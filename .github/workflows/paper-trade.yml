@@ -1,0 +1,57 @@
+name: paper-trade
+
+on:
+  schedule:
+    # 04:10 UTC = 09:40 IST, weekdays. GitHub may delay the start by a few
+    # minutes; entries only begin at 10:15 IST so the buffer is safe.
+    - cron: '10 4 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: paper-trade
+  cancel-in-progress: false
+
+jobs:
+  trade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355        # ends 15:30 IST; hard cap under GitHub's 6h limit
+    env:
+      TZ: Asia/Kolkata
+      UPSTOX_TOKEN: ${{ secrets.UPSTOX_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Run paper trader (sync results every 15 min)
+        working-directory: src
+        run: |
+          git config user.name "paper-trade-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python paper_trade.py &
+          PID=$!
+          while kill -0 $PID 2>/dev/null; do
+            sleep 900
+            kill -0 $PID 2>/dev/null || break
+            git add ../results/paper_* 2>/dev/null || true
+            git commit -m "sync: intraday $(date +%H:%M)" || true
+            git pull --rebase origin main || true
+            git push || true
+          done
+          wait $PID || true
+
+      - name: Final sync
+        if: always()
+        run: |
+          git add results/paper_* 2>/dev/null || true
+          git commit -m "sync: end of day $(date +%F)" || true
+          git pull --rebase origin main || true
+          git push || true

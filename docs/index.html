@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zen Overnight — Paper Trading</title>
+<style>
+:root {
+  --page:       #f9f9f7;
+  --surface:    #fcfcfb;
+  --ink:        #0b0b0b;
+  --ink-2:      #52514e;
+  --muted:      #898781;
+  --grid:       #e1e0d9;
+  --axis:       #c3c2b7;
+  --border:     rgba(11,11,11,0.10);
+  --series:     #2a78d6;
+  --up:         #006300;
+  --down:       #d03b3b;
+  --status-good:#0ca30c;
+  --wash:       rgba(42,120,214,0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page:     #0d0d0d;
+    --surface:  #1a1a19;
+    --ink:      #ffffff;
+    --ink-2:    #c3c2b7;
+    --muted:    #898781;
+    --grid:     #2c2c2a;
+    --axis:     #383835;
+    --border:   rgba(255,255,255,0.10);
+    --series:   #3987e5;
+    --up:       #0ca30c;
+    --down:     #e66767;
+    --wash:     rgba(57,135,229,0.14);
+  }
+}
+* { box-sizing: border-box; margin: 0; }
+body {
+  background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding: 20px; max-width: 1080px; margin: 0 auto;
+}
+h1 { font-size: 20px; font-weight: 650; }
+.sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+         flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+button {
+  background: var(--surface); color: var(--ink-2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 14px; font: inherit; font-size: 13px; cursor: pointer;
+}
+button:hover { background: var(--wash); }
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px 18px; margin-bottom: 14px;
+}
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+         gap: 14px; margin-bottom: 14px; }
+.tile-label { color: var(--muted); font-size: 12px; letter-spacing: .02em; }
+.tile-value { font-size: 26px; font-weight: 650; margin-top: 2px; }
+.tile-note  { color: var(--ink-2); font-size: 12px; margin-top: 2px; }
+.pos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px 18px; margin-top: 10px; }
+.pos-grid .tile-value { font-size: 17px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+         color: var(--ink-2); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.dot.live { background: var(--status-good); }
+.up   { color: var(--up); }
+.down { color: var(--down); }
+.num  { font-variant-numeric: tabular-nums; }
+#chartwrap { position: relative; }
+#tooltip {
+  position: absolute; pointer-events: none; display: none;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 6px 10px; font-size: 12px; color: var(--ink-2);
+  box-shadow: 0 2px 8px rgba(0,0,0,.12); white-space: nowrap; z-index: 2;
+}
+#tooltip b { color: var(--ink); }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; color: var(--muted); font-weight: 500; padding: 6px 10px;
+     border-bottom: 1px solid var(--grid); white-space: nowrap; }
+td { padding: 6px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+td.r, th.r { text-align: right; }
+details summary { cursor: pointer; color: var(--ink-2); font-size: 13px; }
+pre { font-size: 12px; color: var(--ink-2); overflow-x: auto; margin-top: 8px; }
+.empty { color: var(--muted); padding: 18px 0; text-align: center; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Zen Overnight — Paper Trading</h1>
+    <div class="sub">NIFTY credit spreads · SL 15% of margin · exit next day 15:15 · 1 lot</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="badge" id="updated"><span class="dot" id="statusdot"></span><span id="updatedtext">loading…</span></span>
+    <button onclick="loadAll()">Refresh</button>
+  </div>
+</header>
+
+<div class="card" id="poscard"><div class="tile-label">OPEN POSITION</div><div class="empty">loading…</div></div>
+
+<div class="tiles" id="tiles"></div>
+
+<div class="card">
+  <div class="tile-label" style="margin-bottom:8px">EQUITY — CUMULATIVE NET P&amp;L (Rs)</div>
+  <div id="chartwrap"><div id="tooltip"></div><div id="chart" class="empty">loading…</div></div>
+</div>
+
+<div class="card">
+  <div class="tile-label" style="margin-bottom:8px">TRADES (NEWEST FIRST)</div>
+  <div class="tablewrap" id="tradetable"><div class="empty">loading…</div></div>
+</div>
+
+<div class="card"><details><summary>Recent log</summary><pre id="log">…</pre></details></div>
+
+<script>
+const onPages = location.hostname.endsWith("github.io");
+const owner = location.hostname.split(".")[0];
+const repo  = location.pathname.split("/").filter(Boolean)[0] || "";
+const base  = onPages
+  ? `https://raw.githubusercontent.com/${owner}/${repo}/main/results/`
+  : "../results/";
+const bust = () => `?t=${Date.now()}`;
+const rs = n => (n < 0 ? "-" : "") + "Rs " + Math.abs(Math.round(n)).toLocaleString("en-IN");
+const cls = n => n >= 0 ? "up" : "down";
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const head = lines[0].split(",");
+  return lines.slice(1).map(l => {
+    const cells = l.split(","); const row = {};
+    head.forEach((h, i) => row[h] = cells[i]);
+    ["credit","margin","gross_pnl","charges","net_pnl","atm","lot","short_strike","long_strike"]
+      .forEach(k => { if (k in row) row[k] = parseFloat(row[k]); });
+    return row;
+  });
+}
+
+async function fetchText(name) {
+  try {
+    const r = await fetch(base + name + bust(), { cache: "no-store" });
+    return r.ok ? await r.text() : null;
+  } catch { return null; }
+}
+
+function renderPosition(state) {
+  const el = document.getElementById("poscard");
+  const p = state && state.position;
+  if (!p) {
+    el.innerHTML = `<div class="tile-label">OPEN POSITION</div><div class="empty">No open position</div>`;
+    return;
+  }
+  const sl = (0.15 * p.margin);
+  el.innerHTML = `<div class="tile-label">OPEN POSITION</div>
+  <div class="pos-grid">
+    <div><div class="tile-label">Type</div><div class="tile-value">${p.type}</div></div>
+    <div><div class="tile-label">Short / Long</div><div class="tile-value num">${p.short_strike}/${p.long_strike} ${p.kind}</div></div>
+    <div><div class="tile-label">Credit</div><div class="tile-value num">${(+p.credit).toFixed(2)}</div></div>
+    <div><div class="tile-label">Margin</div><div class="tile-value num">${rs(p.margin)}</div></div>
+    <div><div class="tile-label">Stop-loss at</div><div class="tile-value num down">-${rs(sl).replace("Rs ","Rs ")}</div></div>
+    <div><div class="tile-label">Entered</div><div class="tile-value num">${p.entry_ts}</div></div>
+    <div><div class="tile-label">Planned exit</div><div class="tile-value num">${p.exit_date} 15:15</div></div>
+  </div>`;
+}
+
+function renderTiles(rows) {
+  const el = document.getElementById("tiles");
+  if (!rows.length) { el.innerHTML = ""; return; }
+  const net = rows.reduce((s, r) => s + r.net_pnl, 0);
+  const wins = rows.filter(r => r.net_pnl > 0);
+  const losses = rows.filter(r => r.net_pnl <= 0);
+  const pf = losses.length ? wins.reduce((s,r)=>s+r.net_pnl,0) / Math.max(1e-9, -losses.reduce((s,r)=>s+r.net_pnl,0)) : Infinity;
+  const om = rows.reduce((s, r) => s + r.net_pnl / r.margin, 0) * 100;
+  const tile = (label, value, note, klass="") =>
+    `<div class="card" style="margin:0"><div class="tile-label">${label}</div>
+     <div class="tile-value num ${klass}">${value}</div>${note?`<div class="tile-note">${note}</div>`:""}</div>`;
+  el.innerHTML =
+    tile("NET P&L", rs(net), "after all charges", cls(net)) +
+    tile("TRADES", rows.length, `${wins.length} wins · ${rows.length - wins.length} losses`) +
+    tile("WIN RATE", (wins.length / rows.length * 100).toFixed(1) + "%") +
+    tile("PROFIT FACTOR", pf === Infinity ? "—" : pf.toFixed(2)) +
+    tile("RETURN ON MARGIN", om.toFixed(1) + "%", "sum per trade (Dhan-style)", cls(om));
+}
+
+function renderChart(rows) {
+  const el = document.getElementById("chart"), tip = document.getElementById("tooltip");
+  if (rows.length < 2) { el.innerHTML = `<div class="empty">${rows.length ? "Need 2+ trades for a curve" : "No trades yet"}</div>`; return; }
+  const sorted = [...rows].sort((a, b) => (a.exit_ts > b.exit_ts ? 1 : -1));
+  let cum = 0;
+  const pts = sorted.map(r => ({ ...r, cum: (cum += r.net_pnl) }));
+  const W = Math.max(el.clientWidth || 900, 320), H = 260,
+        m = { t: 12, r: 14, b: 26, l: 64 };
+  const lo = Math.min(0, ...pts.map(p => p.cum)), hi = Math.max(0, ...pts.map(p => p.cum));
+  const x = i => m.l + i / (pts.length - 1) * (W - m.l - m.r);
+  const y = v => m.t + (hi - v) / (hi - lo || 1) * (H - m.t - m.b);
+  const ticks = 4, grid = [], labels = [];
+  for (let k = 0; k <= ticks; k++) {
+    const v = lo + (hi - lo) * k / ticks;
+    grid.push(`<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)" stroke-width="1"/>`);
+    labels.push(`<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)" class="num">${Math.round(v/1000)}k</text>`);
+  }
+  const months = [];
+  let lastM = "";
+  pts.forEach((p, i) => {
+    const mo = p.exit_ts.slice(0, 7);
+    if (mo !== lastM) { months.push(`<text x="${x(i)}" y="${H - 8}" font-size="11" fill="var(--muted)">${mo}</text>`); lastM = mo; }
+  });
+  const path = pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.cum).toFixed(1)}`).join("");
+  el.innerHTML = `<svg id="eq" width="100%" viewBox="0 0 ${W} ${H}" style="display:block">
+    ${grid.join("")}${labels.join("")}${months.join("")}
+    <line x1="${m.l}" x2="${W - m.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--axis)" stroke-width="1"/>
+    <path d="${path}" fill="none" stroke="var(--series)" stroke-width="2"/>
+    <line id="xh" y1="${m.t}" y2="${H - m.b}" stroke="var(--axis)" stroke-width="1" visibility="hidden"/>
+    <circle id="pt" r="4" fill="var(--series)" stroke="var(--surface)" stroke-width="2" visibility="hidden"/>
+  </svg>`;
+  const svg = document.getElementById("eq"), xh = document.getElementById("xh"), pt = document.getElementById("pt");
+  svg.addEventListener("mousemove", ev => {
+    const box = svg.getBoundingClientRect();
+    const mx = (ev.clientX - box.left) * W / box.width;
+    const i = Math.max(0, Math.min(pts.length - 1, Math.round((mx - m.l) / (W - m.l - m.r) * (pts.length - 1))));
+    const p = pts[i];
+    xh.setAttribute("x1", x(i)); xh.setAttribute("x2", x(i)); xh.setAttribute("visibility", "visible");
+    pt.setAttribute("cx", x(i)); pt.setAttribute("cy", y(p.cum)); pt.setAttribute("visibility", "visible");
+    tip.style.display = "block";
+    tip.innerHTML = `<b>${p.exit_ts}</b><br>${p.type} ${p.short_strike}/${p.long_strike}` +
+      `<br>trade: <b class="${cls(p.net_pnl)}">${rs(p.net_pnl)}</b> · total: <b>${rs(p.cum)}</b>`;
+    const wrap = document.getElementById("chartwrap").getBoundingClientRect();
+    let tx = ev.clientX - wrap.left + 14;
+    if (tx + tip.offsetWidth > wrap.width) tx = tx - tip.offsetWidth - 28;
+    tip.style.left = tx + "px";
+    tip.style.top = (ev.clientY - wrap.top - 10) + "px";
+  });
+  svg.addEventListener("mouseleave", () => {
+    tip.style.display = "none"; xh.setAttribute("visibility", "hidden"); pt.setAttribute("visibility", "hidden");
+  });
+}
+
+function renderTable(rows) {
+  const el = document.getElementById("tradetable");
+  if (!rows.length) { el.innerHTML = `<div class="empty">No trades yet — the first one will appear here.</div>`; return; }
+  const sorted = [...rows].sort((a, b) => (a.exit_ts < b.exit_ts ? 1 : -1));
+  el.innerHTML = `<table><thead><tr>
+    <th>Entry</th><th>Exit</th><th>Type</th><th class="r">Strikes</th><th class="r">Credit</th>
+    <th>Reason</th><th class="r">Net P&L</th><th class="r">On margin</th>
+  </tr></thead><tbody>` + sorted.map(r => `<tr>
+    <td class="num">${r.entry_ts}</td><td class="num">${r.exit_ts}</td><td>${r.type}</td>
+    <td class="r num">${r.short_strike}/${r.long_strike}</td>
+    <td class="r num">${r.credit.toFixed(2)}</td><td>${r.exit_reason}</td>
+    <td class="r num ${cls(r.net_pnl)}">${rs(r.net_pnl)}</td>
+    <td class="r num ${cls(r.net_pnl)}">${(r.net_pnl / r.margin * 100).toFixed(1)}%</td>
+  </tr>`).join("") + "</tbody></table>";
+}
+
+async function loadAll() {
+  const [csv, stateTxt, logTxt] = await Promise.all([
+    fetchText("paper_trades.csv"), fetchText("paper_state.json"), fetchText("paper_trade.log")]);
+  const rows = csv ? parseCSV(csv) : [];
+  let state = null; try { state = stateTxt && JSON.parse(stateTxt); } catch {}
+  renderPosition(state); renderTiles(rows); renderChart(rows); renderTable(rows);
+  const lines = (logTxt || "").trim().split("\n");
+  document.getElementById("log").textContent = lines.slice(-25).join("\n") || "no log yet";
+  const last = lines.length ? lines[lines.length - 1].slice(0, 19) : null;
+  const dot = document.getElementById("statusdot");
+  if (last) {
+    const age = (Date.now() - new Date(last.replace(" ", "T"))) / 60000;
+    dot.className = "dot" + (age < 20 ? " live" : "");
+    document.getElementById("updatedtext").textContent =
+      age < 20 ? `live · updated ${Math.max(0, Math.round(age))}m ago` : `last activity ${last}`;
+  } else {
+    document.getElementById("updatedtext").textContent = "no data yet";
+  }
+}
+loadAll();
+setInterval(loadAll, 5 * 60 * 1000);
+</script>
+</body>
+</html>

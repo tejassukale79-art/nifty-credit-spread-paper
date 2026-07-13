@@ -1,0 +1,47 @@
+93 expiries: 2024-10-03 -> 2026-07-07
+2024-10-03: lot=25 need=70 fetched=70 missing=0
+2024-10-10: lot=25 need=60 fetched=60 missing=0
+2024-10-17: lot=25 need=48 fetched=48 missing=0
+2024-10-24: lot=25 need=54 fetched=54 missing=0
+2024-10-31: lot=25 need=44 fetched=44 missing=0
+2024-11-07: lot=25 need=56 fetched=56 missing=0
+2024-11-14: lot=25 need=62 fetched=62 missing=0
+2024-11-21: lot=25 need=48 fetched=48 missing=0
+2024-11-28: lot=25 need=68 fetched=68 missing=0
+2024-12-05: lot=25 need=66 fetched=66 missing=0
+2024-12-12: lot=25 need=38 fetched=38 missing=0
+2024-12-19: lot=25 need=64 fetched=64 missing=0
+2024-12-26: lot=25 need=50 fetched=50 missing=0
+2025-01-02: lot=75 need=58 fetched=58 missing=0
+2025-01-09: lot=75 need=56 fetched=56 missing=0
+2025-01-16: lot=75 need=50 fetched=50 missing=0
+2025-01-23: lot=75 need=46 fetched=46 missing=0
+2025-01-30: lot=25 need=50 fetched=50 missing=0
+2025-02-06: lot=75 need=52 fetched=52 missing=0
+2025-02-13: lot=75 need=64 fetched=64 missing=0
+2025-02-20: lot=75 need=44 fetched=44 missing=0
+2025-02-27: lot=75 need=44 fetched=44 missing=0
+2025-03-06: lot=75 need=52 fetched=52 missing=0
+2025-03-13: lot=75 need=42 fetched=42 missing=0
+Traceback (most recent call last):
+  File [35m"E:\Claude\nifty_credit_spread\src\download_options.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mmain[0m[1;31m()[0m
+    [31m~~~~[0m[1;31m^^[0m
+  File [35m"E:\Claude\nifty_credit_spread\src\download_options.py"[0m, line [35m80[0m, in [35mmain[0m
+    if [31msave_contract[0m[1;31m(expiry_dir, c, from_date, expiry)[0m:
+       [31m~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"E:\Claude\nifty_credit_spread\src\download_options.py"[0m, line [35m32[0m, in [35msave_contract[0m
+    candles = upstox_api.expired_candles_1min(contract["instrument_key"], from_date, expiry)
+  File [35m"E:\Claude\nifty_credit_spread\src\upstox_api.py"[0m, line [35m61[0m, in [35mexpired_candles_1min[0m
+    return [31m_get[0m[1;31m(url)[0m["data"]["candles"]
+           [31m~~~~[0m[1;31m^^^^^[0m
+  File [35m"E:\Claude\nifty_credit_spread\src\upstox_api.py"[0m, line [35m36[0m, in [35m_get[0m
+    raise RuntimeError(f"Retries exhausted for {url}")
+[1;35mRuntimeError[0m: [35mRetries exhausted for https://api.upstox.com/v2/expired-instruments/historical-candle/NSE_FO%7C50237%7C20-03-2025/1minute/2025-03-20/2025-03-11[0m
+iry)
+  File [35m"E:\Claude\nifty_credit_spread\src\upstox_api.py"[0m, line [35m61[0m, in [35mexpired_candles_1min[0m
+    return [31m_get[0m[1;31m(url)[0m["data"]["candles"]
+           [31m~~~~[0m[1;31m^^^^^[0m
+  File [35m"E:\Claude\nifty_credit_spread\src\upstox_api.py"[0m, line [35m36[0m, in [35m_get[0m
+    raise RuntimeError(f"Retries exhausted for {url}")
+[1;35mRuntimeError[0m: [35mRetries exhausted for https://api.upstox.com/v2/expired-instruments/historical-candle/NSE_FO%7C50236%7C20-03-2025/1minute/2025-03-20/2025-03-11[0m
