@@ -77,8 +77,11 @@ def live_option_contracts():
 
 
 def ltp(keys):
-    """Last traded prices for a list of instrument keys -> {key: price}."""
-    url = f"{config.BASE_URL}/v2/market-quote/ltp"
+    """Last traded prices for a list of instrument keys -> {key: price}.
+
+    Uses the v3 quote endpoint: unlike v2 it is on the Analytics Token's
+    allowed list, so the script runs on a 1-year read-only token."""
+    url = f"{config.BASE_URL}/v3/market-quote/ltp"
     data = upstox_api._get(url, {"instrument_key": ",".join(keys)})["data"]
     out = {}
     for v in data.values():
@@ -139,16 +142,25 @@ class LiveData:
 
     # -- option candles --
     def _expired_lookup(self, day):
-        """Contracts for a past day that belonged to an already-expired weekly."""
+        """Contracts for a past day that belonged to an already-expired weekly.
+
+        The expired-instruments API is not on the Analytics Token's allowed
+        list; fail soft (alpha2 warms up from today's bars alone by ~11:45)."""
         if self.expired_keys is None:
-            exps = upstox_api.expired_expiries()
-            past = [e for e in exps if pd.Timestamp(e).date() >= day]
-            if not past:
-                return None, None
-            e = past[0]
-            cons = upstox_api.expired_contracts(e)
-            self.expired_keys = (e, {(int(c["strike_price"]), c["instrument_type"]): c
-                                     for c in cons})
+            try:
+                exps = upstox_api.expired_expiries()
+                past = [e for e in exps if pd.Timestamp(e).date() >= day]
+                if past:
+                    cons = upstox_api.expired_contracts(past[0])
+                    self.expired_keys = (past[0],
+                                         {(int(c["strike_price"]), c["instrument_type"]): c
+                                          for c in cons})
+                else:
+                    self.expired_keys = (None, {})
+            except Exception as e:
+                log(f"expired-instruments API unavailable (analytics token?) - "
+                    f"warm-up will use today's bars only: {e}")
+                self.expired_keys = (None, {})
         return self.expired_keys
 
     def option_series(self, strike, kind, need_from):
