@@ -17,20 +17,21 @@ trading day, 1 lot, entries 10:15–14:15.
 - The dashboard (GitHub Pages, `docs/index.html`) reads those files and shows
   the open position, P&L stats, equity curve, and full trade table.
 
-## Daily step — refresh the Upstox token (before 09:40 IST)
+## Token — use the 1-year Analytics Token (recommended)
 
-The Upstox access token expires every morning (~03:30 IST). Each trading day:
+The script only reads market data, so Upstox's read-only **Analytics Token**
+(valid 1 year) works — no daily refresh needed:
 
-1. Log in to Upstox and copy the new access token.
-2. Update the repo secret — either on the website/app:
+1. In your Upstox account: **Developer Apps → your app → Generate Analytics
+   Token** (see the [docs](https://upstox.com/developer/api-documentation/analytics-token/)).
+2. Put it in the repo secret once:
    **Settings → Secrets and variables → Actions → UPSTOX_TOKEN → Update**,
-   or from a terminal:
-   ```
-   gh secret set UPSTOX_TOKEN --body "PASTE_TOKEN_HERE"
-   ```
+   or `gh secret set UPSTOX_TOKEN --body "PASTE_TOKEN_HERE"`.
 
-If the token is stale the run logs `TOKEN EXPIRED` and trades nothing —
-update the secret and re-run the workflow from the Actions tab
+Notes: generating a new Analytics Token revokes the previous one; it cannot
+place orders (fine — paper trading never does). A normal daily access token
+also works if you prefer. If the token is stale the run logs `TOKEN EXPIRED`
+and trades nothing — update the secret and re-run from the Actions tab
 (**paper-trade → Run workflow**).
 
 ## Local run (alternative)
