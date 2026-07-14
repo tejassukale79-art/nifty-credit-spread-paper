@@ -1,21 +1,3 @@
 {
- "position": {
-  "date": "2026-07-14",
-  "expiry": "2026-07-14",
-  "type": "bear_call",
-  "kind": "CE",
-  "entry_ts": "2026-07-14 11:56:08",
-  "atm": 24100,
-  "lot": 65,
-  "short_strike": 24100,
-  "long_strike": 24500,
-  "credit": 34.35,
-  "margin": 23767.25,
-  "short_entry": 34.95,
-  "long_entry": 0.6000000000000001,
-  "alpha": 0.14177215189873418,
-  "alpha2": 0.13559322033898305,
-  "spot_entry": 24104.6,
-  "exit_date": "2026-07-14"
- }
+ "position": null
 }

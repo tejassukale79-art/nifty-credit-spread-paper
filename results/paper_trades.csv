@@ -1,0 +1,2 @@
+date,expiry,type,entry_ts,atm,lot,short_strike,long_strike,credit,margin,alpha,alpha2,spot_entry,exit_ts,exit_reason,exit_cost_to_close,gross_pnl,charges,net_pnl
+2026-07-14,2026-07-14,bear_call,2026-07-14 11:56:08,24100,65,24100,24500,34.35,23767.25,0.14177215189873418,0.13559322033898305,24104.6,2026-07-14 15:15:09,TIME,0.10000000000000002,2226.25,97.6397358825,2128.6102641175
