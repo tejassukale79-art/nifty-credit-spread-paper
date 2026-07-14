@@ -3,3 +3,8 @@
 2026-07-13 23:29:02  warm-up spot: 1875 bars (2026-07-06 09:15:00 -> 2026-07-10 15:29:00)
 2026-07-13 23:29:02  trading expiry 2026-07-14, lot 65
 2026-07-13 23:29:02  day done. open position: False (state saved; run again tomorrow)
+2026-07-14 11:53:29  ============================================================
+2026-07-14 11:53:29  paper trading start | SL 15% of margin | exit next day 15:15
+2026-07-14 11:53:31  warm-up spot: 2250 bars (2026-07-06 09:15:00 -> 2026-07-13 15:29:00)
+2026-07-14 11:53:31  trading expiry 2026-07-14, lot 65
+2026-07-14 11:56:24  OPENED bear_call: sell 24100CE @ 34.95, buy 24500CE @ 0.60, credit 34.35, margin 23,767, SL 3,565, exit 2026-07-14 15:15
