@@ -14,3 +14,4 @@
 2026-07-15 11:57:17  paper trading start | SL 15% of margin | exit next day 15:15
 2026-07-15 11:57:19  warm-up spot: 2625 bars (2026-07-06 09:15:00 -> 2026-07-14 15:29:00)
 2026-07-15 11:57:19  trading expiry 2026-07-21, lot 65
+2026-07-15 12:17:22  OPENED bull_put: sell 24200PE @ 161.55, buy 23800PE @ 40.15, credit 121.40, margin 18,109, SL 2,716, exit 2026-07-16 15:15
