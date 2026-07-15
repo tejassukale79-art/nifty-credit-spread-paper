@@ -10,3 +10,7 @@
 2026-07-14 11:56:24  OPENED bear_call: sell 24100CE @ 34.95, buy 24500CE @ 0.60, credit 34.35, margin 23,767, SL 3,565, exit 2026-07-14 15:15
 2026-07-14 15:15:09  CLOSED bear_call 24100/24500 (TIME) net 2,129
 2026-07-14 15:30:22  day done. open position: False (state saved; run again tomorrow)
+2026-07-15 11:57:17  ============================================================
+2026-07-15 11:57:17  paper trading start | SL 15% of margin | exit next day 15:15
+2026-07-15 11:57:19  warm-up spot: 2625 bars (2026-07-06 09:15:00 -> 2026-07-14 15:29:00)
+2026-07-15 11:57:19  trading expiry 2026-07-21, lot 65
