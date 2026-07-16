@@ -3,3 +3,26 @@
 2026-07-13 23:29:02  warm-up spot: 1875 bars (2026-07-06 09:15:00 -> 2026-07-10 15:29:00)
 2026-07-13 23:29:02  trading expiry 2026-07-14, lot 65
 2026-07-13 23:29:02  day done. open position: False (state saved; run again tomorrow)
+2026-07-14 11:53:29  ============================================================
+2026-07-14 11:53:29  paper trading start | SL 15% of margin | exit next day 15:15
+2026-07-14 11:53:31  warm-up spot: 2250 bars (2026-07-06 09:15:00 -> 2026-07-13 15:29:00)
+2026-07-14 11:53:31  trading expiry 2026-07-14, lot 65
+2026-07-14 11:56:24  OPENED bear_call: sell 24100CE @ 34.95, buy 24500CE @ 0.60, credit 34.35, margin 23,767, SL 3,565, exit 2026-07-14 15:15
+2026-07-14 15:15:09  CLOSED bear_call 24100/24500 (TIME) net 2,129
+2026-07-14 15:30:22  day done. open position: False (state saved; run again tomorrow)
+2026-07-15 11:57:17  ============================================================
+2026-07-15 11:57:17  paper trading start | SL 15% of margin | exit next day 15:15
+2026-07-15 11:57:19  warm-up spot: 2625 bars (2026-07-06 09:15:00 -> 2026-07-14 15:29:00)
+2026-07-15 11:57:19  trading expiry 2026-07-21, lot 65
+2026-07-15 12:17:22  OPENED bull_put: sell 24200PE @ 161.55, buy 23800PE @ 40.15, credit 121.40, margin 18,109, SL 2,716, exit 2026-07-16 15:15
+2026-07-15 12:56:08  SL hit: MTM -2,941 <= -2,716
+2026-07-15 12:56:10  CLOSED bull_put 24200/23800 (SL) net -3,061
+2026-07-15 13:03:24  OPENED bull_put: sell 24050PE @ 167.05, buy 23650PE @ 42.35, credit 124.70, margin 17,894, SL 2,684, exit 2026-07-16 15:15
+2026-07-15 15:30:08  day done. open position: True (state saved; run again tomorrow)
+2026-07-16 12:00:14  ============================================================
+2026-07-16 12:00:14  paper trading start | SL 15% of margin | exit next day 15:15
+2026-07-16 12:00:16  warm-up spot: 2625 bars (2026-07-07 09:15:00 -> 2026-07-15 15:29:00)
+2026-07-16 12:00:16  trading expiry 2026-07-21, lot 65
+2026-07-16 12:00:16  restored open position: bull_put 24050/23650
+2026-07-16 15:15:09  CLOSED bull_put 24050/23650 (TIME) net 1,919
+2026-07-16 15:30:19  day done. open position: False (state saved; run again tomorrow)
