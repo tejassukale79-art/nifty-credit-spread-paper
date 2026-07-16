@@ -9,8 +9,11 @@ trading day, 1 lot, entries 10:15–14:15.
 
 ## How it runs
 
-- `.github/workflows/paper-trade.yml` starts every weekday at ~09:40 IST on
-  GitHub Actions and runs `src/paper_trade.py` until 15:30 IST.
+- `.github/workflows/paper-trade-starter.yml` fires every weekday at 08:30 IST,
+  idles until 09:35 IST, then dispatches `paper-trade.yml` (this absorbs
+  GitHub's cron delays, which can exceed 2 hours). The trading job runs
+  `src/paper_trade.py` until 15:30 IST; a 09:40 IST fallback cron on
+  `paper-trade.yml` covers the rare case where the starter never ran.
 - Trades append to `results/paper_trades.csv`; the open position lives in
   `results/paper_state.json` (committed back to the repo so overnight
   positions survive between daily runs).

@@ -6,3 +6,4 @@ __pycache__/
 dhan_page.html
 ~$*
 .claude/
+results/download_*.log

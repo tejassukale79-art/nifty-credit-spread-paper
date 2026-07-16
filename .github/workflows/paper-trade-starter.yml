@@ -1,0 +1,35 @@
+name: paper-trade-starter
+
+on:
+  schedule:
+    # 03:00 UTC = 08:30 IST, weekdays. GitHub can delay cron starts by an
+    # hour or more, so this job absorbs the delay: it idles until 09:35 IST
+    # and then dispatches paper-trade.yml (dispatched runs start within
+    # seconds). A single job cannot cover 08:30 -> 15:30 directly because
+    # GitHub-hosted jobs are killed at 6 hours.
+    - cron: '0 3 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+concurrency:
+  group: paper-trade-starter
+  cancel-in-progress: true
+
+jobs:
+  start:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      TZ: Asia/Kolkata
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Wait until 09:35 IST, then dispatch the trading workflow
+        run: |
+          target=$(date -d "09:35" +%s)
+          now=$(date +%s)
+          echo "now: $(date), dispatching at: $(date -d @$target)"
+          while [ "$(date +%s)" -lt "$target" ]; do sleep 30; done
+          gh workflow run paper-trade.yml --repo ${{ github.repository }}
+          echo "dispatched at $(date)"

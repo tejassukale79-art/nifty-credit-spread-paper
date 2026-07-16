@@ -1,11 +1,15 @@
 name: paper-trade
 
 on:
-  schedule:
-    # 04:10 UTC = 09:40 IST, weekdays. GitHub may delay the start by a few
-    # minutes; entries only begin at 10:15 IST so the buffer is safe.
-    - cron: '10 4 * * 1-5'
+  # Normal start: paper-trade-starter.yml dispatches this at 09:35 IST
+  # (its own cron fires at 08:30 IST and it idles until 09:35, absorbing
+  # GitHub's cron delays; dispatched runs start within seconds).
   workflow_dispatch:
+  schedule:
+    # Disaster fallback only, in case the starter never ran. If the starter
+    # did run, this queues behind the live run (same concurrency group) and
+    # exits within a minute once it starts after 15:30 IST.
+    - cron: '10 4 * * 1-5'
 
 permissions:
   contents: write
@@ -17,7 +21,8 @@ concurrency:
 jobs:
   trade:
     runs-on: ubuntu-latest
-    timeout-minutes: 355        # ends 15:30 IST; hard cap under GitHub's 6h limit
+    timeout-minutes: 358        # from a 09:35 IST dispatch this outlives the
+                                # script's own 15:30 exit, within GitHub's 6h cap
     env:
       TZ: Asia/Kolkata
       UPSTOX_TOKEN: ${{ secrets.UPSTOX_TOKEN }}

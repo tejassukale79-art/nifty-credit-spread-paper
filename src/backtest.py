@@ -44,7 +44,9 @@ def charges(buy_turnover, sell_turnover, n_orders):
 def prepare():
     """Load data and compute alphas once; reusable across simulation variants."""
     spot = signals.load_spot()
-    expiries = [e for e in upstox_api.expired_expiries() if e <= config.BACKTEST_END]
+    # expired archive + any locally downloaded live expiries (e.g. current week)
+    local = [d.name for d in config.OPT_DIR.iterdir() if (d / "meta.json").exists()]
+    expiries = sorted(set(upstox_api.expired_expiries()) | set(local))
     emap = signals.expiry_map(spot["date"], expiries)
     store = signals.OptionStore(pd.DatetimeIndex(spot["ts"]))
 
@@ -74,7 +76,7 @@ def run(prepared=None, invert=False, tag="baseline"):
     print("simulating...", flush=True)
     for d, day in df.groupby("date", sort=True):
         expiry = emap.get(d)
-        if expiry is None or str(expiry) > config.BACKTEST_END:
+        if expiry is None:
             continue
         data = store.expiry_data(str(expiry))
         if not data:
@@ -155,7 +157,7 @@ def run(prepared=None, invert=False, tag="baseline"):
     tr = pd.DataFrame(trades)
     tr.to_csv(config.RESULTS_DIR / f"trades_{tag}.csv", index=False)
     df[["ts", "close", "atm", "alpha", "alpha2", "sig"]].to_parquet(
-        config.RESULTS_DIR / "signals.parquet", index=False)
+        config.RESULTS_DIR / f"signals_{tag}.parquet", index=False)
     report(tr, df)
     return tr
 

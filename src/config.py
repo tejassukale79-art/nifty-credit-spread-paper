@@ -20,7 +20,7 @@ NIFTY_KEY = "NSE_INDEX|Nifty 50"
 # Expired-option archive starts with the 2024-10-03 expiry (contract data from ~2024-09-02).
 SPOT_START = "2024-08-16"        # extra history for the 800-min alpha warm-up
 BACKTEST_START = "2024-09-27"    # first day fully inside option-data coverage
-BACKTEST_END = "2026-07-07"      # last completed weekly expiry
+BACKTEST_END = "2026-07-14"      # last completed weekly expiry
 
 # ---- strategy parameters (from the strategy spec; ambiguous items are
 # marked TUNABLE and can be changed without re-downloading data) ----

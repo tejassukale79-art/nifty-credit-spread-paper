@@ -55,6 +55,27 @@ def expired_contracts(expiry_date):
                       "expiry_date": expiry_date})["data"]
 
 
+def active_option_contracts(expiry_date):
+    """Contract list for a live (not yet expired) expiry."""
+    url = f"{config.BASE_URL}/v2/option/contract"
+    return _get(url, {"instrument_key": config.NIFTY_KEY,
+                      "expiry_date": expiry_date})["data"]
+
+
+def live_candles_1min(instrument_key, from_date, to_date):
+    """1-min candles for a live instrument (index or F&O), past days only."""
+    key = quote(instrument_key, safe="")
+    url = f"{config.BASE_URL}/v3/historical-candle/{key}/minutes/1/{to_date}/{from_date}"
+    return _get(url)["data"]["candles"]
+
+
+def intraday_candles_1min(instrument_key):
+    """1-min candles for the current trading day."""
+    key = quote(instrument_key, safe="")
+    url = f"{config.BASE_URL}/v3/historical-candle/intraday/{key}/minutes/1"
+    return _get(url)["data"]["candles"]
+
+
 def expired_candles_1min(expired_key, from_date, to_date):
     key = quote(expired_key, safe="")
     url = (f"{config.BASE_URL}/v2/expired-instruments/historical-candle/"
