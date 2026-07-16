@@ -19,3 +19,8 @@
 2026-07-15 12:56:10  CLOSED bull_put 24200/23800 (SL) net -3,061
 2026-07-15 13:03:24  OPENED bull_put: sell 24050PE @ 167.05, buy 23650PE @ 42.35, credit 124.70, margin 17,894, SL 2,684, exit 2026-07-16 15:15
 2026-07-15 15:30:08  day done. open position: True (state saved; run again tomorrow)
+2026-07-16 12:00:14  ============================================================
+2026-07-16 12:00:14  paper trading start | SL 15% of margin | exit next day 15:15
+2026-07-16 12:00:16  warm-up spot: 2625 bars (2026-07-07 09:15:00 -> 2026-07-15 15:29:00)
+2026-07-16 12:00:16  trading expiry 2026-07-21, lot 65
+2026-07-16 12:00:16  restored open position: bull_put 24050/23650
