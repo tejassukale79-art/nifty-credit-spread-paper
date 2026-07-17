@@ -38,3 +38,4 @@
 2026-07-17 11:10:26  OPENED bear_call: sell 24250CE @ 108.60, buy 24650CE @ 9.90, credit 98.70, margin 19,584, SL 2,938, exit 2026-07-18 15:15
 2026-07-17 14:16:08  SL hit: MTM -3,257 <= -2,938
 2026-07-17 14:16:10  CLOSED bear_call 24250/24650 (SL) net -2,968
+2026-07-17 15:30:24  day done. open position: False (state saved; run again tomorrow)
