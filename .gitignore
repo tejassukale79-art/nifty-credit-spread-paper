@@ -13,3 +13,5 @@ results/*.log
 results/dhan_zen.html
 results/dhan_main.js
 results/dhan_chunk.js
+ssh-key-*
+*.pem
