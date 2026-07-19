@@ -18,9 +18,11 @@ import signals
 import upstox_api
 
 
-def run():
+def run(tag="overnight"):
     spot = signals.load_spot()
-    expiries = [e for e in upstox_api.expired_expiries() if e <= config.BACKTEST_END]
+    # expired archive + any locally downloaded live expiries (e.g. current week)
+    local = [d.name for d in config.OPT_DIR.iterdir() if (d / "meta.json").exists()]
+    expiries = sorted(set(upstox_api.expired_expiries()) | set(local))
     emap = signals.expiry_map(spot["date"], expiries)
     store = signals.OptionStore(pd.DatetimeIndex(spot["ts"]))
 
@@ -86,7 +88,7 @@ def run():
             continue
         d = dates[i]
         expiry = emap.get(d)
-        if expiry is None or str(expiry) > config.BACKTEST_END:
+        if expiry is None:
             continue
         data = store.expiry_data(str(expiry))
         if not data:
@@ -133,7 +135,7 @@ def run():
                        "gross_pnl": gross, "charges": cost, "net_pnl": gross - cost})
 
     tr = pd.DataFrame(trades)
-    tr.to_csv(config.RESULTS_DIR / "trades_overnight.csv", index=False)
+    tr.to_csv(config.RESULTS_DIR / f"trades_{tag}.csv", index=False)
     backtest.report(tr, df)
     return tr
 

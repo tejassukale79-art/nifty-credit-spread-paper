@@ -29,8 +29,8 @@ ALPHA2_LOOKBACK = 300            # minutes, ts_rank window for alpha2
 RET_MINUTES = 5                  # trailing price-change horizon (minutes)
 LONG_TH = 0.8                    # both alphas above -> credit put spread
 SHORT_TH = 0.2                   # both alphas below -> credit call spread
-VOL_RATIO_WINDOW = 60            # TUNABLE: rolling-mean window for option volume ratio
-OPT_VOL_WINDOW = 30              # TUNABLE: rolling-std window (1-min returns) for option volatility
+VOL_RATIO_WINDOW = 15            # best fit to Dhan live entries (sweep 2026-07-20)
+OPT_VOL_WINDOW = 240             # best fit to Dhan live entries (sweep 2026-07-20)
 STRIKE_STEP = 50
 WING_POINTS = 400                # wing distance for the spread
 

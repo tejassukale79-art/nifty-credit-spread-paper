@@ -7,3 +7,9 @@ dhan_page.html
 ~$*
 .claude/
 results/download_*.log
+results/*.npz
+results/*.log
+!results/paper_trade.log
+results/dhan_zen.html
+results/dhan_main.js
+results/dhan_chunk.js

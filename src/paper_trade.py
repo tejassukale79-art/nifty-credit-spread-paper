@@ -27,7 +27,7 @@ import upstox_api
 from backtest import charges
 
 SL_PCT = 0.15                       # best backtested value (NOT config's 0.25)
-EXIT_TIME = "15:15"                 # next-day square-off
+EXIT_TIME = "15:00"                 # next-day square-off (verified from Dhan live exits)
 STATE_FILE = config.RESULTS_DIR / "paper_state.json"
 TRADES_FILE = config.RESULTS_DIR / "paper_trades.csv"
 LOG_FILE = config.RESULTS_DIR / "paper_trade.log"
