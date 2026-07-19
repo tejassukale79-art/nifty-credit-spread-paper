@@ -1,0 +1,9 @@
+[Unit]
+Description=Start paper trading Mon-Fri at 09:10 IST
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 09:10:00
+Persistent=false
+
+[Install]
+WantedBy=timers.target

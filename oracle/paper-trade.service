@@ -1,0 +1,12 @@
+[Unit]
+Description=NIFTY credit-spread paper trading session
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+ExecStart=/usr/bin/bash /home/ubuntu/paper/oracle/run_paper.sh
+TimeoutStartSec=8h
+StandardOutput=append:/home/ubuntu/paper-trade-session.log
+StandardError=append:/home/ubuntu/paper-trade-session.log
