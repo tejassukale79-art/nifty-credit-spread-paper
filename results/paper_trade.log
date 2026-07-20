@@ -39,3 +39,10 @@
 2026-07-17 14:16:08  SL hit: MTM -3,257 <= -2,938
 2026-07-17 14:16:10  CLOSED bear_call 24250/24650 (SL) net -2,968
 2026-07-17 15:30:24  day done. open position: False (state saved; run again tomorrow)
+2026-07-20 01:32:34  warm-up spot: 1875 bars (2026-07-13 09:15:00 -> 2026-07-17 15:29:00)
+2026-07-20 01:32:34  trading expiry 2026-07-21, lot 65
+2026-07-20 09:10:09  ============================================================
+2026-07-20 09:10:09  paper trading start | SL 15% of margin | exit next day 15:00
+2026-07-20 09:10:10  warm-up spot: 1875 bars (2026-07-13 09:15:00 -> 2026-07-17 15:29:00)
+2026-07-20 09:10:10  trading expiry 2026-07-21, lot 65
+2026-07-20 09:16:08  ERROR: Can only use .dt accessor with datetimelike values
