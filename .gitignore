@@ -1,6 +1,7 @@
 data/
 config/token.txt
 config/upstox_secrets.env
+config/upstox_app.env
 __pycache__/
 *.pyc
 *.parquet
