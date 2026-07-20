@@ -8,6 +8,18 @@ cd "$DIR"
 
 git pull --rebase origin main || true
 
+cd src
+if [ -f "$DIR/config/upstox_secrets.env" ]; then
+    if ! "$DIR/.venv/bin/python" get_trading_token.py; then
+        echo "$(date) token refresh failed - paper_trade.py will retry/skip if stale" \
+            >> "$DIR/results/paper_trade.log"
+    fi
+else
+    echo "$(date) no upstox_secrets.env - skipping auto token refresh, using existing config/token.txt" \
+        >> "$DIR/results/paper_trade.log"
+fi
+cd "$DIR"
+
 sync_results() {
     git add results/paper_* 2>/dev/null || true
     git commit -m "sync: $1 $(date +%H:%M)" >/dev/null 2>&1 || true

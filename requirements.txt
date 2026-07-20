@@ -1,3 +1,7 @@
 requests
 pandas
 numpy
+
+# Optional: automated daily Upstox token refresh (VM only, needs Python 3.12+).
+# Not required for backtesting/paper-trade-with-manual-token workflows.
+upstox-totp; python_version >= "3.12"
