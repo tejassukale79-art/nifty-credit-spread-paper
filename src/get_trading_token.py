@@ -54,34 +54,59 @@ def load_env_file():
         os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
 
 
+def write_status(ok, reason):
+    """Write a dashboard-visible status file. This file is committed to a
+    PUBLIC repo, so `reason` must be a short, non-sensitive label only -
+    never the token, credentials, or raw exception text."""
+    import json
+    status = {
+        "status": "success" if ok else "failed",
+        "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "reason": reason,
+    }
+    try:
+        (config.RESULTS_DIR / "token_status.json").write_text(json.dumps(status, indent=1))
+    except Exception as exc:      # never let status-writing mask the real result
+        log(f"(could not write token_status.json: {exc})")
+
+
+def _fail(reason, detail=None):
+    """Log a detailed message locally, but record only a safe label."""
+    log(f"FAILED: {detail or reason}")
+    write_status(False, reason)
+    return 1
+
+
 def main():
     load_env_file()
     missing = [v for v in REQUIRED_VARS if not os.environ.get(v)]
     if missing:
-        log(f"FAILED: missing credentials {missing} - run "
-            f"oracle/setup_trading_secrets.sh on the VM first")
-        return 1
+        return _fail("missing credentials",
+                     f"missing credentials {missing} - run "
+                     f"oracle/setup_trading_secrets.sh on the VM first")
 
     try:
         from upstox_totp import UpstoxTOTP
     except ImportError:
-        log("FAILED: upstox-totp not installed (pip install upstox-totp, needs Python 3.12+)")
-        return 1
+        return _fail("upstox-totp not installed",
+                     "upstox-totp not installed (pip install upstox-totp, needs Python 3.12+)")
 
     try:
         upx = UpstoxTOTP()
         resp = upx.app_token.get_access_token()
     except Exception as exc:
-        log(f"FAILED: login/token-exchange raised {type(exc).__name__}: {exc}")
-        return 1
+        # detail (with exception text) stays in the local log only
+        return _fail("login/token-exchange error",
+                     f"login/token-exchange raised {type(exc).__name__}: {exc}")
 
     if not (resp and getattr(resp, "success", False) and resp.data):
-        log(f"FAILED: {getattr(resp, 'message', 'unknown error, no access_token in response')}")
-        return 1
+        return _fail("no access token returned",
+                     getattr(resp, "message", "unknown error, no access_token in response"))
 
     token = resp.data.access_token
     (config.CONFIG_DIR / "token.txt").write_text(token.strip())
     log(f"OK: new access token written to config/token.txt (len={len(token)})")
+    write_status(True, f"token generated (len={len(token)})")
     return 0
 
 

@@ -67,6 +67,9 @@ button:hover { background: var(--wash); }
          color: var(--ink-2); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
 .dot.live { background: var(--status-good); }
+.dot.ok   { background: var(--status-good); }
+.dot.warn { background: #e0a200; }
+.dot.bad  { background: var(--down); }
 .up   { color: var(--up); }
 .down { color: var(--down); }
 .num  { font-variant-numeric: tabular-nums; }
@@ -95,7 +98,8 @@ pre { font-size: 12px; color: var(--ink-2); overflow-x: auto; margin-top: 8px; }
     <h1>Zen Overnight — Paper Trading</h1>
     <div class="sub">NIFTY credit spreads · SL 15% of margin · exit next day 15:15 · 1 lot</div>
   </div>
-  <div style="display:flex;align-items:center;gap:12px">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <span class="badge" id="tokenbadge" title="Upstox access token generated each morning at 08:00 IST"><span class="dot" id="tokendot"></span><span id="tokentext">token…</span></span>
     <span class="badge" id="updated"><span class="dot" id="statusdot"></span><span id="updatedtext">loading…</span></span>
     <button onclick="loadAll()">Refresh</button>
   </div>
@@ -256,9 +260,36 @@ function renderTable(rows) {
   </tr>`).join("") + "</tbody></table>";
 }
 
+function renderToken(txt) {
+  const dot = document.getElementById("tokendot");
+  const el = document.getElementById("tokentext");
+  let s = null; try { s = txt && JSON.parse(txt); } catch {}
+  if (!s || !s.generated_at) {
+    dot.className = "dot"; el.textContent = "token: unknown";
+    return;
+  }
+  const when = new Date(s.generated_at.replace(" ", "T"));
+  const today = new Date();
+  const sameDay = when.toDateString() === today.toDateString();
+  const hm = s.generated_at.slice(11, 16);
+  if (s.status === "success" && sameDay) {
+    dot.className = "dot ok";
+    el.textContent = `token: generated ${hm}`;
+  } else if (s.status === "success") {
+    dot.className = "dot warn";
+    el.textContent = `token: stale (last ${s.generated_at.slice(5, 16)})`;
+  } else {
+    dot.className = "dot bad";
+    el.textContent = sameDay ? `token: FAILED ${hm}` : `token: last failed ${s.generated_at.slice(5, 16)}`;
+  }
+  el.title = `${s.status} · ${s.reason || ""} · ${s.generated_at} IST`;
+}
+
 async function loadAll() {
-  const [csv, stateTxt, logTxt] = await Promise.all([
-    fetchText("paper_trades.csv"), fetchText("paper_state.json"), fetchText("paper_trade.log")]);
+  const [csv, stateTxt, logTxt, tokenTxt] = await Promise.all([
+    fetchText("paper_trades.csv"), fetchText("paper_state.json"),
+    fetchText("paper_trade.log"), fetchText("token_status.json")]);
+  renderToken(tokenTxt);
   const rows = csv ? parseCSV(csv) : [];
   let state = null; try { state = stateTxt && JSON.parse(stateTxt); } catch {}
   renderPosition(state); renderTiles(rows); renderChart(rows); renderTable(rows);
