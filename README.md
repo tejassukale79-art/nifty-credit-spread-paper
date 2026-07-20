@@ -51,18 +51,23 @@ requires your browser login — so nothing account-sensitive is ever stored.
 
 ### 2. Fully automated — zero daily effort (higher trust)
 
-`oracle/run_paper.sh` calls `src/get_trading_token.py` at the start of every
-session, logging in via the [upstox-totp](https://github.com/batpool/upstox-totp)
-package (TOTP 2FA, no browser). One-time setup, run **directly over SSH on the
-VM** — never paste these credentials into a chat or a file on your dev machine:
+A dedicated systemd timer (`token-refresh.timer`) runs `src/get_trading_token.py`
+every weekday at **08:00 IST**, logging in via the
+[upstox-totp](https://github.com/batpool/upstox-totp) package (TOTP 2FA, no
+browser) and writing a fresh `config/token.txt` — an hour before the 09:10
+trading session needs it, so a failed refresh is visible with time to fix.
+One-time setup, run **directly over SSH on the VM** — never paste these
+credentials into a chat or a file on your dev machine:
 ```
 ssh -i ssh-key-2026-07-19.key ubuntu@140.238.226.69
-cd ~/paper && bash oracle/setup_trading_secrets.sh
+cd ~/paper && git pull && bash oracle/setup_trading_secrets.sh
 ```
 It prompts for your mobile number, password, trading PIN, TOTP secret, and
 developer app credentials (hidden input, not logged), stores them in
-`config/upstox_secrets.env` (chmod 600, gitignored), and runs a test refresh.
-Requires **authenticator-app 2FA enabled on your Upstox account**.
+`config/upstox_secrets.env` (chmod 600, gitignored), runs a test refresh, and
+installs+enables the 08:00 IST timer. Requires **authenticator-app 2FA enabled
+on your Upstox account**. Check it any morning with
+`systemctl list-timers token-refresh.timer` and `~/token-refresh.log`.
 
 This stores your password/PIN/TOTP secret on the VM — a real trust decision:
 whoever controls that VM can log into your Upstox account. Only use it on

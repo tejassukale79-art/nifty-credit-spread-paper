@@ -1,0 +1,12 @@
+[Unit]
+Description=Refresh Upstox access token (fully automated, TOTP)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+ExecStart=/usr/bin/bash /home/ubuntu/paper/oracle/refresh_token.sh
+TimeoutStartSec=10min
+StandardOutput=append:/home/ubuntu/token-refresh.log
+StandardError=append:/home/ubuntu/token-refresh.log

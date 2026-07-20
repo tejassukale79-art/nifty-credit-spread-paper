@@ -47,7 +47,15 @@ echo "running a test token refresh..."
 cd src
 if ../.venv/bin/python get_trading_token.py; then
     echo "SUCCESS - config/token.txt now has a live token."
+    cd ..
+    echo "installing the 08:00 IST daily token-refresh timer..."
+    sudo cp oracle/token-refresh.service oracle/token-refresh.timer /etc/systemd/system/
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now token-refresh.timer
+    systemctl list-timers token-refresh.timer --no-pager | head -3
+    echo "Done. A fresh token will be generated automatically every weekday at 08:00 IST."
 else
     echo "FAILED - check the error above (wrong credentials, TOTP not enabled"
     echo "on the Upstox account, or a login-flow change). Nothing was overwritten."
+    echo "Timer NOT installed; fix credentials and re-run this script."
 fi

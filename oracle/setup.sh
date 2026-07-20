@@ -34,10 +34,12 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now paper-trade.timer
 
 echo "============================================================"
-echo "Setup done. Two manual steps remain:"
-echo "1. Put the Upstox token into $DIR/config/token.txt"
-echo "2. Add this DEPLOY KEY to the GitHub repo (Settings > Deploy keys,"
+echo "Setup done. Manual steps remain:"
+echo "1. Add this DEPLOY KEY to the GitHub repo (Settings > Deploy keys,"
 echo "   allow write access):"
 cat "$HOME/.ssh/id_ed25519.pub"
+echo "2. For automated daily tokens, run: bash oracle/setup_trading_secrets.sh"
+echo "   (it stores credentials and enables the 08:00 IST token-refresh timer)."
+echo "   Otherwise put a token into $DIR/config/token.txt manually."
 echo "============================================================"
 systemctl list-timers paper-trade.timer --no-pager

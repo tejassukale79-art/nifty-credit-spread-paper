@@ -8,17 +8,17 @@ cd "$DIR"
 
 git pull --rebase origin main || true
 
-cd src
-if [ -f "$DIR/config/upstox_secrets.env" ]; then
-    if ! "$DIR/.venv/bin/python" get_trading_token.py; then
-        echo "$(date) token refresh failed - paper_trade.py will retry/skip if stale" \
-            >> "$DIR/results/paper_trade.log"
-    fi
-else
-    echo "$(date) no upstox_secrets.env - skipping auto token refresh, using existing config/token.txt" \
+# Token is refreshed by the dedicated 08:00 IST token-refresh.timer. Here we
+# only do a safety-net refresh if that job left no usable token (e.g. it hit
+# a transient error), so the session isn't lost for the whole day.
+if [ ! -s "$DIR/config/token.txt" ] && [ -f "$DIR/config/upstox_secrets.env" ]; then
+    echo "$(date) token.txt missing/empty at session start - fallback refresh" \
         >> "$DIR/results/paper_trade.log"
+    cd src
+    "$DIR/.venv/bin/python" get_trading_token.py \
+        >> "$DIR/results/paper_trade.log" 2>&1 || true
+    cd "$DIR"
 fi
-cd "$DIR"
 
 sync_results() {
     git add results/paper_* 2>/dev/null || true
