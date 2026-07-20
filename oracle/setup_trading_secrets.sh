@@ -24,8 +24,10 @@ read -rsp "Developer app Client Secret (API secret): " CSEC; echo
 read -rp "Developer app Redirect URI: " RURI
 
 ENV_FILE="config/upstox_secrets.env"
-umask 177   # file created 600 from the start, never briefly world-readable
-cat > "$ENV_FILE" <<EOF
+# Write inside a subshell so the restrictive umask stays local. A global
+# umask 177 would strip the execute bit from any directory created later in
+# this script, which breaks `uv`'s Python install (can't enter its dirs).
+( umask 077; cat > "$ENV_FILE" <<EOF
 UPSTOX_USERNAME=$UN
 UPSTOX_PASSWORD=$PW
 UPSTOX_PIN_CODE=$PIN
@@ -34,6 +36,7 @@ UPSTOX_CLIENT_ID=$CID
 UPSTOX_CLIENT_SECRET=$CSEC
 UPSTOX_REDIRECT_URI=$RURI
 EOF
+)
 chmod 600 "$ENV_FILE"
 echo "wrote $ENV_FILE (permissions: $(stat -c '%a' "$ENV_FILE"))"
 
