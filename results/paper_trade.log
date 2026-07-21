@@ -48,3 +48,8 @@
 2026-07-20 09:16:08  ERROR: Can only use .dt accessor with datetimelike values
 2026-07-20 10:18:26  OPENED bull_put: sell 24200PE @ 83.55, buy 23800PE @ 6.80, credit 76.75, margin 21,011, SL 3,152, exit 2026-07-21 15:00
 2026-07-20 15:30:08  day done. open position: True (state saved; run again tomorrow)
+2026-07-21 09:10:13  ============================================================
+2026-07-21 09:10:13  paper trading start | SL 15% of margin | exit next day 15:00
+2026-07-21 09:10:14  warm-up spot: 2250 bars (2026-07-13 09:15:00 -> 2026-07-20 15:29:00)
+2026-07-21 09:10:14  trading expiry 2026-07-21, lot 65
+2026-07-21 09:10:14  restored open position: bull_put 24200/23800
