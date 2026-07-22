@@ -61,3 +61,4 @@
 2026-07-22 09:10:11  trading expiry 2026-07-28, lot 65
 2026-07-22 09:16:08  ERROR: Can only use .dt accessor with datetimelike values
 2026-07-22 10:16:24  OPENED bear_call: sell 24050CE @ 142.95, buy 24450CE @ 27.75, credit 115.20, margin 18,512, SL 2,777, exit 2026-07-23 15:00
+2026-07-22 15:30:08  day done. open position: True (state saved; run again tomorrow)
