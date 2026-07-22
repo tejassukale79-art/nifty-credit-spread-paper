@@ -170,7 +170,7 @@ function renderPosition(state) {
     const slDist = lv.mtm + lv.sl_amount;   // rupees of room left before SL
     liveHtml = `
     <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:10px 0 4px">
-      <div><div class="tile-label">LIVE P&amp;L${fresh ? "" : " (as of " + asof + ")"}</div>
+      <div><div class="tile-label">UNREALISED P&amp;L${fresh ? " (live)" : " (as of " + asof + ")"}</div>
         <div class="tile-value num ${cls(lv.mtm)}" style="font-size:26px">${rs(lv.mtm)}
           <span style="font-size:14px">(${lv.mtm_pct_margin >= 0 ? "+" : ""}${(+lv.mtm_pct_margin).toFixed(1)}% of margin)</span></div></div>
       <div><div class="tile-label">Cost to close</div><div class="tile-value num">${(+lv.cost_to_close).toFixed(2)} <span style="font-size:12px;color:var(--muted)">vs credit ${(+p.credit).toFixed(2)}</span></div></div>
@@ -197,10 +197,13 @@ function renderTiles(rows, state) {
   const today = new Date().toISOString().slice(0, 10);
   const realizedToday = rows.filter(r => (r.exit_ts || "").slice(0, 10) === today)
                             .reduce((s, r) => s + r.net_pnl, 0);
-  const lv = state && state.position && state.live;
+  const hasPos = state && state.position;
+  const lv = hasPos && state.live;
   const unreal = lv && lv.mtm !== undefined ? +lv.mtm : 0;
   const todayPnl = realizedToday + unreal;
-  const todayNote = lv ? `realized ${rs(realizedToday)} + open ${rs(unreal)}` : "realized (no open position)";
+  const todayNote = lv ? `realized ${rs(realizedToday)} + unrealised ${rs(unreal)}`
+                  : hasPos ? "realized only — open position P&L pending"
+                  : "realized (no open position)";
   const wins = rows.filter(r => r.net_pnl > 0);
   const losses = rows.filter(r => r.net_pnl <= 0);
   const pf = losses.length ? wins.reduce((s,r)=>s+r.net_pnl,0) / Math.max(1e-9, -losses.reduce((s,r)=>s+r.net_pnl,0)) : Infinity;
