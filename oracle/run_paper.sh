@@ -33,7 +33,7 @@ PID=$!
 cd "$DIR"
 
 while kill -0 $PID 2>/dev/null; do
-    sleep 900
+    sleep 300      # 5-min syncs so the dashboard's live P&L stays fresh
     kill -0 $PID 2>/dev/null || break
     sync_results "intraday"
 done

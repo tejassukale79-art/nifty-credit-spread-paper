@@ -96,7 +96,7 @@ pre { font-size: 12px; color: var(--ink-2); overflow-x: auto; margin-top: 8px; }
 <header>
   <div>
     <h1>Zen Overnight — Paper Trading</h1>
-    <div class="sub">NIFTY credit spreads · SL 15% of margin · exit next day 15:15 · 1 lot</div>
+    <div class="sub">NIFTY credit spreads · SL 15% of margin · exit next day 15:00 · 1 lot</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <span class="badge" id="tokenbadge" title="Upstox access token generated each morning at 08:00 IST"><span class="dot" id="tokendot"></span><span id="tokentext">token…</span></span>
@@ -160,7 +160,25 @@ function renderPosition(state) {
     return;
   }
   const sl = (0.15 * p.margin);
-  el.innerHTML = `<div class="tile-label">OPEN POSITION</div>
+  const lv = state.live;
+  let liveHtml = "";
+  if (lv && lv.mtm !== undefined) {
+    const age = (Date.now() - new Date(lv.ts.replace(" ", "T"))) / 60000;
+    const fresh = age < 20;
+    const asof = lv.ts.slice(0, 10) === new Date().toISOString().slice(0, 10)
+               ? lv.ts.slice(11, 16) : lv.ts.slice(5, 16);
+    const slDist = lv.mtm + lv.sl_amount;   // rupees of room left before SL
+    liveHtml = `
+    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:10px 0 4px">
+      <div><div class="tile-label">LIVE P&amp;L${fresh ? "" : " (as of " + asof + ")"}</div>
+        <div class="tile-value num ${cls(lv.mtm)}" style="font-size:26px">${rs(lv.mtm)}
+          <span style="font-size:14px">(${lv.mtm_pct_margin >= 0 ? "+" : ""}${(+lv.mtm_pct_margin).toFixed(1)}% of margin)</span></div></div>
+      <div><div class="tile-label">Cost to close</div><div class="tile-value num">${(+lv.cost_to_close).toFixed(2)} <span style="font-size:12px;color:var(--muted)">vs credit ${(+p.credit).toFixed(2)}</span></div></div>
+      <div><div class="tile-label">Legs (S/L)</div><div class="tile-value num">${(+lv.short_px).toFixed(2)} / ${(+lv.long_px).toFixed(2)}</div></div>
+      <div><div class="tile-label">Room to SL</div><div class="tile-value num ${slDist < 0.25 * lv.sl_amount ? "down" : ""}">${rs(slDist)}</div></div>
+    </div>`;
+  }
+  el.innerHTML = `<div class="tile-label">OPEN POSITION</div>${liveHtml}
   <div class="pos-grid">
     <div><div class="tile-label">Type</div><div class="tile-value">${p.type}</div></div>
     <div><div class="tile-label">Short / Long</div><div class="tile-value num">${p.short_strike}/${p.long_strike} ${p.kind}</div></div>
@@ -168,14 +186,21 @@ function renderPosition(state) {
     <div><div class="tile-label">Margin</div><div class="tile-value num">${rs(p.margin)}</div></div>
     <div><div class="tile-label">Stop-loss at</div><div class="tile-value num down">-${rs(sl).replace("Rs ","Rs ")}</div></div>
     <div><div class="tile-label">Entered</div><div class="tile-value num">${p.entry_ts}</div></div>
-    <div><div class="tile-label">Planned exit</div><div class="tile-value num">${p.exit_date} 15:15</div></div>
+    <div><div class="tile-label">Planned exit</div><div class="tile-value num">${p.exit_date} 15:00</div></div>
   </div>`;
 }
 
-function renderTiles(rows) {
+function renderTiles(rows, state) {
   const el = document.getElementById("tiles");
   if (!rows.length) { el.innerHTML = ""; return; }
   const net = rows.reduce((s, r) => s + r.net_pnl, 0);
+  const today = new Date().toISOString().slice(0, 10);
+  const realizedToday = rows.filter(r => (r.exit_ts || "").slice(0, 10) === today)
+                            .reduce((s, r) => s + r.net_pnl, 0);
+  const lv = state && state.position && state.live;
+  const unreal = lv && lv.mtm !== undefined ? +lv.mtm : 0;
+  const todayPnl = realizedToday + unreal;
+  const todayNote = lv ? `realized ${rs(realizedToday)} + open ${rs(unreal)}` : "realized (no open position)";
   const wins = rows.filter(r => r.net_pnl > 0);
   const losses = rows.filter(r => r.net_pnl <= 0);
   const pf = losses.length ? wins.reduce((s,r)=>s+r.net_pnl,0) / Math.max(1e-9, -losses.reduce((s,r)=>s+r.net_pnl,0)) : Infinity;
@@ -184,6 +209,7 @@ function renderTiles(rows) {
     `<div class="card" style="margin:0"><div class="tile-label">${label}</div>
      <div class="tile-value num ${klass}">${value}</div>${note?`<div class="tile-note">${note}</div>`:""}</div>`;
   el.innerHTML =
+    tile("TODAY", rs(todayPnl), todayNote, cls(todayPnl)) +
     tile("NET P&L", rs(net), "after all charges", cls(net)) +
     tile("TRADES", rows.length, `${wins.length} wins · ${rows.length - wins.length} losses`) +
     tile("WIN RATE", (wins.length / rows.length * 100).toFixed(1) + "%") +
@@ -292,7 +318,7 @@ async function loadAll() {
   renderToken(tokenTxt);
   const rows = csv ? parseCSV(csv) : [];
   let state = null; try { state = stateTxt && JSON.parse(stateTxt); } catch {}
-  renderPosition(state); renderTiles(rows); renderChart(rows); renderTable(rows);
+  renderPosition(state); renderTiles(rows, state); renderChart(rows); renderTable(rows);
   const lines = (logTxt || "").trim().split("\n");
   document.getElementById("log").textContent = lines.slice(-25).join("\n") || "no log yet";
   const last = lines.length ? lines[lines.length - 1].slice(0, 19) : null;

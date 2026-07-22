@@ -283,6 +283,7 @@ def close_position(state, live, reason):
     log(f"CLOSED {pos['type']} {pos['short_strike']}/{pos['long_strike']} "
         f"({reason}) net {gross - cost:,.0f}")
     state["position"] = None
+    state["live"] = None
     save_state(state)
     return True
 
@@ -305,6 +306,14 @@ def try_exit(state, live, now):
     if sc is None or lc is None:
         return False
     mtm = (pos["credit"] - (sc - lc)) * pos["lot"]
+    # publish minute-by-minute mark-to-market for the dashboard (display only)
+    state["live"] = {
+        "ts": now.strftime("%Y-%m-%d %H:%M:%S"),
+        "short_px": sc, "long_px": lc, "cost_to_close": sc - lc,
+        "mtm": mtm, "mtm_pct_margin": mtm / pos["margin"] * 100,
+        "sl_amount": SL_PCT * pos["margin"],
+    }
+    save_state(state)
     if mtm <= -SL_PCT * pos["margin"]:
         log(f"SL hit: MTM {mtm:,.0f} <= -{SL_PCT * pos['margin']:,.0f}")
         return close_position(state, live, "SL")
