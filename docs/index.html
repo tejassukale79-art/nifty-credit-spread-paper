@@ -4,118 +4,151 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zen Overnight — Paper Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --page:       #f9f9f7;
-  --surface:    #fcfcfb;
-  --ink:        #0b0b0b;
-  --ink-2:      #52514e;
-  --muted:      #898781;
-  --grid:       #e1e0d9;
-  --axis:       #c3c2b7;
-  --border:     rgba(11,11,11,0.10);
-  --series:     #2a78d6;
-  --up:         #006300;
-  --down:       #d03b3b;
-  --status-good:#0ca30c;
-  --wash:       rgba(42,120,214,0.08);
+  --page:    #f4f7fb;
+  --surface: #ffffff;
+  --ink:     #0e293b;
+  --ink-2:   #40566e;
+  --muted:   #7c8da1;
+  --grid:    #edf1f7;
+  --axis:    #d7dfe9;
+  --border:  #e4eaf2;
+  --accent:  #2563eb;
+  --line:    #0e293b;
+  --up:      #059669;
+  --down:    #e11d48;
+  --wash:    rgba(37,99,235,0.06);
+  --pill-ok-bg:   #ecfdf5; --pill-ok-tx:   #047857; --pill-ok-dot:  #10b981;
+  --pill-warn-bg: #fffbeb; --pill-warn-tx: #b45309; --pill-warn-dot:#f59e0b;
+  --pill-bad-bg:  #fff1f2; --pill-bad-tx:  #be123c; --pill-bad-dot: #f43f5e;
+  --pill-mut-bg:  #eef2f7; --pill-mut-tx:  #64748b; --pill-mut-dot: #94a3b8;
+  --shadow: 0 1px 2px rgba(14,41,59,0.05), 0 4px 16px rgba(14,41,59,0.04);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --page:     #0d0d0d;
-    --surface:  #1a1a19;
-    --ink:      #ffffff;
-    --ink-2:    #c3c2b7;
-    --muted:    #898781;
-    --grid:     #2c2c2a;
-    --axis:     #383835;
-    --border:   rgba(255,255,255,0.10);
-    --series:   #3987e5;
-    --up:       #0ca30c;
-    --down:     #e66767;
-    --wash:     rgba(57,135,229,0.14);
+    --page:    #0b1524;
+    --surface: #101e32;
+    --ink:     #e8eef6;
+    --ink-2:   #a9b9cc;
+    --muted:   #6e8096;
+    --grid:    #1b293d;
+    --axis:    #2a3b53;
+    --border:  #1e2d44;
+    --accent:  #629ff5;
+    --line:    #cfe0f2;
+    --up:      #34d399;
+    --down:    #fb7185;
+    --wash:    rgba(98,159,245,0.09);
+    --pill-ok-bg:   rgba(16,185,129,.13); --pill-ok-tx:   #34d399; --pill-ok-dot:  #34d399;
+    --pill-warn-bg: rgba(245,158,11,.13); --pill-warn-tx: #fbbf24; --pill-warn-dot:#fbbf24;
+    --pill-bad-bg:  rgba(244,63,94,.13);  --pill-bad-tx:  #fb7185; --pill-bad-dot: #fb7185;
+    --pill-mut-bg:  rgba(148,163,184,.12);--pill-mut-tx:  #94a3b8; --pill-mut-dot: #94a3b8;
+    --shadow: none;
   }
 }
 * { box-sizing: border-box; margin: 0; }
 body {
   background: var(--page); color: var(--ink);
-  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
-  padding: 20px; max-width: 1080px; margin: 0 auto;
+  font: 14px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding: 24px 20px 40px; max-width: 1120px; margin: 0 auto;
 }
-h1 { font-size: 20px; font-weight: 650; }
-.sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+.sub { color: var(--muted); font-size: 13px; margin-top: 3px; }
+.sub b { color: var(--accent); font-weight: 600; }
 header { display: flex; justify-content: space-between; align-items: flex-end;
-         flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-button {
-  background: var(--surface); color: var(--ink-2); border: 1px solid var(--border);
-  border-radius: 8px; padding: 6px 14px; font: inherit; font-size: 13px; cursor: pointer;
+         flex-wrap: wrap; gap: 10px 16px; margin-bottom: 18px; }
+.pills { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12px; font-weight: 600; letter-spacing: .01em;
+  padding: 5px 12px; border-radius: 999px;
+  background: var(--pill-mut-bg); color: var(--pill-mut-tx);
 }
-button:hover { background: var(--wash); }
+.pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pill-mut-dot); }
+.pill.ok   { background: var(--pill-ok-bg);   color: var(--pill-ok-tx); }
+.pill.ok .dot   { background: var(--pill-ok-dot); }
+.pill.warn { background: var(--pill-warn-bg); color: var(--pill-warn-tx); }
+.pill.warn .dot { background: var(--pill-warn-dot); }
+.pill.bad  { background: var(--pill-bad-bg);  color: var(--pill-bad-tx); }
+.pill.bad .dot  { background: var(--pill-bad-dot); }
 .card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; padding: 16px 18px; margin-bottom: 14px;
+  border-radius: 14px; padding: 18px 20px; margin-bottom: 16px;
+  box-shadow: var(--shadow);
 }
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-         gap: 14px; margin-bottom: 14px; }
-.tile-label { color: var(--muted); font-size: 12px; letter-spacing: .02em; }
-.tile-value { font-size: 26px; font-weight: 650; margin-top: 2px; }
-.tile-note  { color: var(--ink-2); font-size: 12px; margin-top: 2px; }
-.pos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px 18px; margin-top: 10px; }
-.pos-grid .tile-value { font-size: 17px; }
-.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
-         color: var(--ink-2); }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
-.dot.live { background: var(--status-good); }
-.dot.ok   { background: var(--status-good); }
-.dot.warn { background: #e0a200; }
-.dot.bad  { background: var(--down); }
+.sec {
+  color: var(--accent); font-size: 11px; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase;
+}
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+         gap: 14px; margin-bottom: 16px; }
+.tile-label { color: var(--muted); font-size: 11px; font-weight: 600;
+              letter-spacing: .05em; text-transform: uppercase; }
+.tile-value { font-size: 23px; font-weight: 700; margin-top: 3px; letter-spacing: -0.01em; }
+.tile-note  { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
+.live-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+             gap: 12px 22px; margin: 14px 0 16px; }
+.live-grid .big { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+.live-grid .big span { font-size: 13px; font-weight: 600; }
+.live-grid .mid { font-size: 19px; font-weight: 700; margin-top: 3px; }
+.live-grid .mid span { font-size: 12px; font-weight: 500; color: var(--muted); }
+.divider { border-top: 1px solid var(--grid); margin: 2px 0 14px; }
+.pos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(126px, 1fr));
+            gap: 12px 18px; }
+.pos-grid .tile-value { font-size: 15.5px; font-weight: 650; }
 .up   { color: var(--up); }
 .down { color: var(--down); }
+.mut  { color: var(--muted); }
+.acc  { color: var(--accent); }
 .num  { font-variant-numeric: tabular-nums; }
 #chartwrap { position: relative; }
 #tooltip {
   position: absolute; pointer-events: none; display: none;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-  padding: 6px 10px; font-size: 12px; color: var(--ink-2);
-  box-shadow: 0 2px 8px rgba(0,0,0,.12); white-space: nowrap; z-index: 2;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 7px 11px; font-size: 12px; color: var(--ink-2);
+  box-shadow: 0 4px 16px rgba(14,41,59,.14); white-space: nowrap; z-index: 2;
 }
 #tooltip b { color: var(--ink); }
 .tablewrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 13px; }
-th { text-align: left; color: var(--muted); font-weight: 500; padding: 6px 10px;
-     border-bottom: 1px solid var(--grid); white-space: nowrap; }
-td { padding: 6px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th { text-align: left; color: var(--muted); font-weight: 600; font-size: 10.5px;
+     letter-spacing: .07em; text-transform: uppercase;
+     padding: 8px 10px; border-bottom: 1px solid var(--axis); white-space: nowrap; }
+td { padding: 8px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+tbody tr:hover { background: var(--wash); }
 td.r, th.r { text-align: right; }
-details summary { cursor: pointer; color: var(--ink-2); font-size: 13px; }
-pre { font-size: 12px; color: var(--ink-2); overflow-x: auto; margin-top: 8px; }
-.empty { color: var(--muted); padding: 18px 0; text-align: center; }
+details summary { cursor: pointer; color: var(--ink-2); font-size: 13px; font-weight: 600; }
+pre { font-size: 12px; color: var(--ink-2); overflow-x: auto; margin-top: 10px; }
+.empty { color: var(--muted); padding: 20px 0; text-align: center; }
 </style>
 </head>
 <body>
 <header>
   <div>
     <h1>Zen Overnight — Paper Trading</h1>
-    <div class="sub">NIFTY credit spreads · SL 15% of margin · exit next day 15:00 · 1 lot</div>
+    <div class="sub">NIFTY credit spreads · SL <b>15% of margin</b> · exit next day <b>15:00</b> · <b>1 lot</b></div>
   </div>
-  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-    <span class="badge" id="tokenbadge" title="Upstox access token generated each morning at 08:00 IST"><span class="dot" id="tokendot"></span><span id="tokentext">token…</span></span>
-    <span class="badge" id="updated"><span class="dot" id="statusdot"></span><span id="updatedtext">loading…</span></span>
-    <button onclick="loadAll()">Refresh</button>
+  <div class="pills">
+    <span class="pill" id="tokenbadge" title="Upstox access token generated each morning at 08:00 IST"><span class="dot"></span><span id="tokentext">token…</span></span>
+    <span class="pill" id="updated"><span class="dot"></span><span id="updatedtext">loading…</span></span>
   </div>
 </header>
 
-<div class="card" id="poscard"><div class="tile-label">OPEN POSITION</div><div class="empty">loading…</div></div>
+<div class="card" id="poscard"><div class="sec">Open position</div><div class="empty">loading…</div></div>
 
 <div class="tiles" id="tiles"></div>
 
 <div class="card">
-  <div class="tile-label" style="margin-bottom:8px">EQUITY — CUMULATIVE NET P&amp;L (Rs)</div>
+  <div class="sec" style="margin-bottom:10px">Equity — cumulative net P&amp;L (Rs)</div>
   <div id="chartwrap"><div id="tooltip"></div><div id="chart" class="empty">loading…</div></div>
 </div>
 
 <div class="card">
-  <div class="tile-label" style="margin-bottom:8px">TRADES (NEWEST FIRST)</div>
+  <div class="sec" style="margin-bottom:6px">Trades (newest first)</div>
   <div class="tablewrap" id="tradetable"><div class="empty">loading…</div></div>
 </div>
 
@@ -156,7 +189,7 @@ function renderPosition(state) {
   const el = document.getElementById("poscard");
   const p = state && state.position;
   if (!p) {
-    el.innerHTML = `<div class="tile-label">OPEN POSITION</div><div class="empty">No open position</div>`;
+    el.innerHTML = `<div class="sec">Open position</div><div class="empty">No open position</div>`;
     return;
   }
   const sl = (0.15 * p.margin);
@@ -169,16 +202,22 @@ function renderPosition(state) {
                ? lv.ts.slice(11, 16) : lv.ts.slice(5, 16);
     const slDist = lv.mtm + lv.sl_amount;   // rupees of room left before SL
     liveHtml = `
-    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:10px 0 4px">
-      <div><div class="tile-label">UNREALISED P&amp;L${fresh ? " (live)" : " (as of " + asof + ")"}</div>
-        <div class="tile-value num ${cls(lv.mtm)}" style="font-size:26px">${rs(lv.mtm)}
-          <span style="font-size:14px">(${lv.mtm_pct_margin >= 0 ? "+" : ""}${(+lv.mtm_pct_margin).toFixed(1)}% of margin)</span></div></div>
-      <div><div class="tile-label">Cost to close</div><div class="tile-value num">${(+lv.cost_to_close).toFixed(2)} <span style="font-size:12px;color:var(--muted)">vs credit ${(+p.credit).toFixed(2)}</span></div></div>
-      <div><div class="tile-label">Legs (S/L)</div><div class="tile-value num">${(+lv.short_px).toFixed(2)} / ${(+lv.long_px).toFixed(2)}</div></div>
-      <div><div class="tile-label">Room to SL</div><div class="tile-value num ${slDist < 0.25 * lv.sl_amount ? "down" : ""}">${rs(slDist)}</div></div>
-    </div>`;
+    <div class="live-grid">
+      <div><div class="tile-label">Unrealised P&amp;L ${fresh ? "(live)" : "(as of " + asof + ")"}</div>
+        <div class="big num ${cls(lv.mtm)}">${rs(lv.mtm)}
+          <span>(${lv.mtm_pct_margin >= 0 ? "+" : ""}${(+lv.mtm_pct_margin).toFixed(1)}% of margin)</span></div></div>
+      <div><div class="tile-label">Cost to close</div>
+        <div class="mid num">${(+lv.cost_to_close).toFixed(2)} <span>vs credit ${(+p.credit).toFixed(2)}</span></div></div>
+      <div><div class="tile-label">Legs (S/L)</div>
+        <div class="mid num">${(+lv.short_px).toFixed(2)} / ${(+lv.long_px).toFixed(2)}</div></div>
+      <div><div class="tile-label">Room to SL</div>
+        <div class="mid num ${slDist < 0.25 * lv.sl_amount ? "down" : ""}">${rs(slDist)}</div></div>
+    </div>
+    <div class="divider"></div>`;
+  } else {
+    liveHtml = `<div style="height:8px"></div>`;
   }
-  el.innerHTML = `<div class="tile-label">OPEN POSITION</div>${liveHtml}
+  el.innerHTML = `<div class="sec">Open position</div>${liveHtml}
   <div class="pos-grid">
     <div><div class="tile-label">Type</div><div class="tile-value">${p.type}</div></div>
     <div><div class="tile-label">Short / Long</div><div class="tile-value num">${p.short_strike}/${p.long_strike} ${p.kind}</div></div>
@@ -212,12 +251,12 @@ function renderTiles(rows, state) {
     `<div class="card" style="margin:0"><div class="tile-label">${label}</div>
      <div class="tile-value num ${klass}">${value}</div>${note?`<div class="tile-note">${note}</div>`:""}</div>`;
   el.innerHTML =
-    tile("TODAY", rs(todayPnl), todayNote, cls(todayPnl)) +
-    tile("NET P&L", rs(net), "after all charges", cls(net)) +
-    tile("TRADES", rows.length, `${wins.length} wins · ${rows.length - wins.length} losses`) +
-    tile("WIN RATE", (wins.length / rows.length * 100).toFixed(1) + "%") +
-    tile("PROFIT FACTOR", pf === Infinity ? "—" : pf.toFixed(2)) +
-    tile("RETURN ON MARGIN", om.toFixed(1) + "%", "sum per trade (Dhan-style)", cls(om));
+    tile("Today", rs(todayPnl), todayNote, cls(todayPnl)) +
+    tile("Net P&L", rs(net), "after all charges", cls(net)) +
+    tile("Trades", rows.length, `${wins.length} wins · ${rows.length - wins.length} losses`) +
+    tile("Win rate", (wins.length / rows.length * 100).toFixed(1) + "%") +
+    tile("Profit factor", pf === Infinity ? "—" : pf.toFixed(2)) +
+    tile("Return on margin", om.toFixed(1) + "%", "sum per trade (Dhan-style)", cls(om));
 }
 
 function renderChart(rows) {
@@ -247,9 +286,9 @@ function renderChart(rows) {
   el.innerHTML = `<svg id="eq" width="100%" viewBox="0 0 ${W} ${H}" style="display:block">
     ${grid.join("")}${labels.join("")}${months.join("")}
     <line x1="${m.l}" x2="${W - m.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--axis)" stroke-width="1"/>
-    <path d="${path}" fill="none" stroke="var(--series)" stroke-width="2"/>
+    <path d="${path}" fill="none" stroke="var(--line)" stroke-width="2.25" stroke-linejoin="round"/>
     <line id="xh" y1="${m.t}" y2="${H - m.b}" stroke="var(--axis)" stroke-width="1" visibility="hidden"/>
-    <circle id="pt" r="4" fill="var(--series)" stroke="var(--surface)" stroke-width="2" visibility="hidden"/>
+    <circle id="pt" r="4" fill="var(--line)" stroke="var(--surface)" stroke-width="2" visibility="hidden"/>
   </svg>`;
   const svg = document.getElementById("eq"), xh = document.getElementById("xh"), pt = document.getElementById("pt");
   svg.addEventListener("mousemove", ev => {
@@ -281,20 +320,21 @@ function renderTable(rows) {
     <th>Entry</th><th>Exit</th><th>Type</th><th class="r">Strikes</th><th class="r">Credit</th>
     <th>Reason</th><th class="r">Net P&L</th><th class="r">On margin</th>
   </tr></thead><tbody>` + sorted.map(r => `<tr>
-    <td class="num">${r.entry_ts}</td><td class="num">${r.exit_ts}</td><td>${r.type}</td>
+    <td class="num acc">${r.entry_ts}</td><td class="num acc">${r.exit_ts}</td><td>${r.type}</td>
     <td class="r num">${r.short_strike}/${r.long_strike}</td>
-    <td class="r num">${r.credit.toFixed(2)}</td><td>${r.exit_reason}</td>
+    <td class="r num">${r.credit.toFixed(2)}</td>
+    <td class="${r.exit_reason === "SL" ? "down" : "mut"}">${r.exit_reason}</td>
     <td class="r num ${cls(r.net_pnl)}">${rs(r.net_pnl)}</td>
     <td class="r num ${cls(r.net_pnl)}">${(r.net_pnl / r.margin * 100).toFixed(1)}%</td>
   </tr>`).join("") + "</tbody></table>";
 }
 
 function renderToken(txt) {
-  const dot = document.getElementById("tokendot");
+  const badge = document.getElementById("tokenbadge");
   const el = document.getElementById("tokentext");
   let s = null; try { s = txt && JSON.parse(txt); } catch {}
   if (!s || !s.generated_at) {
-    dot.className = "dot"; el.textContent = "token: unknown";
+    badge.className = "pill"; el.textContent = "token: unknown";
     return;
   }
   const when = new Date(s.generated_at.replace(" ", "T"));
@@ -302,16 +342,16 @@ function renderToken(txt) {
   const sameDay = when.toDateString() === today.toDateString();
   const hm = s.generated_at.slice(11, 16);
   if (s.status === "success" && sameDay) {
-    dot.className = "dot ok";
+    badge.className = "pill ok";
     el.textContent = `token: generated ${hm}`;
   } else if (s.status === "success") {
-    dot.className = "dot warn";
+    badge.className = "pill warn";
     el.textContent = `token: stale (last ${s.generated_at.slice(5, 16)})`;
   } else {
-    dot.className = "dot bad";
+    badge.className = "pill bad";
     el.textContent = sameDay ? `token: FAILED ${hm}` : `token: last failed ${s.generated_at.slice(5, 16)}`;
   }
-  el.title = `${s.status} · ${s.reason || ""} · ${s.generated_at} IST`;
+  badge.title = `${s.status} · ${s.reason || ""} · ${s.generated_at} IST`;
 }
 
 async function loadAll() {
@@ -325,10 +365,10 @@ async function loadAll() {
   const lines = (logTxt || "").trim().split("\n");
   document.getElementById("log").textContent = lines.slice(-25).join("\n") || "no log yet";
   const last = lines.length ? lines[lines.length - 1].slice(0, 19) : null;
-  const dot = document.getElementById("statusdot");
+  const badge = document.getElementById("updated");
   if (last) {
     const age = (Date.now() - new Date(last.replace(" ", "T"))) / 60000;
-    dot.className = "dot" + (age < 20 ? " live" : "");
+    badge.className = "pill" + (age < 20 ? " ok" : "");
     document.getElementById("updatedtext").textContent =
       age < 20 ? `live · updated ${Math.max(0, Math.round(age))}m ago` : `last activity ${last}`;
   } else {
@@ -337,6 +377,7 @@ async function loadAll() {
 }
 loadAll();
 setInterval(loadAll, 5 * 60 * 1000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) loadAll(); });
 </script>
 </body>
 </html>
