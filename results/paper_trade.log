@@ -70,3 +70,4 @@
 2026-07-23 09:10:14  trading expiry 2026-07-28, lot 65
 2026-07-23 09:10:14  restored open position: bear_call 24050/24450
 2026-07-23 15:00:09  CLOSED bear_call 24050/24450 (TIME) net 4,647
+2026-07-23 15:30:26  day done. open position: False (state saved; run again tomorrow)
