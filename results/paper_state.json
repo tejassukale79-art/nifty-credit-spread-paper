@@ -19,12 +19,12 @@
   "exit_date": "2026-07-25"
  },
  "live": {
-  "ts": "2026-07-24 15:11:08",
-  "short_px": 60.6,
-  "long_px": 9.85,
-  "cost_to_close": 50.75,
-  "mtm": 3168.75,
-  "mtm_pct_margin": 16.22296173044925,
+  "ts": "2026-07-24 15:16:08",
+  "short_px": 48.7,
+  "long_px": 8.5,
+  "cost_to_close": 40.2,
+  "mtm": 3854.5,
+  "mtm_pct_margin": 19.73377703826955,
   "sl_amount": 2929.875
  }
 }
