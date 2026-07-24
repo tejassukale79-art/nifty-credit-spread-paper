@@ -49,6 +49,13 @@ def _candles_df(candles):
     if len(df):
         df["ts"] = pd.to_datetime(df["ts"]).dt.tz_localize(None)
         df = df.drop_duplicates("ts").sort_values("ts").reset_index(drop=True)
+    else:
+        # An empty response (e.g. at 09:16, before the first candle is
+        # published) would leave "ts" as object dtype; concatenating that with
+        # the datetime history downgrades the column and every later .dt
+        # accessor raises. Keep the dtype so the caller's "no candles yet"
+        # path is reached instead.
+        df["ts"] = pd.Series(dtype="datetime64[ns]")
     return df
 
 
