@@ -288,6 +288,43 @@ def close_position(state, live, reason):
     return True
 
 
+_holidays = None
+
+
+def nse_holidays():
+    """Dates when NSE cash/F&O is closed (cached for the session).
+
+    A date counts as a holiday only if NSE is in closed_exchanges and NOT in
+    open_exchanges - special sessions (e.g. Budget Day, Muhurat) list NSE as
+    open and are normal trading days for us.
+    """
+    global _holidays
+    if _holidays is None:
+        try:
+            data = upstox_api._get(f"{config.BASE_URL}/v2/market/holidays")["data"]
+            hs = set()
+            for h in data:
+                closed = h.get("closed_exchanges") or []
+                opens = {o.get("exchange") for o in (h.get("open_exchanges") or [])}
+                if "NSE" in closed and "NSE" not in opens:
+                    hs.add(pd.Timestamp(h["date"]).date())
+            _holidays = hs
+            log(f"NSE holiday calendar loaded ({len(hs)} closed days)")
+        except Exception as exc:
+            log(f"WARN: holiday calendar unavailable ({exc}); skipping weekends only")
+            _holidays = set()
+    return _holidays
+
+
+def next_trading_day(d):
+    """First NSE trading day strictly after d (skips weekends and holidays)."""
+    hol = nse_holidays()
+    nd = d + timedelta(days=1)
+    while nd.weekday() >= 5 or nd in hol:
+        nd += timedelta(days=1)
+    return nd
+
+
 def try_exit(state, live, now):
     pos = state["position"]
     t_exit = pd.Timestamp(EXIT_TIME).time()
@@ -350,7 +387,7 @@ def try_entry(state, live, frame, now):
     lot = live.lot
     margin = (config.WING_POINTS - credit) * lot
     today = now.date()
-    exit_date = today if today == live.expiry_date else (today + timedelta(days=1))
+    exit_date = today if today == live.expiry_date else next_trading_day(today)
     state["position"] = {
         "date": str(today), "expiry": live.expiry, "type": typ, "kind": kind,
         "entry_ts": now.strftime("%Y-%m-%d %H:%M:%S"), "atm": atm, "lot": lot,
