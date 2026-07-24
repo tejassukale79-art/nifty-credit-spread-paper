@@ -75,3 +75,4 @@
 2026-07-24 09:10:14  paper trading start | SL 15% of margin | exit next day 15:00
 2026-07-24 09:10:15  warm-up spot: 2625 bars (2026-07-15 09:15:00 -> 2026-07-23 15:29:00)
 2026-07-24 09:10:15  trading expiry 2026-07-28, lot 65
+2026-07-24 09:16:08  ERROR: Can only use .dt accessor with datetimelike values
