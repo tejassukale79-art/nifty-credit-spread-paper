@@ -1,4 +1,22 @@
 {
- "position": null,
+ "position": {
+  "date": "2026-07-24",
+  "expiry": "2026-07-28",
+  "type": "bull_put",
+  "kind": "PE",
+  "entry_ts": "2026-07-24 10:41:08",
+  "atm": 23650,
+  "lot": 65,
+  "short_strike": 23650,
+  "long_strike": 23250,
+  "credit": 99.5,
+  "margin": 19532.5,
+  "short_entry": 123.10000000000001,
+  "long_entry": 23.6,
+  "alpha": 0.9620253164556962,
+  "alpha2": 0.9355932203389831,
+  "spot_entry": 23637.15,
+  "exit_date": "2026-07-25"
+ },
  "live": null
 }
