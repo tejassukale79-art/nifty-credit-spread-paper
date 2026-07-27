@@ -2,9 +2,11 @@
 
 Configuration (the backtest's best variant):
   - signals/entries identical to backtest.py (alpha & alpha2, 10:15-14:15,
-    edge-triggered, one position at a time, 1 lot)
-  - stop-loss 15% of margin, checked every minute
-  - exit at 15:15 on the next trading day (same day if entry is on expiry)
+    edge-triggered, 1 lot)
+  - up to MAX_POSITIONS (2) concurrent spreads, any direction: a fresh signal
+    that fires while already holding a position opens a second one
+  - stop-loss 15% of margin per position, checked every minute
+  - exit at 15:00 on the next trading day (same day if entry is on expiry)
 
 Run it each trading day (it exits after square-off time):
     python paper_trade.py
@@ -28,6 +30,7 @@ from backtest import charges
 
 SL_PCT = 0.15                       # best backtested value (NOT config's 0.25)
 EXIT_TIME = "15:00"                 # next-day square-off (verified from Dhan live exits)
+MAX_POSITIONS = 2                   # concurrent open spreads (any direction)
 STATE_FILE = config.RESULTS_DIR / "paper_state.json"
 TRADES_FILE = config.RESULTS_DIR / "paper_trades.csv"
 LOG_FILE = config.RESULTS_DIR / "paper_trade.log"
@@ -96,9 +99,18 @@ def ltp(keys):
 # ---------- state ----------
 
 def load_state():
-    if STATE_FILE.exists():
-        return json.loads(STATE_FILE.read_text())
-    return {"position": None}
+    """Return {"positions": [...], "live": [...]}.
+
+    Migrates the old single-position schema ({"position": {...}|None,
+    "live": {...}|None}) so an existing open position survives the upgrade.
+    """
+    raw = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
+    if "positions" in raw:
+        positions = raw.get("positions") or []
+    else:  # legacy single-position file
+        p = raw.get("position")
+        positions = [p] if p else []
+    return {"positions": positions, "live": []}
 
 
 def save_state(state):
@@ -269,13 +281,9 @@ def paper_fill(live, strike, kind, side):
     return max(px + config.SLIPPAGE, 0.05) if side == "buy" else max(px - config.SLIPPAGE, 0.05)
 
 
-def close_position(state, live, reason):
-    pos = state["position"]
-    sb = paper_fill(live, pos["short_strike"], pos["kind"], "buy")
-    lb = paper_fill(live, pos["long_strike"], pos["kind"], "sell")
-    if sb is None or lb is None:
-        log(f"WARN: no quote to close ({reason}); will retry next minute")
-        return False
+def record_close(pos, sb, lb, reason):
+    """Append the closed-trade row and log it. Caller manages the positions
+    list. sb/lb are the exit fills (short bought back, long sold)."""
     lot = pos["lot"]
     gross = (pos["credit"] - (sb - lb)) * lot
     cost = charges(buy_turnover=(pos["long_entry"] + sb) * lot,
@@ -289,10 +297,7 @@ def close_position(state, live, reason):
     append_trade(row)
     log(f"CLOSED {pos['type']} {pos['short_strike']}/{pos['long_strike']} "
         f"({reason}) net {gross - cost:,.0f}")
-    state["position"] = None
-    state["live"] = None
-    save_state(state)
-    return True
+    return gross - cost
 
 
 _holidays = None
@@ -333,41 +338,59 @@ def next_trading_day(d):
 
 
 def try_exit(state, live, now):
-    pos = state["position"]
+    """Manage every open position: publish its live MTM, and close it on a
+    stop-loss or the time exit. Rebuilds state["positions"] and state["live"]."""
     t_exit = pd.Timestamp(EXIT_TIME).time()
-    exit_date = pd.Timestamp(pos["exit_date"]).date()
-    expiry = pd.Timestamp(pos["expiry"]).date()
-    # time exit: first trading day >= exit_date at/after 15:15 (or expiry day)
-    if (now.date() >= exit_date or now.date() >= expiry) and now.time() >= t_exit:
-        return close_position(state, live, "TIME")
-    # stop-loss on live LTP
-    skey = live.contract_key(pos["short_strike"], pos["kind"])
-    lkey = live.contract_key(pos["long_strike"], pos["kind"])
-    if not skey or not lkey:
-        return False
-    q = ltp([skey, lkey])
-    sc, lc = q.get(skey), q.get(lkey)
-    if sc is None or lc is None:
-        return False
-    mtm = (pos["credit"] - (sc - lc)) * pos["lot"]
-    # publish minute-by-minute mark-to-market for the dashboard (display only)
-    state["live"] = {
-        "ts": now.strftime("%Y-%m-%d %H:%M:%S"),
-        "short_px": sc, "long_px": lc, "cost_to_close": sc - lc,
-        "mtm": mtm, "mtm_pct_margin": mtm / pos["margin"] * 100,
-        "sl_amount": SL_PCT * pos["margin"],
-    }
+    survivors, live_list = [], []
+    for pos in state["positions"]:
+        exit_date = pd.Timestamp(pos["exit_date"]).date()
+        expiry = pd.Timestamp(pos["expiry"]).date()
+        time_due = (now.date() >= exit_date or now.date() >= expiry) and now.time() >= t_exit
+
+        skey = live.contract_key(pos["short_strike"], pos["kind"])
+        lkey = live.contract_key(pos["long_strike"], pos["kind"])
+        q = ltp([skey, lkey]) if (skey and lkey) else {}
+        sc, lc = q.get(skey), q.get(lkey)
+        if sc is None or lc is None:      # no quote: keep, retry next minute
+            if time_due:
+                log(f"WARN: no quote to time-exit {pos['short_strike']}/"
+                    f"{pos['long_strike']}; will retry next minute")
+            survivors.append(pos)
+            continue
+
+        mtm = (pos["credit"] - (sc - lc)) * pos["lot"]
+        hit_sl = mtm <= -SL_PCT * pos["margin"]
+        if time_due or hit_sl:
+            sb = max(sc + config.SLIPPAGE, 0.05)          # buy back short
+            lb = max(lc - config.SLIPPAGE, 0.05)          # sell long
+            reason = "SL" if hit_sl else "TIME"
+            if hit_sl:
+                log(f"SL hit {pos['short_strike']}/{pos['long_strike']}: "
+                    f"MTM {mtm:,.0f} <= -{SL_PCT * pos['margin']:,.0f}")
+            record_close(pos, sb, lb, reason)
+        else:
+            survivors.append(pos)
+            live_list.append({
+                "ts": now.strftime("%Y-%m-%d %H:%M:%S"),
+                "type": pos["type"], "kind": pos["kind"],
+                "short_strike": pos["short_strike"], "long_strike": pos["long_strike"],
+                "credit": pos["credit"], "margin": pos["margin"],
+                "entry_ts": pos["entry_ts"], "exit_date": pos["exit_date"],
+                "short_px": sc, "long_px": lc, "cost_to_close": sc - lc,
+                "mtm": mtm, "mtm_pct_margin": mtm / pos["margin"] * 100,
+                "sl_amount": SL_PCT * pos["margin"],
+            })
+    state["positions"] = survivors
+    state["live"] = live_list
     save_state(state)
-    if mtm <= -SL_PCT * pos["margin"]:
-        log(f"SL hit: MTM {mtm:,.0f} <= -{SL_PCT * pos['margin']:,.0f}")
-        return close_position(state, live, "SL")
-    return False
 
 
 def try_entry(state, live, frame, now):
     t0 = pd.Timestamp(config.ENTRY_START).time()
     t1 = pd.Timestamp(config.ENTRY_END).time()
     if not (t0 <= now.time() <= t1):
+        return
+    if len(state["positions"]) >= MAX_POSITIONS:
         return
     cur, prev = frame.iloc[-1], frame.iloc[-2]
     lc = cur["alpha"] > config.LONG_TH and cur["alpha2"] > config.LONG_TH
@@ -395,7 +418,7 @@ def try_entry(state, live, frame, now):
     margin = (config.WING_POINTS - credit) * lot
     today = now.date()
     exit_date = today if today == live.expiry_date else next_trading_day(today)
-    state["position"] = {
+    pos = {
         "date": str(today), "expiry": live.expiry, "type": typ, "kind": kind,
         "entry_ts": now.strftime("%Y-%m-%d %H:%M:%S"), "atm": atm, "lot": lot,
         "short_strike": s_strike, "long_strike": l_strike,
@@ -405,10 +428,12 @@ def try_entry(state, live, frame, now):
         "spot_entry": float(cur["close"]),
         "exit_date": str(min(exit_date, live.expiry_date)),
     }
+    state["positions"].append(pos)
     save_state(state)
-    log(f"OPENED {typ}: sell {s_strike}{kind} @ {s_fill:.2f}, "
-        f"buy {l_strike}{kind} @ {l_fill:.2f}, credit {credit:.2f}, "
-        f"margin {margin:,.0f}, SL {SL_PCT * margin:,.0f}, exit {state['position']['exit_date']} {EXIT_TIME}")
+    log(f"OPENED {typ} ({len(state['positions'])}/{MAX_POSITIONS}): "
+        f"sell {s_strike}{kind} @ {s_fill:.2f}, buy {l_strike}{kind} @ {l_fill:.2f}, "
+        f"credit {credit:.2f}, margin {margin:,.0f}, SL {SL_PCT * margin:,.0f}, "
+        f"exit {pos['exit_date']} {EXIT_TIME}")
 
 
 def main():
@@ -422,9 +447,9 @@ def main():
             return
         raise
     state = load_state()
-    if state["position"]:
-        log(f"restored open position: {state['position']['type']} "
-            f"{state['position']['short_strike']}/{state['position']['long_strike']}")
+    for p in state["positions"]:
+        log(f"restored open position: {p['type']} {p['short_strike']}/{p['long_strike']}")
+    log(f"holding {len(state['positions'])}/{MAX_POSITIONS} positions")
 
     end = pd.Timestamp(datetime.now().date()).replace(hour=15, minute=30)
     while datetime.now() < end:
@@ -436,9 +461,9 @@ def main():
         if now.time() < pd.Timestamp("09:16").time():
             continue
         try:
-            if state["position"]:
+            if state["positions"]:
                 try_exit(state, live, now)
-            if not state["position"]:
+            if len(state["positions"]) < MAX_POSITIONS:
                 frame = build_signal_frame(live)
                 if frame["ts"].iloc[-1].date() != now.date():
                     if now.time() >= pd.Timestamp("10:00").time():
@@ -456,7 +481,7 @@ def main():
         except Exception as e:
             log(f"ERROR: {e}")
 
-    log(f"day done. open position: {bool(state['position'])} "
+    log(f"day done. open positions: {len(state['positions'])}/{MAX_POSITIONS} "
         f"(state saved; run again tomorrow)")
 
 

@@ -90,8 +90,9 @@ header { display: flex; justify-content: space-between; align-items: flex-end;
               letter-spacing: .05em; text-transform: uppercase; }
 .tile-value { font-size: 23px; font-weight: 700; margin-top: 3px; letter-spacing: -0.01em; }
 .tile-note  { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
+.pos-block { padding-top: 4px; }
 .live-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-             gap: 12px 22px; margin: 14px 0 16px; }
+             gap: 12px 22px; margin: 10px 0 14px; }
 .live-grid .big { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
 .live-grid .big span { font-size: 13px; font-weight: 600; }
 .live-grid .mid { font-size: 19px; font-weight: 700; margin-top: 3px; }
@@ -185,22 +186,27 @@ async function fetchText(name) {
   } catch { return null; }
 }
 
-function renderPosition(state) {
-  const el = document.getElementById("poscard");
-  const p = state && state.position;
-  if (!p) {
-    el.innerHTML = `<div class="sec">Open position</div><div class="empty">No open position</div>`;
-    return;
-  }
-  const sl = (0.15 * p.margin);
-  const lv = state.live;
-  let liveHtml = "";
+// Normalise both schemas: new {positions:[], live:[]} and legacy {position, live}.
+function readPositions(state) {
+  if (!state) return { positions: [], live: [] };
+  const positions = state.positions || (state.position ? [state.position] : []);
+  const live = Array.isArray(state.live) ? state.live : (state.live ? [state.live] : []);
+  return { positions, live };
+}
+function matchLive(live, p) {
+  return live.find(l => l && +l.short_strike === +p.short_strike &&
+                        +l.long_strike === +p.long_strike && l.kind === p.kind);
+}
+
+function positionBlock(p, lv) {
+  const sl = 0.15 * p.margin;
+  let liveHtml = `<div style="height:6px"></div>`;
   if (lv && lv.mtm !== undefined) {
     const age = (Date.now() - new Date(lv.ts.replace(" ", "T"))) / 60000;
     const fresh = age < 20;
     const asof = lv.ts.slice(0, 10) === new Date().toISOString().slice(0, 10)
                ? lv.ts.slice(11, 16) : lv.ts.slice(5, 16);
-    const slDist = lv.mtm + lv.sl_amount;   // rupees of room left before SL
+    const slDist = lv.mtm + lv.sl_amount;
     liveHtml = `
     <div class="live-grid">
       <div><div class="tile-label">Unrealised P&amp;L ${fresh ? "(live)" : "(as of " + asof + ")"}</div>
@@ -212,21 +218,31 @@ function renderPosition(state) {
         <div class="mid num">${(+lv.short_px).toFixed(2)} / ${(+lv.long_px).toFixed(2)}</div></div>
       <div><div class="tile-label">Room to SL</div>
         <div class="mid num ${slDist < 0.25 * lv.sl_amount ? "down" : ""}">${rs(slDist)}</div></div>
-    </div>
-    <div class="divider"></div>`;
-  } else {
-    liveHtml = `<div style="height:8px"></div>`;
+    </div>`;
   }
-  el.innerHTML = `<div class="sec">Open position</div>${liveHtml}
+  return `<div class="pos-block">${liveHtml}
   <div class="pos-grid">
     <div><div class="tile-label">Type</div><div class="tile-value">${p.type}</div></div>
     <div><div class="tile-label">Short / Long</div><div class="tile-value num">${p.short_strike}/${p.long_strike} ${p.kind}</div></div>
     <div><div class="tile-label">Credit</div><div class="tile-value num">${(+p.credit).toFixed(2)}</div></div>
     <div><div class="tile-label">Margin</div><div class="tile-value num">${rs(p.margin)}</div></div>
-    <div><div class="tile-label">Stop-loss at</div><div class="tile-value num down">-${rs(sl).replace("Rs ","Rs ")}</div></div>
+    <div><div class="tile-label">Stop-loss at</div><div class="tile-value num down">-${rs(sl)}</div></div>
     <div><div class="tile-label">Entered</div><div class="tile-value num">${p.entry_ts}</div></div>
     <div><div class="tile-label">Planned exit</div><div class="tile-value num">${p.exit_date} 15:00</div></div>
-  </div>`;
+  </div></div>`;
+}
+
+function renderPosition(state) {
+  const el = document.getElementById("poscard");
+  const { positions, live } = readPositions(state);
+  if (!positions.length) {
+    el.innerHTML = `<div class="sec">Open positions</div><div class="empty">No open position</div>`;
+    return;
+  }
+  const head = `<div class="sec">Open position${positions.length > 1 ? "s · " + positions.length + " of 2" : ""}</div>`;
+  const blocks = positions.map(p => positionBlock(p, matchLive(live, p)))
+                          .join(`<div class="divider"></div>`);
+  el.innerHTML = head + blocks;
 }
 
 function renderTiles(rows, state) {
@@ -236,12 +252,12 @@ function renderTiles(rows, state) {
   const today = new Date().toISOString().slice(0, 10);
   const realizedToday = rows.filter(r => (r.exit_ts || "").slice(0, 10) === today)
                             .reduce((s, r) => s + r.net_pnl, 0);
-  const hasPos = state && state.position;
-  const lv = hasPos && state.live;
-  const unreal = lv && lv.mtm !== undefined ? +lv.mtm : 0;
+  const { positions, live } = readPositions(state);
+  const marked = live.filter(l => l && l.mtm !== undefined);
+  const unreal = marked.reduce((s, l) => s + (+l.mtm), 0);
   const todayPnl = realizedToday + unreal;
-  const todayNote = lv ? `realized ${rs(realizedToday)} + unrealised ${rs(unreal)}`
-                  : hasPos ? "realized only — open position P&L pending"
+  const todayNote = marked.length ? `realized ${rs(realizedToday)} + unrealised ${rs(unreal)}`
+                  : positions.length ? "realized only — open P&L pending"
                   : "realized (no open position)";
   const wins = rows.filter(r => r.net_pnl > 0);
   const losses = rows.filter(r => r.net_pnl <= 0);
