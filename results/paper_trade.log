@@ -85,3 +85,4 @@
 2026-07-27 09:10:07  trading expiry 2026-07-28, lot 65
 2026-07-27 09:10:07  restored open position: bull_put 23650/23250
 2026-07-27 15:00:09  CLOSED bull_put 23650/23250 (TIME) net 6,172
+2026-07-27 15:30:28  day done. open position: False (state saved; run again tomorrow)
