@@ -54,6 +54,13 @@ server {
     }
     location / { return 404; }
 }
+# redirect plain http (what a browser tries first for a bare IP) to https
+server {
+    listen 80;
+    listen [::]:80;
+    server_name _;
+    return 301 https://$host$request_uri;
+}
 NGINX
 
 sudo ln -sf /etc/nginx/sites-available/zen /etc/nginx/sites-enabled/zen
@@ -62,10 +69,12 @@ sudo nginx -t
 sudo systemctl enable --now nginx
 sudo systemctl reload nginx
 
-# --- VM firewall: accept 443 ahead of Oracle's default REJECT ---
-if ! sudo iptables -C INPUT -p tcp --dport 443 -j ACCEPT 2>/dev/null; then
-    sudo iptables -I INPUT -p tcp --dport 443 -j ACCEPT
-fi
+# --- VM firewall: accept 80 + 443 ahead of Oracle's default REJECT ---
+for port in 443 80; do
+    if ! sudo iptables -C INPUT -p tcp --dport "$port" -j ACCEPT 2>/dev/null; then
+        sudo iptables -I INPUT -p tcp --dport "$port" -j ACCEPT
+    fi
+done
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq iptables-persistent 2>/dev/null || true
 sudo netfilter-persistent save 2>/dev/null || sudo sh -c 'iptables-save > /etc/iptables/rules.v4'
 
