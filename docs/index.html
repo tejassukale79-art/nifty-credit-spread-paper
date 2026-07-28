@@ -173,7 +173,7 @@ function parseCSV(text) {
   return lines.slice(1).map(l => {
     const cells = l.split(","); const row = {};
     head.forEach((h, i) => row[h] = cells[i]);
-    ["credit","margin","gross_pnl","charges","net_pnl","atm","lot","short_strike","long_strike"]
+    ["credit","exit_cost_to_close","margin","gross_pnl","charges","net_pnl","atm","lot","short_strike","long_strike"]
       .forEach(k => { if (k in row) row[k] = parseFloat(row[k]); });
     return row;
   });
@@ -332,13 +332,17 @@ function renderTable(rows) {
   const el = document.getElementById("tradetable");
   if (!rows.length) { el.innerHTML = `<div class="empty">No trades yet — the first one will appear here.</div>`; return; }
   const sorted = [...rows].sort((a, b) => (a.exit_ts < b.exit_ts ? 1 : -1));
+  const px = v => (v != null && !isNaN(v)) ? (+v).toFixed(2) : "—";
   el.innerHTML = `<table><thead><tr>
-    <th>Entry</th><th>Exit</th><th>Type</th><th class="r">Strikes</th><th class="r">Credit</th>
+    <th>Entry</th><th>Exit</th><th>Type</th><th class="r">Strikes</th>
+    <th class="r" title="Net premium received at entry (spread price in)">Entry credit</th>
+    <th class="r" title="Net cost paid to close the spread (spread price out)">Exit cost</th>
     <th>Reason</th><th class="r">Net P&L</th><th class="r">On margin</th>
   </tr></thead><tbody>` + sorted.map(r => `<tr>
     <td class="num acc">${r.entry_ts}</td><td class="num acc">${r.exit_ts}</td><td>${r.type}</td>
     <td class="r num">${r.short_strike}/${r.long_strike}</td>
-    <td class="r num">${r.credit.toFixed(2)}</td>
+    <td class="r num">${px(r.credit)}</td>
+    <td class="r num">${px(r.exit_cost_to_close)}</td>
     <td class="${r.exit_reason === "SL" ? "down" : "mut"}">${r.exit_reason}</td>
     <td class="r num ${cls(r.net_pnl)}">${rs(r.net_pnl)}</td>
     <td class="r num ${cls(r.net_pnl)}">${(r.net_pnl / r.margin * 100).toFixed(1)}%</td>
