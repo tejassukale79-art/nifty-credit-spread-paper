@@ -93,3 +93,4 @@
 2026-07-28 09:10:17  holding 0/2 positions
 2026-07-28 09:16:08  ERROR: loop of ufunc does not support argument 0 of type float which has no callable rint method
 2026-07-28 10:23:31  OPENED bear_call (1/2): sell 24000CE @ 31.00, buy 24400CE @ 0.95, credit 30.05, margin 24,047, SL 3,607, exit 2026-07-28 15:00
+2026-07-28 10:34:32  OPENED bull_put (2/2): sell 24000PE @ 34.75, buy 23600PE @ 1.05, credit 33.70, margin 23,810, SL 3,571, exit 2026-07-28 15:00
