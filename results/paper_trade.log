@@ -86,3 +86,8 @@
 2026-07-27 09:10:07  restored open position: bull_put 23650/23250
 2026-07-27 15:00:09  CLOSED bull_put 23650/23250 (TIME) net 6,172
 2026-07-27 15:30:28  day done. open position: False (state saved; run again tomorrow)
+2026-07-28 09:10:15  ============================================================
+2026-07-28 09:10:15  paper trading start | SL 15% of margin | exit next day 15:00
+2026-07-28 09:10:17  warm-up spot: 2250 bars (2026-07-20 09:15:00 -> 2026-07-27 15:29:00)
+2026-07-28 09:10:17  trading expiry 2026-07-28, lot 65
+2026-07-28 09:10:17  holding 0/2 positions
