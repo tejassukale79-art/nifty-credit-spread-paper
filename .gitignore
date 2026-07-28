@@ -17,3 +17,5 @@ results/dhan_main.js
 results/dhan_chunk.js
 ssh-key-*
 *.pem
+results/live_ticks.json
+results/tick_server.log

@@ -1,0 +1,15 @@
+[Unit]
+Description=Tick-live P&L server (streams LTP, writes results/live_ticks.json)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/paper/src
+ExecStart=/home/ubuntu/tickenv/bin/python /home/ubuntu/paper/src/tick_server.py
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=20
+StandardOutput=append:/home/ubuntu/paper/results/tick_server.log
+StandardError=append:/home/ubuntu/paper/results/tick_server.log

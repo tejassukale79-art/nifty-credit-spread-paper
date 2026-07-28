@@ -48,7 +48,7 @@ server {
         root /home/ubuntu/paper/docs;
     }
     # whitelist exactly the files the dashboard fetches
-    location ~ ^/results/(paper_trades\.csv|paper_state\.json|paper_trade\.log|token_status\.json)$ {
+    location ~ ^/results/(paper_trades\.csv|paper_state\.json|paper_trade\.log|token_status\.json|live_ticks\.json)$ {
         root /home/ubuntu/paper;
         default_type text/plain;
     }

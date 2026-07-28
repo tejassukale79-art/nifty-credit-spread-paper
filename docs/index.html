@@ -91,6 +91,15 @@ header { display: flex; justify-content: space-between; align-items: flex-end;
 .tile-value { font-size: 23px; font-weight: 700; margin-top: 3px; letter-spacing: -0.01em; }
 .tile-note  { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
 .pos-block { padding-top: 4px; }
+.tickdot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+           background: var(--good); vertical-align: middle; margin-left: 5px;
+           animation: tickpulse 1.5s ease-out infinite; }
+@keyframes tickpulse {
+  0%   { box-shadow: 0 0 0 0 rgba(16,185,129,.55); }
+  70%  { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+@media (prefers-reduced-motion: reduce) { .tickdot { animation: none; } }
 .live-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
              gap: 12px 22px; margin: 10px 0 14px; }
 .live-grid .big { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
@@ -202,28 +211,31 @@ function matchLive(live, p) {
                         +l.long_strike === +p.long_strike && l.kind === p.kind);
 }
 
+function posKey(p) { return `${p.short_strike}-${p.long_strike}-${p.kind}`; }
+
 function positionBlock(p, lv) {
   const sl = 0.15 * p.margin;
-  let liveHtml = `<div style="height:6px"></div>`;
-  if (lv && lv.mtm !== undefined) {
-    const age = (Date.now() - new Date(lv.ts.replace(" ", "T"))) / 60000;
-    const fresh = age < 20;
-    const asof = lv.ts.slice(0, 10) === new Date().toISOString().slice(0, 10)
-               ? lv.ts.slice(11, 16) : lv.ts.slice(5, 16);
-    const slDist = lv.mtm + lv.sl_amount;
-    liveHtml = `
-    <div class="live-grid">
-      <div><div class="tile-label">Unrealised P&amp;L ${fresh ? "(live)" : "(as of " + asof + ")"}</div>
-        <div class="big num ${cls(lv.mtm)}">${rs(lv.mtm)}
-          <span>(${lv.mtm_pct_margin >= 0 ? "+" : ""}${(+lv.mtm_pct_margin).toFixed(1)}% of margin)</span></div></div>
-      <div><div class="tile-label">Cost to close</div>
-        <div class="mid num">${(+lv.cost_to_close).toFixed(2)} <span>vs credit ${(+p.credit).toFixed(2)}</span></div></div>
-      <div><div class="tile-label">Legs (S/L)</div>
-        <div class="mid num">${(+lv.short_px).toFixed(2)} / ${(+lv.long_px).toFixed(2)}</div></div>
-      <div><div class="tile-label">Room to SL</div>
-        <div class="mid num ${slDist < 0.25 * lv.sl_amount ? "down" : ""}">${rs(slDist)}</div></div>
-    </div>`;
+  const has = lv && lv.mtm !== undefined;
+  let asof = "", fresh = false;
+  if (has) {
+    fresh = (Date.now() - new Date(lv.ts.replace(" ", "T"))) / 60000 < 20;
+    asof = lv.ts.slice(0, 10) === new Date().toISOString().slice(0, 10)
+         ? lv.ts.slice(11, 16) : lv.ts.slice(5, 16);
   }
+  const mtm = has ? +lv.mtm : null, pct = has ? +lv.mtm_pct_margin : null;
+  const slDist = has ? lv.mtm + lv.sl_amount : null;
+  // Rendered from the minute state; the tick poller updates these in place.
+  const liveHtml = `
+    <div class="live-grid" data-poskey="${posKey(p)}" data-margin="${p.margin}" data-credit="${p.credit}">
+      <div><div class="tile-label"><span class="t-lbl">Unrealised P&amp;L</span> ${has && fresh ? "(live)" : has ? "(as of " + asof + ")" : ""}<span class="tickdot" style="display:none"></span></div>
+        <div class="big num t-mtm ${has ? cls(mtm) : ""}"><span class="t-mtmval">${has ? rs(mtm) : "—"}</span><span class="t-mtmpct">${has ? ` (${pct >= 0 ? "+" : ""}${pct.toFixed(1)}% of margin)` : ""}</span></div></div>
+      <div><div class="tile-label">Cost to close</div>
+        <div class="mid num"><span class="t-cost">${has ? (+lv.cost_to_close).toFixed(2) : "—"}</span> <span>vs credit ${(+p.credit).toFixed(2)}</span></div></div>
+      <div><div class="tile-label">Legs (S/L)</div>
+        <div class="mid num t-legs">${has ? (+lv.short_px).toFixed(2) + " / " + (+lv.long_px).toFixed(2) : "—"}</div></div>
+      <div><div class="tile-label">Room to SL</div>
+        <div class="mid num t-room ${has && slDist < 0.25 * lv.sl_amount ? "down" : ""}">${has ? rs(slDist) : "—"}</div></div>
+    </div>`;
   return `<div class="pos-block">${liveHtml}
   <div class="pos-grid">
     <div><div class="tile-label">Type</div><div class="tile-value">${p.type}</div></div>
@@ -247,7 +259,40 @@ function renderPosition(state) {
   const blocks = positions.map(p => positionBlock(p, matchLive(live, p)))
                           .join(`<div class="divider"></div>`);
   el.innerHTML = head + blocks;
+  tickActive = positions.length > 0;   // gate the fast tick poll
 }
+
+// ---- tick-live P&L: fast-poll live_ticks.json and update the card in place ----
+let tickActive = false;
+async function pollTicks() {
+  if (!tickActive) return;
+  let d;
+  try {
+    const r = await fetch(base + "live_ticks.json?t=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) return;
+    d = await r.json();
+  } catch { return; }
+  if (!d || !d.positions || !d.positions.length) return;
+  if (Date.now() - (d.epoch_ms || 0) > 10000) return;   // stale: leave minute values
+  for (const t of d.positions) {
+    const grid = document.querySelector(`.live-grid[data-poskey="${t.short_strike}-${t.long_strike}-${t.kind}"]`);
+    if (!grid) continue;
+    const q = s => grid.querySelector(s);
+    const mtmEl = q(".t-mtm");
+    if (mtmEl) {
+      mtmEl.classList.remove("up", "down"); mtmEl.classList.add(cls(t.mtm));
+      q(".t-mtmval").textContent = rs(t.mtm);
+      q(".t-mtmpct").textContent = ` (${t.mtm_pct_margin >= 0 ? "+" : ""}${(+t.mtm_pct_margin).toFixed(1)}% of margin)`;
+    }
+    if (q(".t-cost")) q(".t-cost").textContent = (+t.cost_to_close).toFixed(2);
+    if (q(".t-legs")) q(".t-legs").textContent = (+t.short_px).toFixed(2) + " / " + (+t.long_px).toFixed(2);
+    const room = q(".t-room");
+    if (room) { const d2 = t.mtm + t.sl_amount; room.textContent = rs(d2); room.classList.toggle("down", d2 < 0.25 * t.sl_amount); }
+    const lbl = q(".t-lbl"); if (lbl) lbl.textContent = "Unrealised P&L · tick-live";
+    const dot = q(".tickdot"); if (dot) dot.style.display = "inline-block";
+  }
+}
+setInterval(pollTicks, 250);
 
 function renderTiles(rows, state) {
   const el = document.getElementById("tiles");
