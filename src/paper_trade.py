@@ -120,8 +120,20 @@ def save_state(state):
     STATE_FILE.write_text(json.dumps(state, indent=1, default=str))
 
 
+# Canonical CSV column order. New columns are appended at the end so existing
+# files migrate cleanly (old rows get NaN for the added leg-price columns).
+TRADE_COLUMNS = [
+    "date", "expiry", "type", "entry_ts", "atm", "lot", "short_strike", "long_strike",
+    "credit", "margin", "alpha", "alpha2", "spot_entry", "exit_ts", "exit_reason",
+    "exit_cost_to_close", "gross_pnl", "charges", "net_pnl",
+    "short_entry", "long_entry", "short_exit", "long_exit",
+]
+
+
 def append_trade(row):
-    df = pd.DataFrame([row])
+    # reindex so every appended row has the same columns in the same order as
+    # the header, even as the schema grows
+    df = pd.DataFrame([row]).reindex(columns=TRADE_COLUMNS)
     header = not TRADES_FILE.exists()
     df.to_csv(TRADES_FILE, mode="a", header=header, index=False)
 
@@ -296,7 +308,11 @@ def record_close(pos, sb, lb, reason):
                                   "alpha", "alpha2", "spot_entry")},
            "exit_ts": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
            "exit_reason": reason, "exit_cost_to_close": sb - lb,
-           "gross_pnl": gross, "charges": cost, "net_pnl": gross - cost}
+           "gross_pnl": gross, "charges": cost, "net_pnl": gross - cost,
+           # individual leg prices: short sold @ short_entry, bought back @ sb;
+           # long bought @ long_entry, sold @ lb
+           "short_entry": pos["short_entry"], "long_entry": pos["long_entry"],
+           "short_exit": sb, "long_exit": lb}
     append_trade(row)
     log(f"CLOSED {pos['type']} {pos['short_strike']}/{pos['long_strike']} "
         f"({reason}) net {gross - cost:,.0f}")
