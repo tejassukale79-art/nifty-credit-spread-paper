@@ -156,12 +156,15 @@ pre { font-size: 12px; color: var(--ink-2); overflow-x: auto; margin-top: 10px; 
 <div class="card"><details><summary>Recent log</summary><pre id="log">…</pre></details></div>
 
 <script>
+// Data source: GitHub Pages reads the raw CDN (backup view, ~5-min lag);
+// the VM-hosted copy reads /results/ served by nginx off the same disk the
+// trader writes to — real-time, no CDN. A local file:// open uses ../results/.
 const onPages = location.hostname.endsWith("github.io");
 const owner = location.hostname.split(".")[0];
 const repo  = location.pathname.split("/").filter(Boolean)[0] || "";
 const base  = onPages
   ? `https://raw.githubusercontent.com/${owner}/${repo}/main/results/`
-  : "../results/";
+  : (location.protocol.startsWith("http") ? "/results/" : "../results/");
 const bust = () => `?t=${Date.now()}`;
 const rs = n => (n < 0 ? "-" : "") + "Rs " + Math.abs(Math.round(n)).toLocaleString("en-IN");
 const cls = n => n >= 0 ? "up" : "down";
@@ -403,7 +406,9 @@ async function loadAll() {
   }
 }
 loadAll();
-setInterval(loadAll, 5 * 60 * 1000);
+// VM-hosted view has no CDN, so poll every 60s for near-real-time; the
+// GitHub Pages backup view is CDN-cached (~5 min) regardless.
+setInterval(loadAll, 60 * 1000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) loadAll(); });
 </script>
 </body>
