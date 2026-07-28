@@ -41,7 +41,7 @@
  ],
  "live": [
   {
-   "ts": "2026-07-28 14:15:08",
+   "ts": "2026-07-28 14:20:08",
    "type": "bear_call",
    "kind": "CE",
    "short_strike": 24000,
@@ -50,15 +50,15 @@
    "margin": 24046.75,
    "entry_ts": "2026-07-28 10:23:08",
    "exit_date": "2026-07-28",
-   "short_px": 15.9,
-   "long_px": 0.45,
-   "cost_to_close": 15.450000000000001,
-   "mtm": 949.0,
-   "mtm_pct_margin": 3.9464792539532367,
+   "short_px": 14.0,
+   "long_px": 0.35,
+   "cost_to_close": 13.65,
+   "mtm": 1066.0,
+   "mtm_pct_margin": 4.433031490741992,
    "sl_amount": 3607.0125
   },
   {
-   "ts": "2026-07-28 14:15:08",
+   "ts": "2026-07-28 14:20:08",
    "type": "bull_put",
    "kind": "PE",
    "short_strike": 24000,
@@ -67,11 +67,11 @@
    "margin": 23809.5,
    "entry_ts": "2026-07-28 10:34:08",
    "exit_date": "2026-07-28",
-   "short_px": 21.0,
-   "long_px": 0.45,
-   "cost_to_close": 20.55,
-   "mtm": 854.7500000000001,
-   "mtm_pct_margin": 3.589953589953591,
+   "short_px": 22.85,
+   "long_px": 0.4,
+   "cost_to_close": 22.450000000000003,
+   "mtm": 731.25,
+   "mtm_pct_margin": 3.0712530712530715,
    "sl_amount": 3571.4249999999997
   }
  ]
