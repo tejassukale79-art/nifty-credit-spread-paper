@@ -234,8 +234,6 @@ function positionBlock(p, lv) {
   const slDist = has ? lv.mtm + lv.sl_amount : null;
   // prices the legs were actually filled at when the spread was opened
   const hasEntry = p.short_entry != null && p.long_entry != null;
-  const entryLegs = hasEntry
-    ? `${(+p.short_entry).toFixed(2)} / ${(+p.long_entry).toFixed(2)}` : "—";
   // Rendered from the minute state; the tick poller updates these in place.
   const liveHtml = `
     <div class="live-grid" data-poskey="${posKey(p)}" data-margin="${p.margin}" data-credit="${p.credit}">
@@ -244,8 +242,7 @@ function positionBlock(p, lv) {
       <div><div class="tile-label">Cost to close</div>
         <div class="mid num"><span class="t-cost">${has ? (+lv.cost_to_close).toFixed(2) : "—"}</span> <span>vs credit ${(+p.credit).toFixed(2)}</span></div></div>
       <div><div class="tile-label">Market price (S/L)</div>
-        <div class="mid num"><span class="t-legs">${has ? (+lv.short_px).toFixed(2) + " / " + (+lv.long_px).toFixed(2) : "—"}</span>
-          <span>entered ${entryLegs}</span></div></div>
+        <div class="mid num t-legs">${has ? (+lv.short_px).toFixed(2) + " / " + (+lv.long_px).toFixed(2) : "—"}</div></div>
       <div><div class="tile-label">Room to SL</div>
         <div class="mid num t-room ${has && slDist < 0.25 * lv.sl_amount ? "down" : ""}">${has ? rs(slDist) : "—"}</div></div>
     </div>`;
