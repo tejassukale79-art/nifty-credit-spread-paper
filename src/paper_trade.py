@@ -126,7 +126,7 @@ TRADE_COLUMNS = [
     "date", "expiry", "type", "entry_ts", "atm", "lot", "short_strike", "long_strike",
     "credit", "margin", "alpha", "alpha2", "spot_entry", "exit_ts", "exit_reason",
     "exit_cost_to_close", "gross_pnl", "charges", "net_pnl",
-    "short_entry", "long_entry", "short_exit", "long_exit",
+    "short_entry", "long_entry", "short_exit", "long_exit", "signal_ts",
 ]
 
 
@@ -303,9 +303,9 @@ def record_close(pos, sb, lb, reason):
     gross = (pos["credit"] - (sb - lb)) * lot
     cost = charges(buy_turnover=(pos["long_entry"] + sb) * lot,
                    sell_turnover=(pos["short_entry"] + lb) * lot, n_orders=4)
-    row = {**{k: pos[k] for k in ("date", "expiry", "type", "entry_ts", "atm", "lot",
-                                  "short_strike", "long_strike", "credit", "margin",
-                                  "alpha", "alpha2", "spot_entry")},
+    row = {**{k: pos.get(k) for k in ("date", "expiry", "type", "entry_ts", "signal_ts",
+                                      "atm", "lot", "short_strike", "long_strike",
+                                      "credit", "margin", "alpha", "alpha2", "spot_entry")},
            "exit_ts": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
            "exit_reason": reason, "exit_cost_to_close": sb - lb,
            "gross_pnl": gross, "charges": cost, "net_pnl": gross - cost,
@@ -437,9 +437,15 @@ def try_entry(state, live, frame, now):
     margin = (config.WING_POINTS - credit) * lot
     today = now.date()
     exit_date = today if today == live.expiry_date else next_trading_day(today)
+    # entry_ts = when the legs were actually filled, not when the signal minute
+    # was evaluated: building the signal frame and fetching quotes takes ~15-25s
+    # of rate-limited API calls, so `now` would understate the fill time and not
+    # line up with the prices recorded below. exit_ts is stamped the same way.
+    fill_ts = datetime.now()
     pos = {
         "date": str(today), "expiry": live.expiry, "type": typ, "kind": kind,
-        "entry_ts": now.strftime("%Y-%m-%d %H:%M:%S"), "atm": atm, "lot": lot,
+        "entry_ts": fill_ts.strftime("%Y-%m-%d %H:%M:%S"),
+        "signal_ts": now.strftime("%Y-%m-%d %H:%M:%S"), "atm": atm, "lot": lot,
         "short_strike": s_strike, "long_strike": l_strike,
         "credit": credit, "margin": margin,
         "short_entry": s_fill, "long_entry": l_fill,

@@ -11,5 +11,8 @@ ExecStart=/home/ubuntu/tickenv/bin/python /home/ubuntu/paper/src/tick_server.py
 Restart=on-failure
 RestartSec=10
 TimeoutStopSec=20
-StandardOutput=append:/home/ubuntu/paper/results/tick_server.log
-StandardError=append:/home/ubuntu/paper/results/tick_server.log
+# tick_server.py's log() already writes results/tick_server.log itself; sending
+# stdout there too duplicated every line. Route it to the journal instead
+# (journalctl -u tick-server) so tracebacks are still captured, once.
+StandardOutput=journal
+StandardError=journal

@@ -206,12 +206,20 @@ function readPositions(state) {
   const live = Array.isArray(state.live) ? state.live : (state.live ? [state.live] : []);
   return { positions, live };
 }
+// Two positions can share strikes+kind (the trader may open the same spread
+// twice), so entry_ts is what makes a position unique. Fall back to the
+// strike match only for legacy state files that predate per-position live[].
 function matchLive(live, p) {
-  return live.find(l => l && +l.short_strike === +p.short_strike &&
-                        +l.long_strike === +p.long_strike && l.kind === p.kind);
+  const same = l => l && +l.short_strike === +p.short_strike &&
+                    +l.long_strike === +p.long_strike && l.kind === p.kind;
+  return live.find(l => same(l) && l.entry_ts && l.entry_ts === p.entry_ts) ||
+         live.find(l => same(l) && !l.entry_ts);
 }
 
-function posKey(p) { return `${p.short_strike}-${p.long_strike}-${p.kind}`; }
+// unique per position (entry_ts disambiguates identical spreads)
+function posKey(p) {
+  return `${p.short_strike}-${p.long_strike}-${p.kind}-${(p.entry_ts || "").replace(/[^0-9]/g, "")}`;
+}
 
 function positionBlock(p, lv) {
   const sl = 0.15 * p.margin;
@@ -275,7 +283,8 @@ async function pollTicks() {
   if (!d || !d.positions || !d.positions.length) return;
   if (Date.now() - (d.epoch_ms || 0) > 10000) return;   // stale: leave minute values
   for (const t of d.positions) {
-    const grid = document.querySelector(`.live-grid[data-poskey="${t.short_strike}-${t.long_strike}-${t.kind}"]`);
+    // posKey includes entry_ts so identical spreads map to their own block
+    const grid = document.querySelector(`.live-grid[data-poskey="${posKey(t)}"]`);
     if (!grid) continue;
     const q = s => grid.querySelector(s);
     const mtmEl = q(".t-mtm");
