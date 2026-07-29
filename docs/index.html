@@ -243,7 +243,7 @@ function positionBlock(p, lv) {
         <div class="big num t-mtm ${has ? cls(mtm) : ""}"><span class="t-mtmval">${has ? rs(mtm) : "—"}</span><span class="t-mtmpct">${has ? ` (${pct >= 0 ? "+" : ""}${pct.toFixed(1)}% of margin)` : ""}</span></div></div>
       <div><div class="tile-label">Cost to close</div>
         <div class="mid num"><span class="t-cost">${has ? (+lv.cost_to_close).toFixed(2) : "—"}</span> <span>vs credit ${(+p.credit).toFixed(2)}</span></div></div>
-      <div><div class="tile-label">Legs (S/L)</div>
+      <div><div class="tile-label">Market price (S/L)</div>
         <div class="mid num"><span class="t-legs">${has ? (+lv.short_px).toFixed(2) + " / " + (+lv.long_px).toFixed(2) : "—"}</span>
           <span>entered ${entryLegs}</span></div></div>
       <div><div class="tile-label">Room to SL</div>
