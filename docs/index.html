@@ -106,8 +106,10 @@ header { display: flex; justify-content: space-between; align-items: flex-end;
 .live-grid .pnl { grid-column: span 2; }
 .live-grid .big { font-size: clamp(34px, 4.6vw, 46px); font-weight: 800;
                   letter-spacing: -0.025em; line-height: 1.1; }
-.live-grid .big span { font-size: 14px; font-weight: 600; letter-spacing: 0;
-                       white-space: nowrap; }
+/* only the "% of margin" suffix is small - NOT .t-mtmval, which is the
+   headline figure and must inherit .big's size */
+.live-grid .big .t-mtmpct { font-size: 14px; font-weight: 600; letter-spacing: 0;
+                            white-space: nowrap; }
 @media (max-width: 620px) { .live-grid .pnl { grid-column: auto; } }
 .live-grid .mid { font-size: 19px; font-weight: 700; margin-top: 3px; }
 .live-grid .mid span { font-size: 12px; font-weight: 500; color: var(--muted); }
