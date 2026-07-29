@@ -97,3 +97,8 @@
 2026-07-28 15:00:08  CLOSED bear_call 24000/24400 (TIME) net 1,583
 2026-07-28 15:00:09  CLOSED bull_put 24000/23600 (TIME) net -264
 2026-07-28 15:30:19  day done. open positions: 0/2 (state saved; run again tomorrow)
+2026-07-29 09:10:16  ============================================================
+2026-07-29 09:10:16  paper trading start | SL 15% of margin | exit next day 15:00
+2026-07-29 09:10:17  warm-up spot: 2625 bars (2026-07-20 09:15:00 -> 2026-07-28 15:29:00)
+2026-07-29 09:10:17  trading expiry 2026-08-04, lot 65
+2026-07-29 09:10:17  holding 0/2 positions
