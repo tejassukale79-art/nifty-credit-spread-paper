@@ -271,6 +271,7 @@ function renderPosition(state) {
   const { positions, live } = readPositions(state);
   if (!positions.length) {
     el.innerHTML = `<div class="sec">Open positions</div><div class="empty">No open position</div>`;
+    tickActive = false;   // stop the 250ms tick poll once flat (e.g. after the 15:00 exit)
     return;
   }
   const head = `<div class="sec">Open position${positions.length > 1 ? "s · " + positions.length + " of 2" : ""}</div>`;
