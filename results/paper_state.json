@@ -18,11 +18,30 @@
    "alpha2": 0.15932203389830507,
    "spot_entry": 24222.8,
    "exit_date": "2026-07-30"
+  },
+  {
+   "date": "2026-07-29",
+   "expiry": "2026-08-04",
+   "type": "bear_call",
+   "kind": "CE",
+   "entry_ts": "2026-07-29 10:48:08",
+   "atm": 24200,
+   "lot": 65,
+   "short_strike": 24200,
+   "long_strike": 24600,
+   "credit": 122.99999999999999,
+   "margin": 18005.0,
+   "short_entry": 139.79999999999998,
+   "long_entry": 16.8,
+   "alpha": 0.06329113924050633,
+   "alpha2": 0.03728813559322034,
+   "spot_entry": 24220.2,
+   "exit_date": "2026-07-30"
   }
  ],
  "live": [
   {
-   "ts": "2026-07-29 10:46:08",
+   "ts": "2026-07-29 10:51:08",
    "type": "bear_call",
    "kind": "CE",
    "short_strike": 24200,
@@ -31,12 +50,29 @@
    "margin": 17641.0,
    "entry_ts": "2026-07-29 10:31:08",
    "exit_date": "2026-07-30",
-   "short_px": 147.2,
-   "long_px": 18.2,
-   "cost_to_close": 129.0,
-   "mtm": -26.00000000000037,
-   "mtm_pct_margin": -0.14738393515107062,
+   "short_px": 144.0,
+   "long_px": 17.7,
+   "cost_to_close": 126.3,
+   "mtm": 149.49999999999983,
+   "mtm_pct_margin": 0.847457627118643,
    "sl_amount": 2646.15
+  },
+  {
+   "ts": "2026-07-29 10:51:08",
+   "type": "bear_call",
+   "kind": "CE",
+   "short_strike": 24200,
+   "long_strike": 24600,
+   "credit": 122.99999999999999,
+   "margin": 18005.0,
+   "entry_ts": "2026-07-29 10:48:08",
+   "exit_date": "2026-07-30",
+   "short_px": 144.25,
+   "long_px": 17.7,
+   "cost_to_close": 126.55,
+   "mtm": -230.75000000000074,
+   "mtm_pct_margin": -1.2815884476534338,
+   "sl_amount": 2700.75
   }
  ]
 }

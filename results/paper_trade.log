@@ -105,3 +105,4 @@
 2026-07-29 09:16:26  no intraday candles yet (holiday or feed delay?)
 2026-07-29 10:31:27  NSE holiday calendar loaded (16 closed days)
 2026-07-29 10:31:27  OPENED bear_call (1/2): sell 24200CE @ 146.85, buy 24600CE @ 18.25, credit 128.60, margin 17,641, SL 2,646, exit 2026-07-30 15:00
+2026-07-29 10:48:27  OPENED bear_call (2/2): sell 24200CE @ 139.80, buy 24600CE @ 16.80, credit 123.00, margin 18,005, SL 2,701, exit 2026-07-30 15:00
