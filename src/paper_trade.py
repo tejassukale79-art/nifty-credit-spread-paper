@@ -471,6 +471,11 @@ def main():
             log("TOKEN EXPIRED - paste a fresh Upstox token into config/token.txt")
             return
         raise
+    # fetch the holiday calendar up front: it is needed to compute exit_date,
+    # and lazily loading it during the first entry added an API call to the
+    # latency between the signal minute and the actual fills.
+    nse_holidays()
+
     state = load_state()
     for p in state["positions"]:
         log(f"restored open position: {p['type']} {p['short_strike']}/{p['long_strike']}")
@@ -494,7 +499,12 @@ def main():
                     if now.time() >= pd.Timestamp("10:00").time():
                         log("no candles by 10:00 - market closed today, exiting")
                         break
-                    log("no intraday candles yet (holiday or feed delay?)")
+                    # The 09:15 candle isn't published until shortly after
+                    # 09:16, so one of these at the open is normal, not a fault.
+                    if now.time() < pd.Timestamp("09:20").time():
+                        log("waiting for the session's first candle (normal at open)")
+                    else:
+                        log("no intraday candles yet (holiday or feed delay?)")
                     continue
                 try_entry(state, live, frame, now)
         except RuntimeError as e:
