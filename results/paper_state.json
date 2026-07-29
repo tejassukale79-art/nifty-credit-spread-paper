@@ -41,7 +41,7 @@
  ],
  "live": [
   {
-   "ts": "2026-07-29 13:49:08",
+   "ts": "2026-07-29 13:54:08",
    "type": "bear_call",
    "kind": "CE",
    "short_strike": 24200,
@@ -50,15 +50,15 @@
    "margin": 17641.0,
    "entry_ts": "2026-07-29 10:31:08",
    "exit_date": "2026-07-30",
-   "short_px": 153.5,
-   "long_px": 18.3,
-   "cost_to_close": 135.2,
-   "mtm": -428.99999999999966,
-   "mtm_pct_margin": -2.431834929992629,
+   "short_px": 159.0,
+   "long_px": 19.5,
+   "cost_to_close": 139.5,
+   "mtm": -708.5000000000003,
+   "mtm_pct_margin": -4.01621223286662,
    "sl_amount": 2646.15
   },
   {
-   "ts": "2026-07-29 13:49:08",
+   "ts": "2026-07-29 13:54:08",
    "type": "bear_call",
    "kind": "CE",
    "short_strike": 24200,
@@ -67,11 +67,11 @@
    "margin": 18005.0,
    "entry_ts": "2026-07-29 10:48:08",
    "exit_date": "2026-07-30",
-   "short_px": 153.25,
-   "long_px": 18.4,
-   "cost_to_close": 134.85,
-   "mtm": -770.2500000000006,
-   "mtm_pct_margin": -4.277978339350184,
+   "short_px": 159.7,
+   "long_px": 19.6,
+   "cost_to_close": 140.1,
+   "mtm": -1111.5000000000005,
+   "mtm_pct_margin": -6.173285198555959,
    "sl_amount": 2700.75
   }
  ]
