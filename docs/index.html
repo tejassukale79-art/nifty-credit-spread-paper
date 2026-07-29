@@ -102,8 +102,13 @@ header { display: flex; justify-content: space-between; align-items: flex-end;
 @media (prefers-reduced-motion: reduce) { .tickdot { animation: none; } }
 .live-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
              gap: 12px 22px; margin: 10px 0 14px; }
-.live-grid .big { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
-.live-grid .big span { font-size: 13px; font-weight: 600; }
+/* unrealised P&L is the headline number: give it room and scale */
+.live-grid .pnl { grid-column: span 2; }
+.live-grid .big { font-size: clamp(34px, 4.6vw, 46px); font-weight: 800;
+                  letter-spacing: -0.025em; line-height: 1.1; }
+.live-grid .big span { font-size: 14px; font-weight: 600; letter-spacing: 0;
+                       white-space: nowrap; }
+@media (max-width: 620px) { .live-grid .pnl { grid-column: auto; } }
 .live-grid .mid { font-size: 19px; font-weight: 700; margin-top: 3px; }
 .live-grid .mid span { font-size: 12px; font-weight: 500; color: var(--muted); }
 .divider { border-top: 1px solid var(--grid); margin: 2px 0 14px; }
@@ -237,7 +242,7 @@ function positionBlock(p, lv) {
   // Rendered from the minute state; the tick poller updates these in place.
   const liveHtml = `
     <div class="live-grid" data-poskey="${posKey(p)}" data-margin="${p.margin}" data-credit="${p.credit}">
-      <div><div class="tile-label"><span class="t-lbl">Unrealised P&amp;L</span> ${has && fresh ? "(live)" : has ? "(as of " + asof + ")" : ""}<span class="tickdot" style="display:none"></span></div>
+      <div class="pnl"><div class="tile-label"><span class="t-lbl">Unrealised P&amp;L</span> ${has && fresh ? "(live)" : has ? "(as of " + asof + ")" : ""}<span class="tickdot" style="display:none"></span></div>
         <div class="big num t-mtm ${has ? cls(mtm) : ""}"><span class="t-mtmval">${has ? rs(mtm) : "—"}</span><span class="t-mtmpct">${has ? ` (${pct >= 0 ? "+" : ""}${pct.toFixed(1)}% of margin)` : ""}</span></div></div>
       <div><div class="tile-label">Cost to close</div>
         <div class="mid num"><span class="t-cost">${has ? (+lv.cost_to_close).toFixed(2) : "—"}</span> <span>vs credit ${(+p.credit).toFixed(2)}</span></div></div>
