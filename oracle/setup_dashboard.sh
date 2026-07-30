@@ -89,13 +89,13 @@ sudo netfilter-persistent save 2>/dev/null || sudo sh -c 'iptables-save > /etc/i
 # issuance fails, so the dashboard is never left down. ---
 HOST="${IP}.nip.io"
 sudo apt-get install -y -qq certbot
-if [ ! -d "/etc/letsencrypt/live/$HOST" ]; then
+if ! sudo test -d "/etc/letsencrypt/live/$HOST"; then
     # no email is registered: nothing of the user's is shared with the CA;
     # renewal is handled by certbot's own systemd timer, not email reminders
     sudo certbot certonly --webroot -w /var/www/certbot -d "$HOST" \
         --agree-tos --register-unsafely-without-email --non-interactive || true
 fi
-if [ -d "/etc/letsencrypt/live/$HOST" ]; then
+if sudo test -d "/etc/letsencrypt/live/$HOST"; then
     sudo tee /etc/nginx/sites-available/zen-tls >/dev/null <<NGINX
 server {
     listen 443 ssl;
