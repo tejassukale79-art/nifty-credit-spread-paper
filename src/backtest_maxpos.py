@@ -17,7 +17,11 @@ import signals
 import upstox_api
 
 
-def run(max_pos, tag=None):
+def run(max_pos, tag=None, require_diff_day=False, require_opposite=False, block_samedir_sameday=False):
+    """require_diff_day: a 2nd position may not be opened on the same day an
+    already-open position was entered (no same-day doubling).
+    require_opposite: a 2nd position must be the opposite direction to what is
+    already held."""
     tag = tag or f"maxpos{max_pos}"
     spot = signals.load_spot()
     local = [d.name for d in config.OPT_DIR.iterdir() if (d / "meta.json").exists()]
@@ -90,6 +94,18 @@ def run(max_pos, tag=None):
         if sigv[i] == 0 or not (t0 <= times[i] <= t1):
             continue
         d = dates[i]
+        new_type = "bull_put" if sigv[i] == 1 else "bear_call"
+        if positions:
+            # no second position on the same day an open one was entered
+            if require_diff_day and any(p["info"]["date"] == d for p in positions):
+                continue
+            # second position must oppose what is already held
+            if require_opposite and any(p["info"]["type"] == new_type for p in positions):
+                continue
+            # block only same-day SAME-DIRECTION doubling (targets 29-Jul case)
+            if block_samedir_sameday and any(
+                    p["info"]["date"] == d and p["info"]["type"] == new_type for p in positions):
+                continue
         expiry = emap.get(d)
         if expiry is None:
             continue
@@ -164,17 +180,24 @@ def main():
     config.SQUARE_OFF = "15:00"
     print(f"using live spec: SL {config.SL_PCT_OF_MARGIN:.0%} of margin, "
           f"exit {config.SQUARE_OFF}, windows {config.VOL_RATIO_WINDOW}/{config.OPT_VOL_WINDOW}\n")
+    variants = [
+        (dict(max_pos=1, tag="v_max1"), "max 1 (old)"),
+        (dict(max_pos=2, tag="v_max2_any"), "max 2, any/same-day (live now)"),
+        (dict(max_pos=2, tag="v_max2_diffday", require_diff_day=True), "max 2, diff-day only"),
+        (dict(max_pos=2, tag="v_max2_rule", require_diff_day=True, require_opposite=True),
+         "max 2, diff-day + opposite"),
+    ]
     rows = []
-    for mp in (1, 2):
-        tr, df, mu = run(mp)
-        rows.append(summarize(tr, df, mu, f"max {mp} position" + ("s" if mp > 1 else "")))
+    for kw, label in variants:
+        tr, df, mu = run(**kw)
+        rows.append(summarize(tr, df, mu, label))
     print("\n" + "=" * 74)
-    print(f"{'variant':<18}{'trades':>7}{'win%':>7}{'net P&L':>11}{'PF':>6}{'max DD':>10}{'peak margin':>13}")
-    print("-" * 74)
+    print(f"{'variant':<32}{'trades':>7}{'win%':>7}{'net P&L':>11}{'PF':>6}{'max DD':>10}{'peak margin':>13}")
+    print("-" * 88)
     for r in rows:
-        print(f"{r['label']:<18}{r['trades']:>7}{r['win']:>6.1f}%"
+        print(f"{r['label']:<32}{r['trades']:>7}{r['win']:>6.1f}%"
               f"{r['net']:>11,.0f}{r['pf']:>6.2f}{r['dd']:>10,.0f}{r['peak_margin']:>13,.0f}")
-    print("=" * 74)
+    print("=" * 88)
     print(f"period: {config.BACKTEST_START} -> {config.BACKTEST_END}")
 
 
