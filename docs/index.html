@@ -291,6 +291,7 @@ function renderPosition(state) {
 // ---- tick-live: fast-poll live_ticks.json, update spot + open positions ----
 // Polls fast while the feed is live and backs off when it goes quiet (outside
 // market hours), so there is no perpetual 4/sec request overnight.
+let todayRealised = 0;   // set by renderTiles; combined with live MTM below
 function renderSpot(d) {
   const box = document.getElementById("spotbox");
   if (!d || d.spot == null) { box.style.display = "none"; return; }
@@ -316,6 +317,18 @@ async function pollTicks() {
   const fresh = d && (Date.now() - (d.epoch_ms || 0) <= 10000);
   renderSpot(fresh ? d : null);
   if (!fresh || !d.positions || !d.positions.length) return fresh;
+
+  // TODAY tile = realised (from the trade log) + live unrealised across positions
+  const todayEl = document.getElementById("t-today");
+  if (todayEl && d.total_mtm != null) {
+    const tot = todayRealised + (+d.total_mtm);
+    todayEl.textContent = rs(tot);
+    todayEl.classList.remove("up", "down"); todayEl.classList.add(cls(tot));
+    const noteEl = document.getElementById("t-today-note");
+    if (noteEl) noteEl.textContent =
+      `realised ${rs(todayRealised)} + unrealised ${rs(d.total_mtm)} · live`;
+  }
+
   for (const t of d.positions) {
     // posKey includes entry_ts so identical spreads map to their own block
     const grid = document.querySelector(`.live-grid[data-poskey="${posKey(t)}"]`);
@@ -361,11 +374,14 @@ function renderTiles(rows, state) {
   const losses = rows.filter(r => r.net_pnl <= 0);
   const pf = losses.length ? wins.reduce((s,r)=>s+r.net_pnl,0) / Math.max(1e-9, -losses.reduce((s,r)=>s+r.net_pnl,0)) : Infinity;
   const om = rows.reduce((s, r) => s + r.net_pnl / r.margin, 0) * 100;
-  const tile = (label, value, note, klass="") =>
+  // today's realised P&L is needed by the tick loop to recompute the TODAY tile
+  todayRealised = realizedToday;
+  const tile = (label, value, note, klass="", id="") =>
     `<div class="card" style="margin:0"><div class="tile-label">${label}</div>
-     <div class="tile-value num ${klass}">${value}</div>${note?`<div class="tile-note">${note}</div>`:""}</div>`;
+     <div class="tile-value num ${klass}"${id ? ` id="${id}"` : ""}>${value}</div>${
+       note ? `<div class="tile-note"${id ? ` id="${id}-note"` : ""}>${note}</div>` : ""}</div>`;
   el.innerHTML =
-    tile("Today", rs(todayPnl), todayNote, cls(todayPnl)) +
+    tile("Today", rs(todayPnl), todayNote, cls(todayPnl), "t-today") +
     tile("Net P&L", rs(net), "after all charges", cls(net)) +
     tile("Trades", rows.length, `${wins.length} wins · ${rows.length - wins.length} losses`) +
     tile("Win rate", (wins.length / rows.length * 100).toFixed(1) + "%") +
