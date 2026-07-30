@@ -120,3 +120,7 @@
 2026-07-30 09:10:16  restored open position: bear_call 24200/24600
 2026-07-30 09:10:16  restored open position: bear_call 24200/24600
 2026-07-30 09:10:16  holding 2/2 positions
+2026-07-30 12:34:08  SL hit 24200/24600: MTM -2,935 <= -2,646
+2026-07-30 12:34:08  CLOSED bear_call 24200/24600 (SL) net -3,058
+2026-07-30 12:34:09  SL hit 24200/24600: MTM -3,257 <= -2,701
+2026-07-30 12:34:09  CLOSED bear_call 24200/24600 (SL) net -3,379
