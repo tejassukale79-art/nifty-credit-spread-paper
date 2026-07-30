@@ -100,6 +100,26 @@ class Ticker:
         self.last_write = 0.0
         self.logged_shape = False
         self.streamer = None
+        self.day_open = None               # NIFTY open, for the change readout
+        self._open_tried = 0.0
+
+    def fetch_day_open(self):
+        """First 1-min candle's open for today (retried; empty before 09:15)."""
+        if self.day_open is not None or time.time() - self._open_tried < 60:
+            return
+        self._open_tried = time.time()
+        try:
+            r = requests.get(
+                f"{BASE}/v3/historical-candle/intraday/{NIFTY.replace('|', '%7C').replace(' ', '%20')}/minutes/1",
+                headers={"Authorization": f"Bearer {TOKEN}", "Accept": "application/json"},
+                timeout=15)
+            candles = r.json().get("data", {}).get("candles", [])
+            if candles:
+                first = min(candles, key=lambda c: c[0])   # earliest bar of the day
+                self.day_open = float(first[1])
+                log(f"NIFTY day open: {self.day_open}")
+        except Exception as exc:
+            log(f"day-open fetch failed: {exc}")
 
     def _extract_ltp(self, msg):
         """Pull {instrument_key: ltp} out of a decoded feed message, defensively."""
@@ -155,15 +175,22 @@ class Ticker:
                              "mtm": round(mtm, 2), "mtm_pct_margin": round(mtm / p["margin"] * 100, 2),
                              "sl_amount": round(0.15 * p["margin"], 2),
                              "entry_ts": p["entry_ts"], "exit_date": p["exit_date"]})
+        spot = self.ltp.get(NIFTY)
         payload = {"ts": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3],
-                   "epoch_ms": int(now * 1000), "positions": rows, "total_mtm": round(total, 2)}
+                   "epoch_ms": int(now * 1000), "positions": rows, "total_mtm": round(total, 2),
+                   "spot": round(spot, 2) if spot is not None else None,
+                   "spot_open": self.day_open,
+                   "spot_chg": round(spot - self.day_open, 2)
+                               if (spot is not None and self.day_open) else None}
         tmp = OUT_FILE.with_suffix(".tmp")
         tmp.write_text(json.dumps(payload))
         tmp.replace(OUT_FILE)
 
     def sync_positions(self):
         """Re-read state; resubscribe if the leg set changed. Returns has_positions."""
+        self.fetch_day_open()
         positions, keys = read_positions()
+        keys = keys | {NIFTY}          # spot stays subscribed even when flat
         with self.lock:
             self.positions = positions
         if keys != self.keys:
@@ -189,8 +216,9 @@ def main():
 
     t = Ticker()
     positions, keys = read_positions()
+    keys = keys | {NIFTY}              # always stream spot
     t.positions, t.keys = positions, keys
-    log(f"open positions at start: {len(positions)}")
+    log(f"open positions at start: {len(positions)} (+ NIFTY spot)")
 
     cfg = upstox_client.Configuration()
     cfg.access_token = TOKEN
