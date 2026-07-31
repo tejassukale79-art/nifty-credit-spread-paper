@@ -127,3 +127,16 @@
 2026-07-30 12:40:26  OPENED bear_call (1/2): sell 24300CE @ 114.50, buy 24700CE @ 7.35, credit 107.15, margin 19,035, SL 2,855, exit 2026-07-31 15:00
 2026-07-30 13:01:27  OPENED bear_call (2/2): sell 24300CE @ 103.65, buy 24700CE @ 6.35, credit 97.30, margin 19,676, SL 2,951, exit 2026-07-31 15:00
 2026-07-30 15:30:09  day done. open positions: 2/2 (state saved; run again tomorrow)
+2026-07-30 22:59:00  CLOSED bear_call 24300/24700 (TIME) net 818
+2026-07-30 22:59:00  CLOSED bear_call 24300/24700 (TIME) net 178
+2026-07-30 22:59:00  NSE holiday calendar loaded (16 closed days)
+2026-07-30 22:59:02  warm-up spot: 2625 bars (2026-07-21 09:15:00 -> 2026-07-29 15:29:00)
+2026-07-30 22:59:02  trading expiry 2026-08-04, lot 65
+2026-07-31 09:10:15  ============================================================
+2026-07-31 09:10:15  paper trading start | SL 15% of margin | exit next day 15:00
+2026-07-31 09:10:16  warm-up spot: 2625 bars (2026-07-22 09:15:00 -> 2026-07-30 15:29:00)
+2026-07-31 09:10:16  trading expiry 2026-08-04, lot 65
+2026-07-31 09:10:17  NSE holiday calendar loaded (16 closed days)
+2026-07-31 09:10:17  restored open position: bear_call 24300/24700
+2026-07-31 09:10:17  restored open position: bear_call 24300/24700
+2026-07-31 09:10:17  holding 2/1 positions
