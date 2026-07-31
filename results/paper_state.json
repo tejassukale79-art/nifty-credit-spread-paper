@@ -21,5 +21,23 @@
    "exit_date": "2026-08-03"
   }
  ],
- "live": []
+ "live": [
+  {
+   "ts": "2026-07-31 13:03:08",
+   "type": "bull_put",
+   "kind": "PE",
+   "short_strike": 24400,
+   "long_strike": 24000,
+   "credit": 76.1,
+   "margin": 21053.5,
+   "entry_ts": "2026-07-31 12:58:21",
+   "exit_date": "2026-08-03",
+   "short_px": 92.2,
+   "long_px": 12.8,
+   "cost_to_close": 79.4,
+   "mtm": -214.50000000000074,
+   "mtm_pct_margin": -1.0188329731398615,
+   "sl_amount": 3158.025
+  }
+ ]
 }
