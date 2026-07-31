@@ -15,7 +15,7 @@ import json
 import sys
 import threading
 import time
-from datetime import datetime, time as dtime
+from datetime import datetime, time as dtime, timedelta
 from pathlib import Path
 
 import requests
@@ -100,26 +100,31 @@ class Ticker:
         self.last_write = 0.0
         self.logged_shape = False
         self.streamer = None
-        self.day_open = None               # NIFTY open, for the change readout
-        self._open_tried = 0.0
+        self.prev_close = None             # reference for the change readout
+        self._ref_tried = 0.0
 
-    def fetch_day_open(self):
-        """First 1-min candle's open for today (retried; empty before 09:15)."""
-        if self.day_open is not None or time.time() - self._open_tried < 60:
+    def fetch_prev_close(self):
+        """Previous trading day's CLOSE - the reference brokers/NSE/Google use
+        for "change". Using today's open instead understates the move by the
+        overnight gap (e.g. NIFTY gapped 191 pts on 2026-07-29)."""
+        if self.prev_close is not None or time.time() - self._ref_tried < 300:
             return
-        self._open_tried = time.time()
+        self._ref_tried = time.time()
         try:
+            from urllib.parse import quote
+            today = datetime.now().date()
+            frm = (today - timedelta(days=12)).isoformat()
             r = requests.get(
-                f"{BASE}/v3/historical-candle/intraday/{NIFTY.replace('|', '%7C').replace(' ', '%20')}/minutes/1",
+                f"{BASE}/v3/historical-candle/{quote(NIFTY, safe='')}/days/1/{today}/{frm}",
                 headers={"Authorization": f"Bearer {TOKEN}", "Accept": "application/json"},
                 timeout=15)
-            candles = r.json().get("data", {}).get("candles", [])
-            if candles:
-                first = min(candles, key=lambda c: c[0])   # earliest bar of the day
-                self.day_open = float(first[1])
-                log(f"NIFTY day open: {self.day_open}")
+            candles = sorted(r.json().get("data", {}).get("candles", []), key=lambda c: c[0])
+            prior = [c for c in candles if c[0][:10] < today.isoformat()]
+            if prior:
+                self.prev_close = float(prior[-1][4])
+                log(f"NIFTY prev close ({prior[-1][0][:10]}): {self.prev_close}")
         except Exception as exc:
-            log(f"day-open fetch failed: {exc}")
+            log(f"prev-close fetch failed: {exc}")
 
     def _extract_ltp(self, msg):
         """Pull {instrument_key: ltp} out of a decoded feed message, defensively."""
@@ -176,19 +181,21 @@ class Ticker:
                              "sl_amount": round(0.15 * p["margin"], 2),
                              "entry_ts": p["entry_ts"], "exit_date": p["exit_date"]})
         spot = self.ltp.get(NIFTY)
+        ref = self.prev_close
+        chg = (spot - ref) if (spot is not None and ref) else None
         payload = {"ts": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3],
                    "epoch_ms": int(now * 1000), "positions": rows, "total_mtm": round(total, 2),
                    "spot": round(spot, 2) if spot is not None else None,
-                   "spot_open": self.day_open,
-                   "spot_chg": round(spot - self.day_open, 2)
-                               if (spot is not None and self.day_open) else None}
+                   "spot_prev_close": ref,
+                   "spot_chg": round(chg, 2) if chg is not None else None,
+                   "spot_chg_pct": round(chg / ref * 100, 2) if chg is not None else None}
         tmp = OUT_FILE.with_suffix(".tmp")
         tmp.write_text(json.dumps(payload))
         tmp.replace(OUT_FILE)
 
     def sync_positions(self):
         """Re-read state; resubscribe if the leg set changed. Returns has_positions."""
-        self.fetch_day_open()
+        self.fetch_prev_close()
         positions, keys = read_positions()
         keys = keys | {NIFTY}          # spot stays subscribed even when flat
         with self.lock:

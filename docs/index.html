@@ -300,10 +300,13 @@ function renderSpot(d) {
     (+d.spot).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const chgEl = document.getElementById("spotchg");
   if (d.spot_chg == null) { chgEl.textContent = ""; return; }
+  // change is vs the PREVIOUS CLOSE (the broker/NSE convention); the server
+  // sends the percentage so both sides can't disagree on the reference
   const c = +d.spot_chg;
-  const pct = d.spot_open ? (c / d.spot_open * 100) : null;
+  const pct = d.spot_chg_pct != null ? +d.spot_chg_pct
+            : (d.spot_prev_close ? c / d.spot_prev_close * 100 : null);
   chgEl.textContent = `${c >= 0 ? "+" : ""}${c.toFixed(2)}` +
-    (pct != null ? ` (${c >= 0 ? "+" : ""}${pct.toFixed(2)}%)` : "");
+    (pct != null ? ` (${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%)` : "");
   chgEl.className = "spot-chg num " + cls(c);
 }
 
