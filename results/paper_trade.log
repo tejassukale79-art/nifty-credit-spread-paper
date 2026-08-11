@@ -211,3 +211,4 @@
 2026-08-11 09:16:26  waiting for the session's first candle (normal at open)
 2026-08-11 10:29:19  OPENED bull_put (1/1): sell 24500PE @ 63.65, buy 24100PE @ 0.85, credit 62.80, margin 21,918, SL 3,288, exit 2026-08-11 15:00
 2026-08-11 15:00:08  CLOSED bull_put 24500/24100 (TIME) net 1,241
+2026-08-11 15:30:17  day done. open positions: 0/1 (state saved; run again tomorrow)
