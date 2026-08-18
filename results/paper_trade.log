@@ -249,3 +249,9 @@
 2026-08-17 09:10:18  holding 1/1 positions
 2026-08-17 15:00:08  CLOSED bear_call 24350/24750 (TIME) net 1,762
 2026-08-17 15:30:17  day done. open positions: 0/1 (state saved; run again tomorrow)
+2026-08-18 09:10:05  ============================================================
+2026-08-18 09:10:05  paper trading start | SL 15% of margin | exit next day 15:00
+2026-08-18 09:10:07  warm-up spot: 2250 bars (2026-08-10 09:15:00 -> 2026-08-17 15:29:00)
+2026-08-18 09:10:07  trading expiry 2026-08-18, lot 65
+2026-08-18 09:10:08  NSE holiday calendar loaded (16 closed days)
+2026-08-18 09:10:08  holding 0/1 positions
