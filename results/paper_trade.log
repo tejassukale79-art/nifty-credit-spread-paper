@@ -258,3 +258,4 @@
 2026-08-18 09:16:26  waiting for the session's first candle (normal at open)
 2026-08-18 10:17:21  OPENED bear_call (1/1): sell 24200CE @ 44.45, buy 24600CE @ 1.05, credit 43.40, margin 23,179, SL 3,477, exit 2026-08-18 15:00
 2026-08-18 15:00:08  CLOSED bear_call 24200/24600 (TIME) net 277
+2026-08-18 15:30:19  day done. open positions: 0/1 (state saved; run again tomorrow)
