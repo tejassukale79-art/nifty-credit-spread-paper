@@ -97,7 +97,38 @@ python paper_trade.py
 `src/backtest.py` (intraday square-off) and `src/backtest_overnight.py`
 (overnight hold) run against 1-min option data downloaded by
 `src/download_options.py` (not committed — ~5,000 parquet files).
-Backtest conclusion (Sep 2024 – Jul 2026): the intraday version loses;
-the overnight version with SL 15% of margin is the only profitable variant
-(+Rs 28k Jan–Jul 2026 per lot, after charges). SL 10% whipsaws and loses;
-SL 25% loses. See `results/trades_overnight_sl15.csv`.
+`src/run_2year.py` re-runs the overnight version across stop levels,
+`src/report_2year.py` breaks the result down, and `src/run_dhanrules.py`
+tests it against the rules Dhan's own trade log implies.
+
+### The stop-loss is not part of the strategy
+
+An earlier note here said SL 15% of margin was the only profitable variant
+(+Rs 28k Jan–Jul 2026). **That is withdrawn.** Dhan's live trade log settles it:
+all 348 legs across 174 trades carry `stopLoss: 0`. The 15% stop was invented
+here — `config.py` still flags it *"TUNABLE: spec says 'based on margin
+requirements' without a number"* — and it is expensive.
+
+Over Dhan's own window (9 Jul 2025 – 16 Jul 2026), 1 lot, changing only that:
+
+| Rule set | Trades | Win | Net / lot |
+|---|---|---|---|
+| Dhan, actual live record | 174 | 56.9% | **+Rs 156,712** |
+| No stop (only change) | 145 | 64.1% | **+Rs 102,022** |
+| Replica as written, SL 15% | 215 | 48.8% | +Rs 34,615 |
+
+The stop costs **Rs 67,407 per lot** over thirteen months and drops the win rate
+fifteen points: it closes the spreads that would have recovered by the 15:15
+exit. Two other candidate corrections were tested and **rejected** — a tighter
+entry window (Rs 30,691) and a 15:00 exit (Rs 86,372) both made it worse.
+
+### How far to trust the backtest
+
+The P&L engine is exact: against this repo's own saved run, every trade both
+took on the same timestamp priced identically (188 of 188, max difference
+Rs 0.0000). Signal *selection* is approximate — the replica agrees with Dhan on
+direction on about 70% of shared trading days, and reproduced 6 of 11 live paper
+trades over a two-week overlap. That is enough for aggregates over 406 trades
+and **not** enough to tune parameters on. Closing that gap comes first.
+
+Full write-up: `results/twoyear_report.html`.

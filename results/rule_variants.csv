@@ -1,0 +1,11 @@
+variant,window,trades,win%,net_1lot,avg,PF,maxDD,t
+"replica as written      (10:15-14:15, SL 15%, 15:15)",FULL 2y,406,48.0,42772,105,1.06,73826,0.53
+"replica as written      (10:15-14:15, SL 15%, 15:15)",Dhan window,215,48.8,34615,161,1.09,50664,0.57
+"no stop only            (10:15-14:15, no SL, 15:15)",FULL 2y,266,64.3,57725,217,1.11,124058,0.63
+"no stop only            (10:15-14:15, no SL, 15:15)",Dhan window,145,64.1,102022,703,1.4,51773,1.66
+"Dhan entry window only  (10:15-10:30, SL 15%, 15:15)",FULL 2y,308,45.5,-57996,-188,0.9,88406,-0.82
+"Dhan entry window only  (10:15-10:30, SL 15%, 15:15)",Dhan window,163,44.2,-29687,-182,0.91,49993,-0.55
+"Dhan rules              (10:15-10:30, no SL, 15:00)",FULL 2y,242,61.6,-59201,-244,0.9,159870,-0.63
+"Dhan rules              (10:15-10:30, no SL, 15:00)",Dhan window,131,59.5,30691,234,1.11,47157,0.48
+"Dhan rules, wider entry (10:15-11:00, no SL, 15:00)",FULL 2y,261,63.2,22521,86,1.04,132537,0.24
+"Dhan rules, wider entry (10:15-11:00, no SL, 15:00)",Dhan window,143,62.2,86372,604,1.32,45511,1.38

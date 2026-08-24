@@ -1,0 +1,563 @@
+<title>The Stop That Was Never There</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root {
+  --ground:      #F6F7F8;
+  --surface:     #FFFFFF;
+  --surface-2:   #EFF1F3;
+  --hair:        #DFE3E7;
+  --hair-2:      #C9CFD5;
+  --ink:         #171B21;
+  --ink-2:       #3D454E;
+  --muted:       #6B747D;
+  --accent:      #1F6F6B;
+  --accent-soft: #E2EFED;
+  --good:        #10794A;
+  --good-soft:   #E1F0E8;
+  --crit:        #AE3A33;
+  --crit-soft:   #F6E4E2;
+  --warn:        #8C6210;
+  --warn-soft:   #F7EEDA;
+  --shadow:      0 1px 2px rgba(23,27,33,.05), 0 8px 24px -16px rgba(23,27,33,.18);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:      #0D1015;
+    --surface:     #14181E;
+    --surface-2:   #1B2027;
+    --hair:        #262C34;
+    --hair-2:      #39414B;
+    --ink:         #E7EBEF;
+    --ink-2:       #B7BFC8;
+    --muted:       #7E8892;
+    --accent:      #4FB3AC;
+    --accent-soft: #12312F;
+    --good:        #47B37C;
+    --good-soft:   #102C1E;
+    --crit:        #D9615A;
+    --crit-soft:   #331714;
+    --warn:        #C79A3C;
+    --warn-soft:   #2C2413;
+    --shadow:      0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"] {
+  --ground:      #0D1015;
+  --surface:     #14181E;
+  --surface-2:   #1B2027;
+  --hair:        #262C34;
+  --hair-2:      #39414B;
+  --ink:         #E7EBEF;
+  --ink-2:       #B7BFC8;
+  --muted:       #7E8892;
+  --accent:      #4FB3AC;
+  --accent-soft: #12312F;
+  --good:        #47B37C;
+  --good-soft:   #102C1E;
+  --crit:        #D9615A;
+  --crit-soft:   #331714;
+  --warn:        #C79A3C;
+  --warn-soft:   #2C2413;
+  --shadow:      0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 1060px; margin: 0 auto; padding: 0 28px 96px; }
+
+/* ---------------------------------------------------------------- masthead */
+.masthead {
+  border-bottom: 1px solid var(--hair);
+  background: var(--surface);
+}
+.masthead .wrap { padding-top: 52px; padding-bottom: 40px; }
+.kicker {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11.5px; font-weight: 500;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 18px;
+}
+h1 {
+  font-family: "Newsreader", Georgia, "Times New Roman", serif;
+  font-weight: 400; font-size: clamp(34px, 5.2vw, 52px);
+  line-height: 1.08; letter-spacing: -.015em;
+  text-wrap: balance;
+  margin: 0 0 20px; max-width: 20ch;
+}
+h1 em { font-style: italic; color: var(--accent); }
+.standfirst {
+  font-size: 18px; line-height: 1.55; color: var(--ink-2);
+  max-width: 62ch; margin: 0;
+}
+.meta {
+  display: flex; flex-wrap: wrap; gap: 8px 26px;
+  margin-top: 28px; padding-top: 22px;
+  border-top: 1px solid var(--hair);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px; color: var(--muted);
+}
+.meta b { color: var(--ink-2); font-weight: 500; }
+
+/* ---------------------------------------------------------------- sections */
+section { margin-top: 60px; }
+h2 {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11.5px; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 6px;
+  display: flex; align-items: baseline; gap: 12px;
+}
+h2::after {
+  content: ""; flex: 1; height: 1px; background: var(--hair);
+  transform: translateY(-3px);
+}
+h3 {
+  font-family: "Newsreader", Georgia, serif;
+  font-weight: 600; font-size: 25px; line-height: 1.25;
+  letter-spacing: -.01em; text-wrap: balance;
+  margin: 0 0 12px;
+}
+p { margin: 0 0 15px; max-width: 68ch; color: var(--ink-2); }
+p.lead { color: var(--ink); font-size: 17px; }
+strong { color: var(--ink); font-weight: 600; }
+
+/* ---------------------------------------------------------------- verdict */
+.verdict {
+  background: var(--surface); border: 1px solid var(--hair);
+  border-left: 3px solid var(--warn);
+  border-radius: 3px; padding: 26px 28px; box-shadow: var(--shadow);
+  margin-top: 34px;
+}
+.verdict h3 { margin-bottom: 10px; }
+.verdict p:last-child { margin-bottom: 0; }
+
+/* ---------------------------------------------------------------- stats */
+.stats {
+  display: grid; gap: 1px; margin-top: 22px;
+  grid-template-columns: repeat(6, 1fr);
+  background: var(--hair); border: 1px solid var(--hair);
+  border-radius: 3px; overflow: hidden;
+}
+@media (max-width: 1000px) { .stats { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px)  { .stats { grid-template-columns: repeat(2, 1fr); } }
+.stat { background: var(--surface); padding: 17px 16px; }
+.stat .k {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 7px;
+}
+.stat .v {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: clamp(19px, 1.75vw, 23px); font-weight: 500; letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums; line-height: 1.15;
+}
+.stat .s { font-size: 12.5px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+.pos { color: var(--good); }
+.neg { color: var(--crit); }
+.flat { color: var(--ink); }
+
+/* ---------------------------------------------------------------- charts */
+.panel {
+  background: var(--surface); border: 1px solid var(--hair);
+  border-radius: 3px; padding: 24px 26px; margin-top: 20px;
+  box-shadow: var(--shadow);
+}
+.panel-title {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 20px;
+}
+
+/* sweep bars */
+.sweep { display: grid; gap: 3px; font-variant-numeric: tabular-nums; }
+.sweep-row {
+  display: grid; grid-template-columns: 96px 1fr 96px;
+  align-items: center; gap: 14px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px;
+}
+.sweep-row.live .lab { color: var(--accent); font-weight: 600; }
+.sweep-row .lab { color: var(--ink-2); }
+.sweep-track {
+  position: relative; height: 26px;
+  background: var(--surface-2); border-radius: 2px;
+}
+.sweep-zero {
+  position: absolute; top: -3px; bottom: -3px; width: 1px;
+  background: var(--hair-2); left: 50%;
+}
+.sweep-bar { position: absolute; top: 5px; bottom: 5px; border-radius: 2px; }
+.sweep-bar.p { background: var(--good); }
+.sweep-bar.n { background: var(--crit); }
+.sweep-row .val { text-align: right; font-weight: 500; }
+.sweep-foot {
+  display: grid; grid-template-columns: 96px 1fr 96px; gap: 14px;
+  margin-top: 10px; font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10.5px; color: var(--muted); letter-spacing: .06em;
+}
+.sweep-foot span:nth-child(2) { text-align: center; }
+
+/* ---------------------------------------------------------------- tables */
+.tw { overflow-x: auto; margin-top: 18px; border: 1px solid var(--hair); border-radius: 3px; }
+table { border-collapse: collapse; width: 100%; background: var(--surface); }
+th, td {
+  padding: 10px 14px; text-align: right; white-space: nowrap;
+  border-bottom: 1px solid var(--hair);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12.5px; font-variant-numeric: tabular-nums;
+}
+th {
+  font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600; background: var(--surface-2);
+  position: sticky; top: 0;
+}
+th:first-child, td:first-child { text-align: left; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr.total td { background: var(--surface-2); font-weight: 600; color: var(--ink); }
+/* the total row must not swallow the semantic P&L colour */
+tbody tr.total td.pos { color: var(--good); }
+tbody tr.total td.neg { color: var(--crit); }
+td.name { font-family: "Public Sans", sans-serif; font-size: 13.5px; color: var(--ink); }
+
+/* ---------------------------------------------------------------- notes */
+.note {
+  border-left: 2px solid var(--hair-2); padding: 2px 0 2px 18px;
+  margin: 22px 0; color: var(--muted); font-size: 14.5px; max-width: 66ch;
+}
+.tag {
+  display: inline-block; padding: 2px 8px; border-radius: 2px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase;
+  font-weight: 600; vertical-align: 1px;
+}
+.tag.good { background: var(--good-soft); color: var(--good); }
+.tag.crit { background: var(--crit-soft); color: var(--crit); }
+.tag.warn { background: var(--warn-soft); color: var(--warn); }
+.tag.acc  { background: var(--accent-soft); color: var(--accent); }
+
+/* equity curve */
+.curve { width: 100%; height: auto; display: block; }
+.curve-axis { fill: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 9px; }
+
+footer {
+  margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--hair);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11.5px; color: var(--muted); line-height: 1.8;
+}
+@media (max-width: 620px) {
+  .sweep-row, .sweep-foot { grid-template-columns: 68px 1fr 74px; gap: 9px; font-size: 11px; }
+  .wrap { padding-left: 18px; padding-right: 18px; }
+}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="kicker">NIFTY overnight credit spread &middot; two-year audit</p>
+    <h1>The backtest had a stop-loss the <em>real strategy never used</em></h1>
+    <p class="standfirst">
+      Dhan&rsquo;s own trade log settles it: all 348 legs across 174 live trades carry
+      <code style="font-family:'IBM Plex Mono',monospace;font-size:.92em">stopLoss: 0</code>.
+      The replica&rsquo;s 15%-of-margin stop was invented, and it is expensive &mdash; removing it,
+      and changing nothing else, takes the same window from &#8377;34,615 to
+      <strong>&#8377;102,022</strong> per lot.
+    </p>
+    <div class="meta">
+      <span><b>Window</b> 27 Sep 2024 &rarr; 18 Aug 2026</span>
+      <span><b>Config</b> SL 15% of margin, 1 lot</span>
+      <span><b>Data</b> Upstox expired-option archive, 1&#8209;min</span>
+      <span><b>Costs</b> brokerage, STT, exchange, GST, 0.05 slippage/leg</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section style="margin-top:44px">
+    <h2>Headline</h2>
+    <div class="stats">
+      <div class="stat">
+        <div class="k">Dhan, live</div>
+        <div class="v pos">+&#8377;156,712</div>
+        <div class="s">174 trades, per lot, 13 months</div>
+      </div>
+      <div class="stat">
+        <div class="k">Replica, no stop</div>
+        <div class="v pos">+&#8377;102,022</div>
+        <div class="s">same window, 1 lot</div>
+      </div>
+      <div class="stat">
+        <div class="k">Replica as written</div>
+        <div class="v neg">+&#8377;34,615</div>
+        <div class="s">with the invented 15% stop</div>
+      </div>
+      <div class="stat">
+        <div class="k">Cost of the stop</div>
+        <div class="v neg">&minus;&#8377;67,407</div>
+        <div class="s">per lot, over 13 months</div>
+      </div>
+      <div class="stat">
+        <div class="k">Win rate</div>
+        <div class="v flat">64.1%</div>
+        <div class="s">vs 48.8% with the stop</div>
+      </div>
+      <div class="stat">
+        <div class="k">Direction match</div>
+        <div class="v warn" style="color:var(--warn)">70.2%</div>
+        <div class="s">replica vs Dhan, days both traded</div>
+      </div>
+    </div>
+
+    <div class="verdict">
+      <h3>Correcting an earlier conclusion</h3>
+      <p>
+        An earlier version of this page reported that two years of data showed no edge,
+        on a t&#8209;statistic of 0.53. That measurement was taken on a configuration
+        carrying a stop-loss the live strategy does not have. It is withdrawn.
+      </p>
+      <p>
+        What the stop does is not subtle. Over Dhan&rsquo;s own window it converts a
+        64% win rate into 49%, and &#8377;102,022 into &#8377;34,615 &mdash; because the
+        spreads it closes are the ones that would have recovered by the 15:15 exit. The
+        strategy is paid to sit through exactly the moves the stop refuses to sit through.
+      </p>
+      <p style="margin-bottom:0">
+        A gap to Dhan remains &mdash; &#8377;102,022 against &#8377;156,712 &mdash; and it is
+        honestly a signal-reconstruction gap, not a costing one. The replica picks the
+        same direction as Dhan on 70% of shared trading days. The other 30% is what is
+        still missing.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Which rule set is the real one?</h2>
+    <h3>Every change was tested against Dhan&rsquo;s own window, one at a time.</h3>
+    <p>
+      Dhan&rsquo;s 174 live trades run 9 Jul 2025 to 16 Jul 2026. Running the replica over
+      exactly that window, and varying only the disputed rules, isolates which assumption
+      was costing the money.
+    </p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Rule set</th><th>Trades</th><th>Win rate</th><th>Net, 1 lot</th><th>PF</th><th>Max DD</th><th>t</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Dhan, actual live record</td><td>174</td><td>56.9%</td><td class="pos">+&#8377;156,712</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+          <tr class="total"><td class="name">No stop &middot; 10:15&ndash;14:15 &middot; exit 15:15</td><td>145</td><td>64.1%</td><td class="pos">+&#8377;102,022</td><td>1.40</td><td>&#8377;51,773</td><td>1.66</td></tr>
+          <tr><td class="name">No stop &middot; entry to 11:00 &middot; exit 15:00</td><td>143</td><td>62.2%</td><td class="pos">+&#8377;86,372</td><td>1.32</td><td>&#8377;45,511</td><td>1.38</td></tr>
+          <tr><td class="name">Replica as written &middot; SL 15%</td><td>215</td><td>48.8%</td><td class="neg">+&#8377;34,615</td><td>1.09</td><td>&#8377;50,664</td><td>0.57</td></tr>
+          <tr><td class="name">No stop &middot; entry to 10:30 &middot; exit 15:00</td><td>131</td><td>59.5%</td><td class="neg">+&#8377;30,691</td><td>1.11</td><td>&#8377;47,157</td><td>0.48</td></tr>
+          <tr><td class="name">SL 15% &middot; entry to 10:30</td><td>163</td><td>44.2%</td><td class="neg">&minus;&#8377;29,687</td><td>0.91</td><td>&#8377;49,993</td><td>&minus;0.55</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:20px">
+      <strong>Removing the stop is the whole correction.</strong> It is the only change
+      that moves the result materially, and it moves it by
+      <strong>&#8377;67,407 per lot</strong> over thirteen months. Win rate goes from
+      48.8% to 64.1%, and the t&#8209;statistic from 0.57 to 1.66.
+    </p>
+    <div class="note">
+      A hypothesis that did <em>not</em> survive: Dhan enters 67% of its trades within
+      fifteen minutes of 10:15, which looked like a tight entry window. Restricting the
+      replica to 10:15&ndash;10:30 made things <em>worse</em> &mdash; &#8377;30,691 against
+      &#8377;102,022 &mdash; because the remaining third of Dhan&rsquo;s entries, spread
+      across the rest of the window, are not the marginal ones. The wide window in the
+      spec is correct; the entries are simply front-loaded.
+    </div>
+
+    <h2>Where the money actually goes</h2>
+    <h3>Half the gross profit is consumed by costs.</h3>
+    <p>
+      A four-leg round trip &mdash; two legs in, two legs out &mdash; on a spread that
+      collects roughly 100 to 140 points of credit means the fee load is structural, not
+      incidental. Every trade pays about <strong>&#8377;111</strong> in charges against an
+      average net of <strong>&#8377;105</strong>.
+    </p>
+    <div class="tw">
+      <table>
+        <thead>
+          <tr><th>Line</th><th>Amount</th><th>Per trade</th><th>Share of gross</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Gross P&amp;L</td><td>&#8377;87,808</td><td>&#8377;216</td><td>100%</td></tr>
+          <tr><td class="name">Charges &amp; slippage</td><td class="neg">&minus;&#8377;45,035</td><td class="neg">&minus;&#8377;111</td><td class="neg">51%</td></tr>
+          <tr class="total"><td class="name">Net P&amp;L</td><td class="pos">&#8377;42,773</td><td class="pos">&#8377;105</td><td>49%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      This is the one finding that does not depend on any parameter choice, and the one
+      with an obvious lever: fewer, larger trades keep more of the gross. Every setting
+      that increases turnover is fighting a 51% tax.
+    </div>
+  </section>
+
+  <section>
+    <h2>The two years were not alike</h2>
+    <h3>Year one lost money. The curve spent most of its life underwater.</h3>
+
+    <div class="panel">
+      <div class="panel-title">Cumulative net P&amp;L by month &middot; 1 lot</div>
+      <svg class="curve" viewBox="0 0 980 260" role="img"
+           aria-label="Cumulative profit and loss by month from September 2024 to August 2026. The curve falls to minus 30,182 in May 2025, recovers, drops back to 523 in May 2026, and finishes at 42,773.">
+        <!-- underwater band: everything below this line is a cumulative loss -->
+        <rect x="30" y="132" width="920" height="82" fill="var(--crit)" opacity=".05"/>
+        <line x1="30" y1="15" x2="950" y2="15" stroke="var(--hair)" stroke-width="1" stroke-dasharray="2 5"/>
+        <line x1="30" y1="132" x2="950" y2="132" stroke="var(--hair-2)" stroke-width="1"/>
+        <line x1="30" y1="190.6" x2="950" y2="190.6" stroke="var(--hair)" stroke-width="1" stroke-dasharray="2 5"/>
+        <text class="curve-axis" x="956" y="18">+50k</text>
+        <text class="curve-axis" x="956" y="135">0</text>
+        <text class="curve-axis" x="956" y="194">&#8722;25k</text>
+        <polyline fill="none" stroke="var(--accent)" stroke-width="2"
+          stroke-linejoin="round" stroke-linecap="round"
+          points="30.0,138.3 70.0,129.7 110.0,154.8 150.0,158.3 190.0,86.8 230.0,89.2 270.0,67.6 310.0,96.9 350.0,202.7 390.0,174.2 430.0,112.1 470.0,139.8 510.0,147.1 550.0,141.8 590.0,93.8 630.0,58.0 670.0,98.2 710.0,62.2 750.0,36.0 790.0,62.5 830.0,130.8 870.0,86.4 910.0,47.0 950.0,31.9"/>
+        <circle cx="350.0" cy="202.7" r="4" fill="var(--crit)"/>
+        <circle cx="950.0" cy="31.9" r="4" fill="var(--accent)"/>
+        <text class="curve-axis" x="350" y="219" text-anchor="middle" fill="var(--crit)">May 25 &#8722;30,182</text>
+        <text class="curve-axis" x="944" y="26" text-anchor="end">Aug 26 +42,773</text>
+      </svg>
+      <div class="sweep-foot" style="grid-template-columns:1fr 1fr 1fr">
+        <span>Sep 2024</span><span>Sep 2025</span><span style="text-align:right">Aug 2026</span>
+      </div>
+    </div>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Period</th><th>Trades</th><th>Win rate</th><th>Net</th><th>Avg / trade</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Year 1 &middot; Sep 24 &ndash; Aug 25</td><td>199</td><td>46.2%</td><td class="neg">&minus;&#8377;6,069</td><td class="neg">&minus;&#8377;30</td></tr>
+          <tr><td class="name">Year 2 &middot; Aug 25 &ndash; Aug 26</td><td>207</td><td>49.8%</td><td class="pos">+&#8377;48,842</td><td class="pos">+&#8377;236</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      The whole result is year two. A strategy that loses for twelve months and then
+      makes &#8377;49k in the next twelve has not demonstrated an edge &mdash; it has
+      demonstrated variance. Note also that the contract size changed underneath the
+      test: 25 in late 2024, 75 through 2025, 65 in 2026, so early trades are
+      structurally smaller.
+    </div>
+  </section>
+
+  <section>
+    <h2>One side carries it, one side bleeds</h2>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Split</th><th>Trades</th><th>Win rate</th><th>Net</th><th>Avg / trade</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Bear call (short calls)</td><td>198</td><td>51.5%</td><td class="pos">+&#8377;100,722</td><td class="pos">+&#8377;509</td></tr>
+          <tr><td class="name">Bull put (short puts)</td><td>208</td><td>44.7%</td><td class="neg">&minus;&#8377;57,949</td><td class="neg">&minus;&#8377;279</td></tr>
+          <tr class="total"><td class="name">Combined</td><td>406</td><td>48.0%</td><td class="pos">+&#8377;42,773</td><td class="pos">+&#8377;105</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:18px">
+      Bull puts are half the book and lose money over two years. Whether that is a real
+      asymmetry or an artefact of a falling market over the window is exactly the
+      question a longer sample would settle &mdash; and cannot be settled here.
+    </p>
+
+    <h3 style="margin-top:34px">What the invented stop did to the book</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Exit</th><th>Trades</th><th>Win rate</th><th>Net</th><th>Avg / trade</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Held to 15:15 next session</td><td>213</td><td>91.5%</td><td class="pos">+&#8377;707,765</td><td class="pos">+&#8377;3,323</td></tr>
+          <tr><td class="name">Stopped out at 15% of margin</td><td>193</td><td class="neg">0.0%</td><td class="neg">&minus;&#8377;664,992</td><td class="neg">&minus;&#8377;3,446</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      Every stopped trade is a loss by construction, so the 0% is not informative on its
+      own. What is informative: the two columns nearly cancel. The strategy is
+      &#8377;708k of held winners minus &#8377;665k of stops, and the &#8377;43k that
+      survives is the small difference between two large opposing numbers &mdash; which is
+      precisely why small changes to the stop swing the result so violently.
+    </div>
+  </section>
+
+  <section>
+    <h2>How far to trust this</h2>
+    <h3>What was verified, and what was not.</h3>
+    <p class="lead">
+      Two checks were run before any of the above was written down.
+    </p>
+    <p>
+      <span class="tag good">verified</span>&nbsp; <strong>The P&amp;L engine is exact.</strong>
+      Against the project's own saved backtest, every trade that both runs took on the
+      same timestamp produced an identical net P&amp;L &mdash; 188 of 188 matches, maximum
+      difference &#8377;0.0000. Fills, charges and slippage are not in question.
+    </p>
+    <p>
+      <span class="tag warn">partial</span>&nbsp; <strong>Signal selection is approximate.</strong>
+      Against the live paper trader over a two-week overlap, this backtest reproduced
+      6 of 11 trades on the same date, direction and strike, with net P&amp;L within about
+      &#8377;200 per trade. It missed four the live engine took and added one it did not.
+      Borderline signals near the 0.8 / 0.2 alpha thresholds resolve differently between
+      a live feed and a reconstruction, and the live engine will sometimes hold more than
+      one position where this backtest holds one.
+    </p>
+    <p>
+      That gap matters for predicting any individual trade and matters much less for the
+      conclusions here, which rest on aggregates over 406 trades: the cost ratio, the
+      drawdown-to-profit ratio, the year split, and the instability of the stop.
+    </p>
+    <div class="note">
+      One number in the project README does not reproduce: it reports +&#8377;28k for
+      Jan&ndash;Jul 2026, and this run gives +&#8377;5,958 over the same months. The saved
+      trade file matches the README, so the difference is in which trades were selected,
+      not in how they were priced &mdash; consistent with the alpha window parameters
+      having been re-tuned on 20 Jul 2026, after that file was generated.
+    </div>
+  </section>
+
+  <section>
+    <h2>What to do about it</h2>
+    <p class="lead">
+      One change is clearly indicated; the rest is open.
+    </p>
+    <p>
+      <strong>1. Take the stop out of the live paper desk.</strong> It is currently
+      running SL 15% of margin &mdash; a rule the strategy being replicated does not have,
+      and which cost &#8377;67,407 per lot across Dhan&rsquo;s window. Seven of the desk&rsquo;s
+      first twenty-two trades exited on it.
+    </p>
+    <p>
+      <strong>2. Accept that risk then needs another home.</strong> A credit spread is
+      defined-risk &mdash; the wing caps the loss at (width &minus; credit) &times; lot &mdash;
+      so removing the stop does not create unlimited exposure. It does mean the worst
+      case per trade is the full spread width, and position size becomes the only control.
+      Dhan varies between 2 and 6 lots against roughly &#8377;18,000 of margin per lot.
+    </p>
+    <p>
+      <strong>3. Close the remaining signal gap before trusting any further tuning.</strong>
+      The replica agrees with Dhan on direction on 70% of shared trading days. Until that
+      number is higher, a backtest of this strategy cannot settle questions finer than
+      the one settled here &mdash; and no parameter should be tuned on it.
+    </p>
+  </section>
+
+  <footer>
+    Backtest window 27 Sep 2024 &ndash; 18 Aug 2026 &middot; 468 trading days &middot; 406 trades &middot; 1 lot<br>
+    Data: Upstox expired-instruments archive, 1-minute option candles, 99 weekly expiries &middot; NIFTY 50 spot 1-minute<br>
+    Costs modelled: &#8377;20 brokerage per order, STT 0.1% sell premium, exchange 0.03503%, SEBI, stamp, GST 18%, &#8377;0.05 slippage per leg<br>
+    Sources: results/trades_2year_sl15.csv &middot; results/trades_2year_nostop.csv &middot; results/sl_sweep_2year.csv
+  </footer>
+
+</div>
