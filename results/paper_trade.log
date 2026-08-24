@@ -294,3 +294,4 @@
 2026-08-24 09:10:07  trading expiry 2026-08-25, lot 65
 2026-08-24 09:10:08  NSE holiday calendar loaded (16 closed days)
 2026-08-24 09:10:08  holding 0/1 positions
+2026-08-24 10:20:17  OPENED bull_put (1/1): sell 24300PE @ 50.20, buy 23900PE @ 2.75, credit 47.45, margin 22,916, SL 3,437, exit 2026-08-25 15:00
