@@ -17,7 +17,8 @@ import signals
 import upstox_api
 
 
-def run(max_pos, tag=None, require_diff_day=False, require_opposite=False, block_samedir_sameday=False):
+def run(max_pos, tag=None, require_diff_day=False, require_opposite=False, block_samedir_sameday=False,
+        short_exit_below=None):
     """require_diff_day: a 2nd position may not be opened on the same day an
     already-open position was entered (no same-day doubling).
     require_opposite: a 2nd position must be the opposite direction to what is
@@ -71,7 +72,9 @@ def run(max_pos, tag=None, require_diff_day=False, require_opposite=False, block
                 mtm = (pos["credit"] - (sc - lc)) * pos["lot"]
                 hit_sl = mtm <= -pos["sl_amount"]
             time_exit = dates[i] >= pos["exit_date"] and times[i] >= tsq
-            if hit_sl or time_exit:
+            # profit-take: short leg has decayed to near-worthless
+            hit_target = bool(short_exit_below) and np.isfinite(sc) and sc < short_exit_below
+            if hit_sl or time_exit or hit_target:
                 sb = backtest.leg_fill(pos["short_df"], t_next, "buy")
                 lb = backtest.leg_fill(pos["long_df"], t_next, "sell")
                 if sb is None or lb is None:
@@ -80,7 +83,7 @@ def run(max_pos, tag=None, require_diff_day=False, require_opposite=False, block
                 cost = backtest.charges((pos["long_entry"] + sb) * pos["lot"],
                                         (pos["short_entry"] + lb) * pos["lot"], 4)
                 trades.append({**pos["info"], "exit_ts": t_next,
-                               "exit_reason": "SL" if hit_sl else "TIME",
+                               "exit_reason": "SL" if hit_sl else ("TARGET" if hit_target else "TIME"),
                                "exit_cost_to_close": sb - lb,
                                "gross_pnl": gross, "charges": cost, "net_pnl": gross - cost})
             else:
