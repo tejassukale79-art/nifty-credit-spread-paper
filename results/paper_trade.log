@@ -344,3 +344,4 @@
 2026-08-31 09:16:08  SL hit 24150/23750: MTM -4,388 <= -3,442
 2026-08-31 09:16:08  CLOSED bull_put 24150/23750 (SL) net -4,497
 2026-08-31 09:16:32  waiting for the session's first candle (normal at open)
+2026-08-31 10:28:21  OPENED bull_put (1/1): sell 24000PE @ 47.15, buy 23600PE @ 3.00, credit 44.15, margin 23,130, SL 3,470, exit 2026-09-01 15:00
