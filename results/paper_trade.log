@@ -364,3 +364,10 @@
 2026-09-02 09:16:31  waiting for the session's first candle (normal at open)
 2026-09-02 10:22:26  OPENED bull_put (1/1): sell 23850PE @ 104.80, buy 23450PE @ 20.90, credit 83.90, margin 20,546, SL 3,082, exit 2026-09-03 15:00
 2026-09-02 15:30:08  day done. open positions: 1/1 (state saved; run again tomorrow)
+2026-09-03 09:10:16  ============================================================
+2026-09-03 09:10:16  paper trading start | SL 15% of margin | exit next day 15:00
+2026-09-03 09:10:17  warm-up spot: 2625 bars (2026-08-25 09:15:00 -> 2026-09-02 15:29:00)
+2026-09-03 09:10:17  trading expiry 2026-09-08, lot 65
+2026-09-03 09:10:18  NSE holiday calendar loaded (16 closed days)
+2026-09-03 09:10:18  restored open position: bull_put 23850/23450
+2026-09-03 09:10:18  holding 1/1 positions
