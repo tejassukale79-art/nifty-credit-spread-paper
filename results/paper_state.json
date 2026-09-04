@@ -1,4 +1,25 @@
 {
- "positions": [],
+ "positions": [
+  {
+   "date": "2026-09-04",
+   "expiry": "2026-09-08",
+   "type": "bear_call",
+   "kind": "CE",
+   "entry_ts": "2026-09-04 10:36:21",
+   "signal_ts": "2026-09-04 10:36:08",
+   "atm": 23950,
+   "lot": 65,
+   "short_strike": 23950,
+   "long_strike": 24350,
+   "credit": 115.15,
+   "margin": 18515.25,
+   "short_entry": 123.9,
+   "long_entry": 8.75,
+   "alpha": 0.189873417721519,
+   "alpha2": 0.15593220338983052,
+   "spot_entry": 23956.7,
+   "exit_date": "2026-09-07"
+  }
+ ],
  "live": []
 }
