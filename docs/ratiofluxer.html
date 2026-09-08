@@ -208,6 +208,9 @@ td{padding:7px 8px;border-bottom:1px solid var(--grid);text-align:right;font-var
 .log{background:var(--page);border:1px solid var(--border);border-radius:10px;padding:12px;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;max-height:260px;overflow:auto;white-space:pre-wrap;color:var(--ink-2)}
 .big{font-size:28px;font-weight:800;letter-spacing:-.03em}
 .empty{color:var(--muted);padding:10px 0}
+.tickdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--pill-ok-dot);margin-left:5px;vertical-align:middle;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.chg{font-size:12px;font-weight:600;margin-top:2px}
 </style>
 
 <script>
@@ -237,7 +240,9 @@ function renderTiles(trades, st){
     ["Open MTM", live===null?"–":money(live), live===null?"":(live>=0?"up":"down")]
   ];
   el("tiles").innerHTML = tiles.map(([k,v,c])=>
-    '<div class="tile"><div class="k">'+k+'</div><div class="v '+c+'">'+v+'</div></div>').join("");
+    '<div class="tile"'+(k==="Open MTM"?' id="mtmTile"':'')+'><div class="k">'+k+'</div>'+
+    '<div class="v '+c+'">'+v+'</div></div>').join("")+
+    '<div class="tile" id="spotTile"><div class="k">NIFTY</div><div class="v">-</div></div>';
 }
 
 function renderSignal(st){
@@ -304,15 +309,61 @@ function renderTrades(trades){
   el("trNote").textContent = trades.length+" closed";
 }
 
+// ---- tick-live: fast-poll rf_live_ticks.json for sub-second P&L ----
+let LAST_TICK = null;
+
+function renderSpot(d){
+  const box = el("spotTile");
+  if(!box) return;
+  if(!d || d.spot==null){ box.innerHTML='<div class="k">NIFTY</div><div class="v">-</div>'; return; }
+  const c = d.spot_chg, pc = d.spot_chg_pct;
+  const cls = c==null ? "" : (c>=0 ? "up" : "down");
+  const sign = (c!=null && c>=0) ? "+" : "";
+  box.innerHTML = '<div class="k">NIFTY <span class="tickdot"></span></div>'+
+    '<div class="v">'+d.spot.toLocaleString("en-IN",{minimumFractionDigits:2})+'</div>'+
+    (c==null ? "" : '<div class="chg '+cls+'">'+sign+c.toFixed(2)+' ('+sign+pc.toFixed(2)+'%)</div>');
+}
+
+function applyLive(tk){
+  if(!tk || !tk.position) return;
+  const q = tk.position, mtm = +q.mtm;
+  const big = document.querySelector("#posBody .big");
+  if(big){ big.textContent = money(mtm); big.className = "big "+(mtm>=0?"up":"down"); }
+  const note = document.querySelector("#posBody .muted");
+  if(note) note.textContent = "unrealised - "+q.mtm_pct_maxloss+"% of max loss - "+
+    new Date(tk.epoch_ms).toLocaleTimeString("en-IN");
+  const t4 = el("mtmTile");
+  if(t4) t4.innerHTML = '<div class="k">Open MTM</div><div class="v '+(mtm>=0?"up":"down")+'">'+money(mtm)+'</div>';
+}
+
+async function pollTicks(){
+  try{
+    const r = await fetch(R+"rf_live_ticks.json?t="+Date.now(), {cache:"no-store"});
+    if(!r.ok) return false;
+    const d = await r.json();
+    LAST_TICK = d;
+    renderSpot(d); applyLive(d);
+    return !!(d.epoch_ms && (Date.now() - d.epoch_ms) < 15000);
+  }catch(e){ return false; }
+}
+
 async function tick(){
   const st = await j("rf_state.json");
-  const trades = parseCsv(await t("rf_trades.csv")).filter(r=>r.net_pnl!==undefined && r.net_pnl!=="");
+  const trades = parseCsv(await t("rf_trades.csv")).filter(function(r){ return r.net_pnl!==undefined && r.net_pnl!==""; });
   renderTiles(trades, st); renderSignal(st); renderPos(st); renderChart(trades); renderTrades(trades);
+  if(LAST_TICK) applyLive(LAST_TICK);
   const lg = await t("rf_trade.log");
   if(lg){ const L=lg.trim().split(/\r?\n/); el("log").textContent=L.slice(-60).join("\n");
           el("logNote").textContent="last "+Math.min(60,L.length)+" lines"; }
 }
-tick(); setInterval(tick, 5000);
+
+// 250ms while the feed is live; 5s when it is quiet (evenings, weekends)
+async function tickLoop(){
+  let fresh = false;
+  try{ fresh = await pollTicks(); }catch(e){}
+  setTimeout(tickLoop, fresh ? 250 : 5000);
+}
+tick(); setInterval(tick, 5000); tickLoop();
 </script>
 
 </body>
