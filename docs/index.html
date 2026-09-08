@@ -181,6 +181,12 @@ pre { font-size: 12px; color: var(--ink-2); overflow-x: auto; margin-top: 10px; 
 <div class="card"><details><summary>Recent log</summary><pre id="log">…</pre></details></div>
 
 <script>
+// Capital the broker actually blocks. The trader records margin_blocked from
+// the Upstox margin API; rows written before that field existed fall back to
+// max loss x 2.4, the measured SPAN+exposure ratio for a 400-pt NIFTY spread.
+const BLOCKED_FALLBACK = 2.4;
+const capitalOf = r => (+r.margin_blocked) || (+r.margin * BLOCKED_FALLBACK);
+
 // Data source: GitHub Pages reads the raw CDN (backup view, ~5-min lag);
 // the VM-hosted copy reads /results/ served by nginx off the same disk the
 // trader writes to — real-time, no CDN. A local file:// open uses ../results/.
@@ -268,7 +274,8 @@ function positionBlock(p, lv) {
     <div><div class="tile-label">Short / Long</div><div class="tile-value num">${p.short_strike}/${p.long_strike} ${p.kind}</div></div>
     <div><div class="tile-label">Entry price (S/L)</div><div class="tile-value num">${hasEntry ? `<span class="up">${(+p.short_entry).toFixed(2)}</span> / ${(+p.long_entry).toFixed(2)}` : "—"}</div></div>
     <div><div class="tile-label">Credit</div><div class="tile-value num">${(+p.credit).toFixed(2)}</div></div>
-    <div><div class="tile-label">Margin</div><div class="tile-value num">${rs(p.margin)}</div></div>
+    <div><div class="tile-label" title="Most this spread can lose; the stop is 15% of it">Max loss</div><div class="tile-value num">${rs(p.margin)}</div></div>
+    <div><div class="tile-label" title="What the broker blocks: SPAN+exposure with hedge netting">Margin blocked</div><div class="tile-value num">${rs(capitalOf(p))}</div></div>
     <div><div class="tile-label">Stop-loss at</div><div class="tile-value num down">-${rs(sl)}</div></div>
     <div><div class="tile-label">Entered</div><div class="tile-value num">${p.entry_ts}</div></div>
     <div><div class="tile-label">Planned exit</div><div class="tile-value num">${p.exit_date} 15:00</div></div>
@@ -358,12 +365,6 @@ async function pollTicks() {
   try { fresh = await pollTicks(); } catch {}
   setTimeout(tickLoop, fresh ? 250 : 5000);
 })();
-
-// Capital the broker actually blocks. The trader records margin_blocked from
-// the Upstox margin API; rows written before that field existed fall back to
-// max loss x 2.4, the measured SPAN+exposure ratio for a 400-pt NIFTY spread.
-const BLOCKED_FALLBACK = 2.4;
-const capitalOf = r => (+r.margin_blocked) || (+r.margin * BLOCKED_FALLBACK);
 
 function renderTiles(rows, state) {
   const el = document.getElementById("tiles");

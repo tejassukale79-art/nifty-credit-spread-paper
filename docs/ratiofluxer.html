@@ -272,6 +272,8 @@ function renderPos(st){
            ["entered", p.entry_ts],
            ["expiry", p.expiry],
            ["max loss", money(p.max_loss)],
+           ["margin blocked", p.margin_blocked ? money(p.margin_blocked)
+                                                : money(p.max_loss*2.6)+" est"],
            ["stop at", L? money(L.stop_at):"–"],
            ["cost to close", L? L.cost_to_close:"–"]];
   node.innerHTML = '<div class="big '+(mtm===null?"":(mtm>=0?"up":"down"))+'">'+(mtm===null?"–":money(mtm))+'</div>'+
