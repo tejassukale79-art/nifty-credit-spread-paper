@@ -1,0 +1,12 @@
+[Unit]
+Description=Ratio-Fluxer credit-spread paper trading session
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+ExecStart=/usr/bin/bash /home/ubuntu/paper/oracle/run_ratiofluxer.sh
+TimeoutStartSec=8h
+StandardOutput=append:/home/ubuntu/ratiofluxer-session.log
+StandardError=append:/home/ubuntu/ratiofluxer-session.log

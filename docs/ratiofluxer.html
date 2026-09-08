@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ratio-Fluxer — Paper Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --page:    #f4f7fb;
+  --surface: #ffffff;
+  --ink:     #0e293b;
+  --ink-2:   #40566e;
+  --muted:   #7c8da1;
+  --grid:    #edf1f7;
+  --axis:    #d7dfe9;
+  --border:  #e4eaf2;
+  --accent:  #2563eb;
+  --line:    #0e293b;
+  --up:      #059669;
+  --down:    #e11d48;
+  --wash:    rgba(37,99,235,0.06);
+  --pill-ok-bg:   #ecfdf5; --pill-ok-tx:   #047857; --pill-ok-dot:  #10b981;
+  --pill-warn-bg: #fffbeb; --pill-warn-tx: #b45309; --pill-warn-dot:#f59e0b;
+  --pill-bad-bg:  #fff1f2; --pill-bad-tx:  #be123c; --pill-bad-dot: #f43f5e;
+  --pill-mut-bg:  #eef2f7; --pill-mut-tx:  #64748b; --pill-mut-dot: #94a3b8;
+  --shadow: 0 1px 2px rgba(14,41,59,0.05), 0 4px 16px rgba(14,41,59,0.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page:    #0b1524;
+    --surface: #101e32;
+    --ink:     #e8eef6;
+    --ink-2:   #a9b9cc;
+    --muted:   #6e8096;
+    --grid:    #1b293d;
+    --axis:    #2a3b53;
+    --border:  #1e2d44;
+    --accent:  #629ff5;
+    --line:    #cfe0f2;
+    --up:      #34d399;
+    --down:    #fb7185;
+    --wash:    rgba(98,159,245,0.09);
+    --pill-ok-bg:   rgba(16,185,129,.13); --pill-ok-tx:   #34d399; --pill-ok-dot:  #34d399;
+    --pill-warn-bg: rgba(245,158,11,.13); --pill-warn-tx: #fbbf24; --pill-warn-dot:#fbbf24;
+    --pill-bad-bg:  rgba(244,63,94,.13);  --pill-bad-tx:  #fb7185; --pill-bad-dot: #fb7185;
+    --pill-mut-bg:  rgba(148,163,184,.12);--pill-mut-tx:  #94a3b8; --pill-mut-dot: #94a3b8;
+    --shadow: none;
+  }
+}
+* { box-sizing: border-box; margin: 0; }
+body {
+  background: var(--page); color: var(--ink);
+  font: 14px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding: 24px 20px 40px; max-width: 1120px; margin: 0 auto;
+}
+h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+.sub { color: var(--muted); font-size: 13px; margin-top: 3px; }
+.sub b { color: var(--accent); font-weight: 600; }
+header { display: flex; justify-content: space-between; align-items: flex-end;
+         flex-wrap: wrap; gap: 10px 16px; margin-bottom: 18px; }
+.pills { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* live NIFTY spot readout in the header */
+.spot { display: inline-flex; align-items: baseline; gap: 7px; padding: 4px 12px;
+        border-radius: 999px; background: var(--wash); border: 1px solid var(--border); }
+.spot-lbl { font-size: 10px; font-weight: 700; letter-spacing: .09em;
+            text-transform: uppercase; color: var(--muted); }
+.spot-px { font-size: 16px; font-weight: 700; letter-spacing: -.01em;
+           font-variant-numeric: tabular-nums; }
+.spot-chg { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12px; font-weight: 600; letter-spacing: .01em;
+  padding: 5px 12px; border-radius: 999px;
+  background: var(--pill-mut-bg); color: var(--pill-mut-tx);
+}
+.pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pill-mut-dot); }
+.pill.ok   { background: var(--pill-ok-bg);   color: var(--pill-ok-tx); }
+.pill.ok .dot   { background: var(--pill-ok-dot); }
+.pill.warn { background: var(--pill-warn-bg); color: var(--pill-warn-tx); }
+.pill.warn .dot { background: var(--pill-warn-dot); }
+.pill.bad  { background: var(--pill-bad-bg);  color: var(--pill-bad-tx); }
+.pill.bad .dot  { background: var(--pill-bad-dot); }
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px 20px; margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.sec {
+  color: var(--accent); font-size: 11px; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase;
+}
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+         gap: 14px; margin-bottom: 16px; }
+.tile-label { color: var(--muted); font-size: 11px; font-weight: 600;
+              letter-spacing: .05em; text-transform: uppercase; }
+.tile-value { font-size: 23px; font-weight: 700; margin-top: 3px; letter-spacing: -0.01em; }
+.tile-note  { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
+.pos-block { padding-top: 4px; }
+.tickdot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+           background: var(--pill-ok-dot); vertical-align: middle; margin-left: 5px;
+           animation: tickpulse 1.5s ease-out infinite; }
+@keyframes tickpulse {
+  0%   { box-shadow: 0 0 0 0 rgba(16,185,129,.55); }
+  70%  { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+@media (prefers-reduced-motion: reduce) { .tickdot { animation: none; } }
+.live-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+             gap: 12px 22px; margin: 10px 0 14px; }
+/* unrealised P&L is the headline number: give it room and scale */
+.live-grid .pnl { grid-column: span 2; }
+.live-grid .big { font-size: clamp(34px, 4.6vw, 46px); font-weight: 800;
+                  letter-spacing: -0.025em; line-height: 1.1; }
+/* only the "% of margin" suffix is small - NOT .t-mtmval, which is the
+   headline figure and must inherit .big's size */
+.live-grid .big .t-mtmpct { font-size: 14px; font-weight: 600; letter-spacing: 0;
+                            white-space: nowrap; }
+@media (max-width: 620px) { .live-grid .pnl { grid-column: auto; } }
+.live-grid .mid { font-size: 19px; font-weight: 700; margin-top: 3px; }
+.live-grid .mid span { font-size: 12px; font-weight: 500; color: var(--muted); }
+.divider { border-top: 1px solid var(--grid); margin: 2px 0 14px; }
+.pos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(126px, 1fr));
+            gap: 12px 18px; }
+.pos-grid .tile-value { font-size: 15.5px; font-weight: 650; }
+.up   { color: var(--up); }
+.down { color: var(--down); }
+.mut  { color: var(--muted); }
+.acc  { color: var(--accent); }
+.num  { font-variant-numeric: tabular-nums; }
+#chartwrap { position: relative; }
+#tooltip {
+  position: absolute; pointer-events: none; display: none;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 7px 11px; font-size: 12px; color: var(--ink-2);
+  box-shadow: 0 4px 16px rgba(14,41,59,.14); white-space: nowrap; z-index: 2;
+}
+#tooltip b { color: var(--ink); }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; color: var(--muted); font-weight: 600; font-size: 10.5px;
+     letter-spacing: .07em; text-transform: uppercase;
+     padding: 8px 10px; border-bottom: 1px solid var(--axis); white-space: nowrap; }
+td { padding: 8px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+tbody tr:hover { background: var(--wash); }
+td.r, th.r { text-align: right; }
+details summary { cursor: pointer; color: var(--ink-2); font-size: 13px; font-weight: 600; }
+pre { font-size: 12px; color: var(--ink-2); overflow-x: auto; margin-top: 10px; }
+.empty { color: var(--muted); padding: 20px 0; text-align: center; }
+</style>
+</head>
+<body>
+<h1>Ratio-Fluxer Credit Spread</h1>
+<div class="sub">Paper trading &middot; NIFTY weekly &middot; enters 1 day before expiry when IV entropy&divide;dispersion &le; 13 &middot; <b>no real orders are placed</b></div>
+
+<div class="tiles" id="tiles"></div>
+
+<div class="card">
+  <div class="cardhead"><h2>Signal</h2><span class="pill" id="sigPill"></span></div>
+  <div class="grid4" id="signalBody"></div>
+</div>
+
+<div class="card">
+  <div class="cardhead"><h2>Open position</h2><span class="pill" id="posPill"></span></div>
+  <div id="posBody"></div>
+</div>
+
+<div class="card">
+  <div class="cardhead"><h2>Equity curve</h2><span class="muted" id="eqNote"></span></div>
+  <div id="chart"></div>
+</div>
+
+<div class="card">
+  <div class="cardhead"><h2>Trades</h2><span class="muted" id="trNote"></span></div>
+  <div class="tablewrap"><table id="trades"></table></div>
+</div>
+
+<div class="card">
+  <div class="cardhead"><h2>Log</h2><span class="muted" id="logNote"></span></div>
+  <pre id="log" class="log"></pre>
+</div>
+
+<style>
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.tile .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.tile .v{font-size:22px;font-weight:700;margin-top:4px;letter-spacing:-.02em}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:16px;box-shadow:var(--shadow)}
+.cardhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+h2{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px}
+.pill i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.ok{background:var(--pill-ok-bg);color:var(--pill-ok-tx)} .ok i{background:var(--pill-ok-dot)}
+.warn{background:var(--pill-warn-bg);color:var(--pill-warn-tx)} .warn i{background:var(--pill-warn-dot)}
+.bad{background:var(--pill-bad-bg);color:var(--pill-bad-tx)} .bad i{background:var(--pill-bad-dot)}
+.mut{background:var(--pill-mut-bg);color:var(--pill-mut-tx)} .mut i{background:var(--pill-mut-dot)}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px}
+.f .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.f .v{font-size:16px;font-weight:600;margin-top:3px}
+.up{color:var(--up)} .down{color:var(--down)} .muted{color:var(--muted);font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:right;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:6px 8px;border-bottom:1px solid var(--border)}
+th:first-child,td:first-child{text-align:left}
+td{padding:7px 8px;border-bottom:1px solid var(--grid);text-align:right;font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto}
+.log{background:var(--page);border:1px solid var(--border);border-radius:10px;padding:12px;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;max-height:260px;overflow:auto;white-space:pre-wrap;color:var(--ink-2)}
+.big{font-size:28px;font-weight:800;letter-spacing:-.03em}
+.empty{color:var(--muted);padding:10px 0}
+</style>
+
+<script>
+const R = "../results/";
+const money = v => (v<0?"-":"") + "₹" + Math.abs(Math.round(v)).toLocaleString("en-IN");
+const el = id => document.getElementById(id);
+function pill(node, cls, txt){ node.className = "pill "+cls; node.innerHTML = "<i></i>"+txt; }
+
+async function j(f){ try{ const r=await fetch(R+f+"?t="+Date.now()); return r.ok?await r.json():null; }catch(e){ return null; } }
+async function t(f){ try{ const r=await fetch(R+f+"?t="+Date.now()); return r.ok?await r.text():null; }catch(e){ return null; } }
+
+function parseCsv(txt){
+  if(!txt) return [];
+  const L=txt.trim().split(/\r?\n/); if(L.length<2) return [];
+  const h=L[0].split(",");
+  return L.slice(1).map(r=>{ const c=r.split(","), o={}; h.forEach((k,i)=>o[k.trim()]=c[i]); return o; });
+}
+
+function renderTiles(trades, st){
+  const net = trades.reduce((a,b)=>a+(+b.net_pnl||0),0);
+  const wins = trades.filter(x=>+x.net_pnl>0).length;
+  const live = st && st.live ? +st.live.mtm : null;
+  const tiles=[
+    ["Net P&L", money(net), net>=0?"up":"down"],
+    ["Trades", trades.length, ""],
+    ["Win rate", trades.length? (wins/trades.length*100).toFixed(0)+"%" : "–", ""],
+    ["Open MTM", live===null?"–":money(live), live===null?"":(live>=0?"up":"down")]
+  ];
+  el("tiles").innerHTML = tiles.map(([k,v,c])=>
+    '<div class="tile"><div class="k">'+k+'</div><div class="v '+c+'">'+v+'</div></div>').join("");
+}
+
+function renderSignal(st){
+  const s = st && st.last_signal;
+  const p = el("sigPill");
+  if(!s){ pill(p,"mut","no data"); el("signalBody").innerHTML='<div class="empty">Waiting for the first poll.</div>'; return; }
+  if(!s.eligible) pill(p,"mut","not an entry day (DTE "+s.dte+")");
+  else if(s.armed) pill(p,"ok","ARMED — entry conditions met");
+  else pill(p,"warn","watching — threshold not met");
+  const f=[["entropy ÷ dispersion", (s.edr!=null?s.edr.toFixed(2):"–")+" / ≤"+s.threshold],
+           ["skew", s.skew!=null? (s.skew*100).toFixed(2)+"%" : "–"],
+           ["would sell", s.skew==null?"–":(s.skew>=0.02?"PUT spread":"CALL spread")],
+           ["days to expiry", s.dte],
+           ["strikes in surface", s.strikes],
+           ["as of", String(s.ts||"").replace("T"," ").slice(0,16)]];
+  el("signalBody").innerHTML=f.map(([k,v])=>'<div class="f"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>').join("");
+}
+
+function renderPos(st){
+  const p = st && st.position, L = st && st.live, node=el("posBody"), pl=el("posPill");
+  if(!p){ pill(pl,"mut","flat"); node.innerHTML='<div class="empty">No open position.</div>'; return; }
+  const mtm = L? +L.mtm : null;
+  pill(pl, mtm===null?"mut":(mtm>=0?"ok":"bad"), p.kind==="CE"?"short call spread":"short put spread");
+  const f=[["legs", "sell "+p.short_strike+p.kind+" / buy "+p.long_strike+p.kind],
+           ["credit", p.credit],
+           ["quantity", p.qty+" ("+p.lots+" lots)"],
+           ["entered", p.entry_ts],
+           ["expiry", p.expiry],
+           ["max loss", money(p.max_loss)],
+           ["stop at", L? money(L.stop_at):"–"],
+           ["cost to close", L? L.cost_to_close:"–"]];
+  node.innerHTML = '<div class="big '+(mtm===null?"":(mtm>=0?"up":"down"))+'">'+(mtm===null?"–":money(mtm))+'</div>'+
+    '<div class="muted" style="margin:2px 0 14px">unrealised'+(L?" · "+L.mtm_pct_maxloss+"% of max loss":"")+'</div>'+
+    '<div class="grid4">'+f.map(([k,v])=>'<div class="f"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>').join("")+'</div>';
+}
+
+function renderChart(trades){
+  const box=el("chart");
+  if(!trades.length){ box.innerHTML='<div class="empty">No closed trades yet.</div>'; return; }
+  let c=0; const pts=trades.map(t=>{ c+=(+t.net_pnl||0); return c; });
+  const W=1000,H=200,P=8, mn=Math.min(0,...pts), mx=Math.max(0,...pts), rg=(mx-mn)||1;
+  const x=i=>P+i*(W-2*P)/Math.max(pts.length-1,1), y=v=>H-P-(v-mn)/rg*(H-2*P);
+  const d=pts.map((v,i)=>(i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)).join(" ");
+  const zero=y(0);
+  box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:200px">'+
+    '<line x1="'+P+'" x2="'+(W-P)+'" y1="'+zero+'" y2="'+zero+'" stroke="var(--axis)" stroke-dasharray="3 3"/>'+
+    '<path d="'+d+' L '+x(pts.length-1).toFixed(1)+' '+zero+' L '+x(0).toFixed(1)+' '+zero+' Z" fill="var(--wash)"/>'+
+    '<path d="'+d+'" fill="none" stroke="var(--line)" stroke-width="2" stroke-linejoin="round"/></svg>';
+  el("eqNote").textContent = money(pts[pts.length-1]) + " cumulative";
+}
+
+function renderTrades(trades){
+  const T=el("trades");
+  if(!trades.length){ T.innerHTML='<tr><td class="empty">No trades yet.</td></tr>'; return; }
+  const cols=[["entry_ts","Entered"],["kind","Type"],["short_strike","Short"],["long_strike","Long"],
+              ["credit","Credit"],["exit_ts","Exited"],["exit_reason","Why"],["net_pnl","Net P&L"]];
+  T.innerHTML="<tr>"+cols.map(c=>"<th>"+c[1]+"</th>").join("")+"</tr>"+
+    trades.slice().reverse().map(r=>"<tr>"+cols.map(function(cc){
+      const k=cc[0]; let v=r[k]==null?"":r[k];
+      if(k==="net_pnl"){ const n=+v; return '<td class="'+(n>=0?"up":"down")+'">'+money(n)+"</td>"; }
+      if(k==="entry_ts"||k==="exit_ts") v=String(v).slice(0,16);
+      return "<td>"+v+"</td>";
+    }).join("")+"</tr>").join("");
+  el("trNote").textContent = trades.length+" closed";
+}
+
+async function tick(){
+  const st = await j("rf_state.json");
+  const trades = parseCsv(await t("rf_trades.csv")).filter(r=>r.net_pnl!==undefined && r.net_pnl!=="");
+  renderTiles(trades, st); renderSignal(st); renderPos(st); renderChart(trades); renderTrades(trades);
+  const lg = await t("rf_trade.log");
+  if(lg){ const L=lg.trim().split(/\r?\n/); el("log").textContent=L.slice(-60).join("\n");
+          el("logNote").textContent="last "+Math.min(60,L.length)+" lines"; }
+}
+tick(); setInterval(tick, 5000);
+</script>
+
+</body>
+</html>
