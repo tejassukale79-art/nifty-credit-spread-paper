@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
 
+import broker_margin
 import config
 import signals
 import upstox_api
@@ -124,7 +125,8 @@ def save_state(state):
 # files migrate cleanly (old rows get NaN for the added leg-price columns).
 TRADE_COLUMNS = [
     "date", "expiry", "type", "entry_ts", "atm", "lot", "short_strike", "long_strike",
-    "credit", "margin", "alpha", "alpha2", "spot_entry", "exit_ts", "exit_reason",
+    "credit", "margin", "margin_blocked", "alpha", "alpha2", "spot_entry",
+    "exit_ts", "exit_reason",
     "exit_cost_to_close", "gross_pnl", "charges", "net_pnl",
     "short_entry", "long_entry", "short_exit", "long_exit", "signal_ts",
 ]
@@ -134,8 +136,20 @@ def append_trade(row):
     # reindex so every appended row has the same columns in the same order as
     # the header, even as the schema grows
     df = pd.DataFrame([row]).reindex(columns=TRADE_COLUMNS)
-    header = not TRADES_FILE.exists()
-    df.to_csv(TRADES_FILE, mode="a", header=header, index=False)
+    if not TRADES_FILE.exists():
+        df.to_csv(TRADES_FILE, index=False)
+        return
+    # If the file on disk predates a schema change its header is short, and a
+    # blind append would silently shift every value one column left. Migrate
+    # the whole file instead - this has bitten three times.
+    old = pd.read_csv(TRADES_FILE)
+    if list(old.columns) != TRADE_COLUMNS:
+        log(f"trade log schema changed ({len(old.columns)} -> {len(TRADE_COLUMNS)} "
+            f"columns); migrating {len(old)} existing rows")
+        pd.concat([old.reindex(columns=TRADE_COLUMNS), df],
+                  ignore_index=True).to_csv(TRADES_FILE, index=False)
+        return
+    df.to_csv(TRADES_FILE, mode="a", header=False, index=False)
 
 
 # ---------- market data assembly ----------
@@ -305,7 +319,7 @@ def record_close(pos, sb, lb, reason):
                    sell_turnover=(pos["short_entry"] + lb) * lot, n_orders=4)
     row = {**{k: pos.get(k) for k in ("date", "expiry", "type", "entry_ts", "signal_ts",
                                       "atm", "lot", "short_strike", "long_strike",
-                                      "credit", "margin", "alpha", "alpha2", "spot_entry")},
+                                      "credit", "margin", "margin_blocked", "alpha", "alpha2", "spot_entry")},
            "exit_ts": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
            "exit_reason": reason, "exit_cost_to_close": sb - lb,
            "gross_pnl": gross, "charges": cost, "net_pnl": gross - cost,
@@ -434,7 +448,10 @@ def try_entry(state, live, frame, now):
         log(f"signal {typ} but credit <= 0, skipped")
         return
     lot = live.lot
-    margin = (config.WING_POINTS - credit) * lot
+    margin = (config.WING_POINTS - credit) * lot      # max loss; the SL keys off this
+    # what the broker actually blocks. Reporting only - never used for the stop.
+    margin_blocked = broker_margin.spread(live.contract_key(s_strike, kind),
+                                          live.contract_key(l_strike, kind), lot)
     today = now.date()
     exit_date = today if today == live.expiry_date else next_trading_day(today)
     # entry_ts = when the legs were actually filled, not when the signal minute
@@ -447,7 +464,7 @@ def try_entry(state, live, frame, now):
         "entry_ts": fill_ts.strftime("%Y-%m-%d %H:%M:%S"),
         "signal_ts": now.strftime("%Y-%m-%d %H:%M:%S"), "atm": atm, "lot": lot,
         "short_strike": s_strike, "long_strike": l_strike,
-        "credit": credit, "margin": margin,
+        "credit": credit, "margin": margin, "margin_blocked": margin_blocked,
         "short_entry": s_fill, "long_entry": l_fill,
         "alpha": float(cur["alpha"]), "alpha2": float(cur["alpha2"]),
         "spot_entry": float(cur["close"]),

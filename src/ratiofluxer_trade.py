@@ -22,6 +22,8 @@ from datetime import datetime, date, timedelta, time as dtime
 from pathlib import Path
 
 import requests
+
+import broker_margin
 import config
 
 WIDTH        = 400        # points between short and long leg
@@ -40,7 +42,7 @@ STATE_FILE  = config.RESULTS_DIR / "rf_state.json"
 TRADES_FILE = config.RESULTS_DIR / "rf_trades.csv"
 LOG_FILE    = config.RESULTS_DIR / "rf_trade.log"
 TRADE_COLUMNS = ["date","expiry","kind","entry_ts","spot_entry","short_strike","long_strike",
-                 "width","lot","lots","qty","credit","max_loss","edr","skew",
+                 "width","lot","lots","qty","credit","max_loss","margin_blocked","edr","skew",
                  "exit_ts","exit_reason","exit_cost","gross_pnl","charges","net_pnl",
                  "short_entry","long_entry","short_exit","long_exit"]
 
@@ -271,7 +273,10 @@ def try_entry(state, chain, spot, prices, now):
            "short_key": sk, "long_key": lk,
            "short_entry": round(s_fill, 2), "long_entry": round(l_fill, 2),
            "credit": round(credit, 2), "max_loss": round((WIDTH - credit) * qty, 2),
-           "edr": round(m["edr"], 2), "skew": round(m["skew"], 4)}
+           "edr": round(m["edr"], 2), "skew": round(m["skew"], 4),
+           # what the broker actually blocks (SPAN+exposure, hedge netted).
+           # For reporting only - the stop keys off max_loss, as backtested.
+           "margin_blocked": broker_margin.spread(sk, lk, qty)}
     state["position"] = pos
     save_state(state)
     log(f"ENTRY {kind} {K1}/{K2} credit {credit:.2f} x{qty} "
