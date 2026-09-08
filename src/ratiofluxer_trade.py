@@ -221,12 +221,21 @@ def try_entry(state, chain, spot, prices, now):
     expiry = fut[0]
     dte = (expiry - now.date()).days
     m = surface(chain, expiry, spot, prices)
+    # always publish a signal row so the dashboard shows current state, even on
+    # expiry day when the smile is pure intrinsic and IVs cannot be inverted.
+    sig = {"ts": now.isoformat(), "dte": dte, "threshold": EDR_TH,
+           "eligible": dte == 1, "armed": False, "spot": round(spot, 2),
+           "expiry": str(expiry), "edr": None, "entropy": None, "disp": None,
+           "skew": None, "strikes": 0}
     if m:
-        state["last_signal"] = {"ts": now.isoformat(), "dte": dte, "edr": round(m["edr"], 2),
-                                "entropy": round(m["entropy"], 5), "disp": round(m["disp"], 4),
-                                "skew": round(m["skew"], 4) if m["skew"] is not None else None,
-                                "strikes": m["n"], "threshold": EDR_TH,
-                                "eligible": dte == 1, "armed": bool(m["edr"] <= EDR_TH)}
+        sig.update({"edr": round(m["edr"], 2), "entropy": round(m["entropy"], 5),
+                    "disp": round(m["disp"], 4), "strikes": m["n"],
+                    "skew": round(m["skew"], 4) if m["skew"] is not None else None,
+                    "armed": bool(m["edr"] <= EDR_TH)})
+    else:
+        sig["note"] = "IV surface unavailable (at/near expiry or thin quotes)"
+    state["last_signal"] = sig
+    save_state(state)
     if dte != 1:
         return
     if not (ENTRY_FROM <= now.time() <= ENTRY_TO):
