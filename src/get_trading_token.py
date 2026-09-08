@@ -77,6 +77,40 @@ def _fail(reason, detail=None):
     return 1
 
 
+def _write_desk_token(token):
+    """Also publish the token as ~/.upstox/token.json.
+
+    The crude / nifty-pullback / DEMA desks in ~/crude-desk read their Upstox
+    token from that path as JSON ({"access_token": ...}), not from
+    config/token.txt. It was last written by hand on 2026-08-15, so once that
+    token expired all three desks' tick streams died - they sat on a dead
+    websocket for weeks while still reporting connected. Writing it here keeps
+    every desk on the same daily token.
+
+    Never fatal: a failure here must not cost the credit-spread session its
+    token, which is already safely on disk by this point.
+    """
+    import datetime as _dt
+    import json as _json
+    from pathlib import Path as _Path
+    try:
+        d = _Path.home() / ".upstox"
+        d.mkdir(mode=0o700, exist_ok=True)
+        f = d / "token.json"
+        now = _dt.datetime.now()
+        f.write_text(_json.dumps({
+            "access_token": token,
+            "issued_at": now.isoformat(timespec="seconds"),
+            # Upstox tokens die at ~03:30 IST the next morning
+            "expires_at": (now.replace(hour=3, minute=30, second=0, microsecond=0)
+                           + _dt.timedelta(days=1)).isoformat(timespec="seconds"),
+        }, indent=1))
+        f.chmod(0o600)
+        log(f"OK: desk token written to {f}")
+    except Exception as exc:
+        log(f"WARN: could not write desk token: {type(exc).__name__}: {exc}")
+
+
 def main():
     load_env_file()
     missing = [v for v in REQUIRED_VARS if not os.environ.get(v)]
@@ -106,6 +140,7 @@ def main():
     token = resp.data.access_token
     (config.CONFIG_DIR / "token.txt").write_text(token.strip())
     log(f"OK: new access token written to config/token.txt (len={len(token)})")
+    _write_desk_token(token.strip())
     write_status(True, f"token generated (len={len(token)})")
     return 0
 
