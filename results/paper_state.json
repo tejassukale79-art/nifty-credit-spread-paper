@@ -24,7 +24,7 @@
  ],
  "live": [
   {
-   "ts": "2026-09-09 14:38:08",
+   "ts": "2026-09-09 14:43:08",
    "type": "bull_put",
    "kind": "PE",
    "short_strike": 23500,
@@ -33,11 +33,11 @@
    "margin": 20530.25,
    "entry_ts": "2026-09-09 10:17:28",
    "exit_date": "2026-09-10",
-   "short_px": 94.25,
-   "long_px": 16.25,
-   "cost_to_close": 78.0,
-   "mtm": 399.75000000000034,
-   "mtm_pct_margin": 1.9471268006965348,
+   "short_px": 96.8,
+   "long_px": 16.65,
+   "cost_to_close": 80.15,
+   "mtm": 260.0,
+   "mtm_pct_margin": 1.2664239354123794,
    "sl_amount": 3079.5375
   }
  ]
