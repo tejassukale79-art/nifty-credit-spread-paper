@@ -364,7 +364,14 @@ async function tick(){
   const st = await j("rf_state.json");
   const trades = parseCsv(await t("rf_trades.csv")).filter(function(r){ return r.net_pnl!==undefined && r.net_pnl!==""; });
   renderTiles(trades, st); renderSignal(st); renderPos(st); renderChart(trades); renderTrades(trades);
-  if(LAST_TICK && LAST_TICK.epoch_ms && (Date.now() - LAST_TICK.epoch_ms) <= 10000) applyLive(LAST_TICK);
+  // renderTiles() rebuilds the NIFTY tile as a bare "-", so re-stamp it from the
+  // last tick immediately. Without this the price blanks every 5s and only
+  // comes back on the next poll - which reads as the tile flickering in and out.
+  if(LAST_TICK){
+    const fresh = !!(LAST_TICK.epoch_ms && (Date.now() - LAST_TICK.epoch_ms) <= 10000);
+    renderSpot(LAST_TICK, fresh);
+    if(fresh) applyLive(LAST_TICK);
+  }
   const lg = await t("rf_trade.log");
   if(lg){ const L=lg.trim().split(/\r?\n/); el("log").textContent=L.slice(-60).join("\n");
           el("logNote").textContent="last "+Math.min(60,L.length)+" lines"; }
