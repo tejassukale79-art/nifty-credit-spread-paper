@@ -9,6 +9,7 @@ subscribes to those two keys plus NIFTY spot and recomputes
 MTM = (credit - (short_ltp - long_ltp)) * qty on every tick.
 """
 import json
+import os
 import sys
 import threading
 import time
@@ -149,7 +150,11 @@ class Ticker:
                    "spot_prev_close": ref,
                    "spot_chg": round(chg, 2) if chg is not None else None,
                    "spot_chg_pct": round(chg / ref * 100, 2) if chg is not None else None}
-        tmp = OUT_FILE.with_suffix(".tmp")
+        # PID in the temp name: a fixed ".tmp" means two instances of this
+        # server (a manual run alongside the timer, or a restart overlapping
+        # the old process) race on the same path and one loses its write with
+        # "[Errno 2] ... .tmp -> .json". Seen repeatedly in both tick logs.
+        tmp = OUT_FILE.with_suffix(f".{os.getpid()}.tmp")
         tmp.write_text(json.dumps(payload))
         tmp.replace(OUT_FILE)
 
