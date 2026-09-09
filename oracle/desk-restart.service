@@ -1,0 +1,7 @@
+[Unit]
+Description=Restart the paper desks so they pick up the fresh daily Upstox token
+After=token-refresh.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl restart crude-desk nifty-desk dema-desk

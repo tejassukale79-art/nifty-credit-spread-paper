@@ -1,0 +1,13 @@
+[Unit]
+Description=Restart the paper desks at 08:05 IST, just after the token refresh
+
+[Timer]
+# token-refresh.timer fires at 08:00; give it five minutes to finish.
+# The desks read ~/.upstox/token.json once at start-up and hold the
+# websocket open, so when that token dies at ~03:30 their streams 401 and
+# never recover. Restarting daily is what keeps their ticks alive.
+OnCalendar=Mon..Fri *-*-* 08:05:00
+Persistent=false
+
+[Install]
+WantedBy=timers.target
