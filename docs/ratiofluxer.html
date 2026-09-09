@@ -345,7 +345,8 @@ async function pollTicks(){
     const d = await r.json();
     LAST_TICK = d;
     renderSpot(d); applyLive(d);
-    return !!(d.epoch_ms && (Date.now() - d.epoch_ms) < 15000);
+    // same 10s window as the credit-spread desk
+    return !!(d.epoch_ms && (Date.now() - d.epoch_ms) <= 10000);
   }catch(e){ return false; }
 }
 
