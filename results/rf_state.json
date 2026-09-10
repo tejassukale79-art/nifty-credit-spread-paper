@@ -2,17 +2,17 @@
  "position": null,
  "live": null,
  "last_signal": {
-  "ts": "2026-09-10T09:40:02.643498",
+  "ts": "2026-09-10T09:45:03.141360",
   "dte": 5,
   "threshold": 13.0,
   "eligible": false,
   "armed": false,
-  "spot": 23419.3,
+  "spot": 23423.05,
   "expiry": "2026-09-15",
-  "edr": 16.3,
-  "entropy": 0.99938,
-  "disp": 0.0613,
-  "skew": -0.0011,
+  "edr": 14.36,
+  "entropy": 0.99919,
+  "disp": 0.0696,
+  "skew": -0.0038,
   "strikes": 21
  }
 }
