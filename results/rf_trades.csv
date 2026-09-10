@@ -1,0 +1,1 @@
+date,expiry,kind,entry_ts,spot_entry,short_strike,long_strike,width,lot,lots,qty,credit,max_loss,margin_blocked,edr,skew,exit_ts,exit_reason,exit_cost,gross_pnl,charges,net_pnl,short_entry,long_entry,short_exit,long_exit
