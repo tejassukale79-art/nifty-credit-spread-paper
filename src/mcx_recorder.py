@@ -15,7 +15,11 @@ Design notes:
     noticing. An end-of-day pull is idempotent: a failed run is simply redone.
   * Resumable and self-healing: files already on disk are skipped, and each run
     also looks BACKFILL_DAYS back to fill anything a failed run missed.
-  * brotli parquet, measured at ~13.8 KB per contract-session.
+  * gzipped CSV, measured at ~9 KB per contract-session. Chosen over parquet
+    because at this file size parquet's per-file metadata outweighs its
+    encoding win (csv.gz measured 35% smaller), and because it needs nothing
+    installed - the live trading venv has no parquet engine and this job must
+    not be a reason to add packages to it. Read back with pd.read_csv(path).
 
 Scope is a judgment call that cannot be undone later - a strike not captured
 today is unrecoverable - so it is deliberately wider than current strategies
@@ -156,7 +160,7 @@ def record(day, scope):
     daydir.mkdir(parents=True, exist_ok=True)
     files = written = skipped = empty = 0
     for sym, label, key in scope:
-        f = daydir / f"{label}.parquet"
+        f = daydir / f"{label}.csv.gz"
         if f.exists():
             skipped += 1
             continue
@@ -171,7 +175,7 @@ def record(day, scope):
         if d.empty:
             empty += 1
             continue
-        d.to_parquet(f, compression="brotli", index=False)
+        d.to_csv(f, index=False, compression={"method": "gzip", "compresslevel": 6})
         files += 1
         written += f.stat().st_size
     return files, written, skipped, empty
@@ -206,7 +210,7 @@ def main():
     log(f"done: {total_f} files, {total_b/1e6:.1f} MB this run")
     try:
         import shutil
-        used = sum(x.stat().st_size for x in OUT.rglob("*.parquet"))
+        used = sum(x.stat().st_size for x in OUT.rglob("*.csv.gz"))
         free = shutil.disk_usage(OUT).free
         log(f"archive now {used/1e9:.2f} GB; {free/1e9:.1f} GB free on disk")
     except Exception:
