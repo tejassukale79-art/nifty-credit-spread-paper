@@ -1,0 +1,12 @@
+[Unit]
+Description=Run the MCX recorder after the evening session closes
+
+[Timer]
+# MCX trades to 23:30 IST; 23:45 leaves the last bars settled. Mon-Sat because
+# a Friday-night session still has bars to collect on Saturday morning runs,
+# and the backfill pass repairs anything an earlier failure missed.
+OnCalendar=Mon..Sat *-*-* 23:45:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

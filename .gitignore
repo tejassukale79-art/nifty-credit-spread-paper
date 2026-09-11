@@ -19,3 +19,6 @@ ssh-key-*
 *.pem
 results/live_ticks.json
 results/tick_server.log
+
+# recorded MCX 1-min archive: ~24 MB/day, must never enter git
+data/market/

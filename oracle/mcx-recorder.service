@@ -1,0 +1,13 @@
+[Unit]
+Description=Record the day's 1-minute MCX bars (crude, gold, silver)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/paper/src
+ExecStart=/home/ubuntu/paper/.venv/bin/python /home/ubuntu/paper/src/mcx_recorder.py
+TimeoutStartSec=2h
+StandardOutput=journal
+StandardError=journal
