@@ -420,3 +420,9 @@
 2026-09-10 09:10:18  holding 1/1 positions
 2026-09-10 15:00:08  CLOSED bull_put 23500/23100 (TIME) net -2,044
 2026-09-10 15:30:17  day done. open positions: 0/1 (state saved; run again tomorrow)
+2026-09-11 09:10:16  ============================================================
+2026-09-11 09:10:16  paper trading start | SL 15% of margin | exit next day 15:00
+2026-09-11 09:10:17  warm-up spot: 2625 bars (2026-09-02 09:15:00 -> 2026-09-10 15:29:00)
+2026-09-11 09:10:17  trading expiry 2026-09-15, lot 65
+2026-09-11 09:10:18  NSE holiday calendar loaded (16 closed days)
+2026-09-11 09:10:18  holding 0/1 positions
