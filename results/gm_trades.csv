@@ -1,0 +1,2 @@
+date,contract,side,lots,entry_ts,entry,stop,exit_ts,exit,exit_reason,move_pct,gross_pnl,charges,net_pnl,margin_blocked,margin_product,entry_tenkan,entry_kijun,entry_cci
+2026-09-14,GOLDM26OCTFUT,SHORT,1,2026-09-14 17:10:06,151154.0,152665.5,2026-09-14 22:59:33,151350.0,square_off,-0.13,-1960,327,-2287,141277,MIS,151749.5,152075.5,-165.1
