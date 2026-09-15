@@ -7,26 +7,26 @@
   "lot_size": 100
  },
  "session": {
-  "date": "2026-09-14",
-  "open": "17:00",
+  "date": "2026-09-15",
+  "open": "09:00",
   "end": "23:30",
   "square_off": "23:00",
   "broker": "Upstox MIS",
   "us_dst": true,
-  "note": "Ganesh Chaturthi: MCX session 17:00-23:30 only"
+  "note": null
  },
  "today": {
-  "date": "2026-09-14",
-  "trades": 1,
-  "net": -2287
+  "date": "2026-09-15",
+  "trades": 0,
+  "net": 0
  },
- "margin_1lot": 141492,
+ "margin_1lot": 140041,
  "margin_product": "MIS",
- "margin_ts": "2026-09-14 08:55:05",
- "heartbeat": "2026-09-14 23:32:58",
+ "margin_ts": "2026-09-15 08:55:11",
+ "heartbeat": "2026-09-15 09:00:09",
  "ltp": {
-  "px": 151450.0,
-  "ts": "2026-09-14 23:32:58"
+  "px": 151385.0,
+  "ts": "2026-09-15 09:00:09"
  },
  "signal": {
   "bar": "2026-09-14 23:20:00",
