@@ -471,3 +471,4 @@
 2026-09-18 09:10:06  holding 0/1 positions
 2026-09-18 09:16:35  waiting for the session's first candle (normal at open)
 2026-09-18 10:25:19  OPENED bear_call (1/1): sell 23300CE @ 117.80, buy 23700CE @ 7.75, credit 110.05, margin 18,847, SL 2,827, exit 2026-09-21 15:00
+2026-09-18 15:30:08  day done. open positions: 1/1 (state saved; run again tomorrow)
