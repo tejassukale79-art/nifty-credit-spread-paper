@@ -479,3 +479,5 @@
 2026-09-21 09:10:07  NSE holiday calendar loaded (16 closed days)
 2026-09-21 09:10:07  restored open position: bear_call 23300/23700
 2026-09-21 09:10:07  holding 1/1 positions
+2026-09-21 13:58:08  SL hit 23300/23700: MTM -3,500 <= -2,827
+2026-09-21 13:58:08  CLOSED bear_call 23300/23700 (SL) net -3,618
