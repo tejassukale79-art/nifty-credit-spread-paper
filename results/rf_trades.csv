@@ -1,1 +1,2 @@
 date,expiry,kind,entry_ts,spot_entry,short_strike,long_strike,width,lot,lots,qty,credit,max_loss,margin_blocked,edr,skew,exit_ts,exit_reason,exit_cost,gross_pnl,charges,net_pnl,short_entry,long_entry,short_exit,long_exit
+2026-09-21,2026-09-22,PE,2026-09-21 09:30:01,23400.15,23400,23000,400,65,5,325,70.0,107250.0,252326,7.22,0.0274,2026-09-22 14:59:33,EXPIRY,62.3,2502.5,139.69,2362.81,76.4,6.4,62.7,0.4
