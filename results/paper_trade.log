@@ -511,3 +511,4 @@
 2026-09-24 09:17:08  SL hit 23350/22950: MTM -3,393 <= -3,140
 2026-09-24 09:17:08  CLOSED bull_put 23350/22950 (SL) net -3,510
 2026-09-24 10:16:24  OPENED bear_call (1/1): sell 23200CE @ 131.70, buy 23600CE @ 15.20, credit 116.50, margin 18,428, SL 2,764, exit 2026-09-25 15:00
+2026-09-24 15:30:08  day done. open positions: 1/1 (state saved; run again tomorrow)
