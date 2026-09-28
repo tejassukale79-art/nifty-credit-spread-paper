@@ -527,3 +527,4 @@
 2026-09-28 09:10:05  trading expiry 2026-09-29, lot 65
 2026-09-28 09:10:06  NSE holiday calendar loaded (16 closed days)
 2026-09-28 09:10:06  holding 0/1 positions
+2026-09-28 10:19:28  OPENED bear_call (1/1): sell 22850CE @ 113.25, buy 23250CE @ 10.65, credit 102.60, margin 19,331, SL 2,900, exit 2026-09-29 15:00
