@@ -22,14 +22,14 @@
   "margin_blocked": 256516
  },
  "live": {
-  "ts": "2026-09-28 10:35:07",
-  "short_px": 82.8,
-  "long_px": 8.2,
-  "cost_to_close": 74.6,
-  "mtm": 9473.75,
+  "ts": "2026-09-28 10:40:08",
+  "short_px": 79.8,
+  "long_px": 8.0,
+  "cost_to_close": 71.8,
+  "mtm": 10383.75,
   "max_loss": 96281.25,
   "stop_at": -33698.44,
-  "mtm_pct_maxloss": 9.8
+  "mtm_pct_maxloss": 10.8
  },
  "last_signal": {
   "ts": "2026-09-28T09:30:01.685452",
