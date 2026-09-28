@@ -21,7 +21,16 @@
   "skew": -0.0157,
   "margin_blocked": 256516
  },
- "live": null,
+ "live": {
+  "ts": "2026-09-28 09:35:02",
+  "short_px": 106.3,
+  "long_px": 8.1,
+  "cost_to_close": 98.2,
+  "mtm": 1803.75,
+  "max_loss": 96281.25,
+  "stop_at": -33698.44,
+  "mtm_pct_maxloss": 1.9
+ },
  "last_signal": {
   "ts": "2026-09-28T09:30:01.685452",
   "dte": 1,
