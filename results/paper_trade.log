@@ -578,3 +578,4 @@
 2026-10-05 09:32:08  SL hit 22500/22900: MTM -2,844 <= -2,828
 2026-10-05 09:32:08  CLOSED bear_call 22500/22900 (SL) net -2,963
 2026-10-05 10:24:40  OPENED bear_call (1/1): sell 22500CE @ 123.20, buy 22900CE @ 7.65, credit 115.55, margin 18,489, SL 2,773, exit 2026-10-06 15:00
+2026-10-05 15:30:08  day done. open positions: 1/1 (state saved; run again tomorrow)
