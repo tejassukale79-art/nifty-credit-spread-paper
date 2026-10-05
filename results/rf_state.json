@@ -1,18 +1,39 @@
 {
- "position": null,
+ "position": {
+  "date": "2026-10-05",
+  "expiry": "2026-10-06",
+  "kind": "CE",
+  "entry_ts": "2026-10-05 09:30:01",
+  "spot_entry": 22570.8,
+  "short_strike": 22550,
+  "long_strike": 22950,
+  "width": 400,
+  "lot": 65,
+  "lots": 5,
+  "qty": 325,
+  "short_key": "NSE_FO|40699",
+  "long_key": "NSE_FO|40723",
+  "short_entry": 125.15,
+  "long_entry": 7.95,
+  "credit": 117.2,
+  "max_loss": 91910.0,
+  "edr": 11.25,
+  "skew": 0.0154,
+  "margin_blocked": 246054
+ },
  "live": null,
  "last_signal": {
-  "ts": "2026-10-05T09:24:01.032409",
+  "ts": "2026-10-05T09:30:01.597799",
   "dte": 1,
   "threshold": 13.0,
   "eligible": true,
   "armed": true,
-  "spot": 22540.15,
+  "spot": 22570.8,
   "expiry": "2026-10-06",
-  "edr": 10.44,
-  "entropy": 0.99849,
-  "disp": 0.0957,
-  "skew": 0.0096,
+  "edr": 11.25,
+  "entropy": 0.99872,
+  "disp": 0.0888,
+  "skew": 0.0154,
   "strikes": 21,
   "plan": {
    "kind": "CE",
@@ -23,11 +44,11 @@
    "lots": 5,
    "lot": 65,
    "qty": 325,
-   "sell_px": 111.2,
-   "buy_px": 7.2,
-   "credit": 103.9,
-   "credit_total": 33768,
-   "max_loss": 96232
+   "sell_px": 125.35,
+   "buy_px": 7.9,
+   "credit": 117.35,
+   "credit_total": 38139,
+   "max_loss": 91861
   }
  }
 }
