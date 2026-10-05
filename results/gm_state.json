@@ -7,26 +7,26 @@
   "lot_size": 100
  },
  "session": {
-  "date": "2026-10-02",
+  "date": "2026-10-05",
   "open": "09:00",
   "end": "23:30",
   "square_off": "23:00",
   "broker": "Upstox MIS",
   "us_dst": true,
-  "note": "MCX closed today"
+  "note": null
  },
  "today": {
-  "date": "2026-10-02",
+  "date": "2026-10-05",
   "trades": 0,
   "net": 0
  },
  "margin_1lot": 137865,
  "margin_product": "MIS",
- "margin_ts": "2026-10-02 08:55:14",
- "heartbeat": "2026-10-01 23:32:59",
+ "margin_ts": "2026-10-05 08:55:14",
+ "heartbeat": "2026-10-05 09:00:07",
  "ltp": {
-  "px": 149000.0,
-  "ts": "2026-10-01 23:32:59"
+  "px": 148124.0,
+  "ts": "2026-10-05 09:00:07"
  },
  "signal": {
   "bar": "2026-10-01 23:20:00",
