@@ -568,3 +568,10 @@
 2026-10-02 09:10:15  restored open position: bear_call 22500/22900
 2026-10-02 09:10:15  holding 1/1 positions
 2026-10-02 15:30:08  day done. open positions: 1/1 (state saved; run again tomorrow)
+2026-10-05 09:10:01  ============================================================
+2026-10-05 09:10:01  paper trading start | SL 15% of margin | exit next day 15:00
+2026-10-05 09:10:03  warm-up spot: 1500 bars (2026-09-28 09:15:00 -> 2026-10-01 15:29:00)
+2026-10-05 09:10:03  trading expiry 2026-10-06, lot 65
+2026-10-05 09:10:04  NSE holiday calendar loaded (16 closed days)
+2026-10-05 09:10:04  restored open position: bear_call 22500/22900
+2026-10-05 09:10:04  holding 1/1 positions
