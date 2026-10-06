@@ -1,19 +1,5 @@
 {
- "position": {
-  "side": 1,
-  "entry": 148697.0,
-  "stop": 147210.0,
-  "lots": 1,
-  "entry_ts": "2026-10-06 15:00:24",
-  "entry_bar": "2026-10-06 15:00:00",
-  "contract": "GOLDM26NOVFUT",
-  "key": "MCX_FO|571445",
-  "margin_blocked": 137118,
-  "margin_product": "MIS",
-  "entry_tenkan": 148383.0,
-  "entry_kijun": 148167.5,
-  "entry_cci": 81.2
- },
+ "position": null,
  "contract": {
   "symbol": "GOLDM26NOVFUT",
   "key": "MCX_FO|571445",
@@ -31,16 +17,16 @@
  },
  "today": {
   "date": "2026-10-06",
-  "trades": 1,
-  "net": -7102
+  "trades": 2,
+  "net": -6395
  },
  "margin_1lot": 137059,
  "margin_product": "MIS",
  "margin_ts": "2026-10-06 08:55:14",
- "heartbeat": "2026-10-06 22:54:42",
+ "heartbeat": "2026-10-06 22:59:45",
  "ltp": {
-  "px": 148788.0,
-  "ts": "2026-10-06 22:54:42"
+  "px": 148800.0,
+  "ts": "2026-10-06 22:59:45"
  },
  "signal": {
   "bar": "2026-10-06 22:40:00",
@@ -54,11 +40,5 @@
   "after_square_off": false
  },
  "last_bar": "2026-10-06 22:40:00",
- "live": {
-  "ts": "2026-10-06 22:54:42",
-  "ltp": 148788.0,
-  "mtm": 910,
-  "mtm_pct_margin": 0.66,
-  "to_stop_pct": 1.061
- }
+ "live": null
 }
