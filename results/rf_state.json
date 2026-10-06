@@ -2,18 +2,18 @@
  "position": null,
  "live": null,
  "last_signal": {
-  "ts": "2026-10-06T15:08:36.829686",
+  "ts": "2026-10-06T15:13:37.498375",
   "dte": 0,
   "threshold": 13.0,
   "eligible": false,
   "armed": true,
-  "spot": 22711.45,
+  "spot": 22712.15,
   "expiry": "2026-10-06",
-  "edr": 4.11,
-  "entropy": 0.98858,
-  "disp": 0.2406,
-  "skew": 0.0751,
-  "strikes": 11,
+  "edr": 2.74,
+  "entropy": 0.97805,
+  "disp": 0.3567,
+  "skew": 0.0516,
+  "strikes": 16,
   "plan": {
    "kind": "PE",
    "structure": "bull put spread",
@@ -23,11 +23,11 @@
    "lots": 5,
    "lot": 65,
    "qty": 325,
-   "sell_px": 16.25,
-   "buy_px": 0.2,
-   "credit": 15.95,
-   "credit_total": 5184,
-   "max_loss": 124816
+   "sell_px": 16.45,
+   "buy_px": 0.25,
+   "credit": 16.1,
+   "credit_total": 5232,
+   "max_loss": 124768
   }
  }
 }
