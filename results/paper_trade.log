@@ -616,3 +616,4 @@
 2026-10-08 11:34:33  OPENED bull_put (1/1): sell 22350PE @ 133.30, buy 21950PE @ 26.85, credit 106.45, margin 19,081, SL 2,862, exit 2026-10-09 15:00
 2026-10-08 14:01:08  SL hit 22350/21950: MTM -2,912 <= -2,862
 2026-10-08 14:01:08  CLOSED bull_put 22350/21950 (SL) net -3,036
+2026-10-08 15:30:35  day done. open positions: 0/1 (state saved; run again tomorrow)
