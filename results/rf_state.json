@@ -1,36 +1,6 @@
 {
- "position": {
-  "date": "2026-10-12",
-  "expiry": "2026-10-13",
-  "kind": "PE",
-  "entry_ts": "2026-10-12 09:30:01",
-  "spot_entry": 22582.8,
-  "short_strike": 22600,
-  "long_strike": 22200,
-  "width": 400,
-  "lot": 65,
-  "lots": 5,
-  "qty": 325,
-  "short_key": "NSE_FO|44617",
-  "long_key": "NSE_FO|44595",
-  "short_entry": 96.25,
-  "long_entry": 10.7,
-  "credit": 85.55,
-  "max_loss": 102196.25,
-  "edr": 11.22,
-  "skew": 0.0243,
-  "margin_blocked": 239343
- },
- "live": {
-  "ts": "2026-10-12 11:00:10",
-  "short_px": 203.15,
-  "long_px": 24.75,
-  "cost_to_close": 178.4,
-  "mtm": -30176.25,
-  "max_loss": 102196.25,
-  "stop_at": -35768.69,
-  "mtm_pct_maxloss": -29.5
- },
+ "position": null,
+ "live": null,
  "last_signal": {
   "ts": "2026-10-12T09:30:01.658594",
   "dte": 1,
