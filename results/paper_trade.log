@@ -636,3 +636,5 @@
 2026-10-12 09:10:04  NSE holiday calendar loaded (16 closed days)
 2026-10-12 09:10:04  restored open position: bull_put 22550/22150
 2026-10-12 09:10:04  holding 1/1 positions
+2026-10-12 10:31:08  SL hit 22550/22150: MTM -3,416 <= -3,123
+2026-10-12 10:31:08  CLOSED bull_put 22550/22150 (SL) net -3,532
