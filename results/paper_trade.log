@@ -664,3 +664,5 @@
 2026-10-14 09:10:03  holding 0/1 positions
 2026-10-14 09:16:49  waiting for the session's first candle (normal at open)
 2026-10-14 10:31:33  OPENED bull_put (1/1): sell 22700PE @ 137.90, buy 22300PE @ 33.50, credit 104.40, margin 19,214, SL 2,882, exit 2026-10-15 15:00
+2026-10-14 13:04:08  SL hit 22700/22300: MTM -3,084 <= -2,882
+2026-10-14 13:04:08  CLOSED bull_put 22700/22300 (SL) net -3,209
