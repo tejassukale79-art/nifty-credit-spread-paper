@@ -667,3 +667,4 @@
 2026-10-14 13:04:08  SL hit 22700/22300: MTM -3,084 <= -2,882
 2026-10-14 13:04:08  CLOSED bull_put 22700/22300 (SL) net -3,209
 2026-10-14 13:28:33  OPENED bull_put (1/1): sell 22600PE @ 164.40, buy 22200PE @ 40.35, credit 124.05, margin 17,937, SL 2,691, exit 2026-10-15 15:00
+2026-10-14 15:30:08  day done. open positions: 1/1 (state saved; run again tomorrow)
