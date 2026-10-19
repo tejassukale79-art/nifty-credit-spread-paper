@@ -1,44 +1,4 @@
 {
- "positions": [
-  {
-   "date": "2026-10-16",
-   "expiry": "2026-10-19",
-   "type": "bull_put",
-   "kind": "PE",
-   "entry_ts": "2026-10-16 10:16:37",
-   "signal_ts": "2026-10-16 10:16:08",
-   "atm": 23100,
-   "lot": 65,
-   "short_strike": 23100,
-   "long_strike": 22700,
-   "credit": 98.2,
-   "margin": 19617.0,
-   "margin_blocked": 50126,
-   "short_entry": 118.9,
-   "long_entry": 20.7,
-   "alpha": 0.9455696202531646,
-   "alpha2": 0.9593220338983051,
-   "spot_entry": 23094.3,
-   "exit_date": "2026-10-19"
-  }
- ],
- "live": [
-  {
-   "ts": "2026-10-19 09:24:08",
-   "type": "bull_put",
-   "kind": "PE",
-   "short_strike": 23100,
-   "long_strike": 22700,
-   "credit": 98.2,
-   "margin": 19617.0,
-   "entry_ts": "2026-10-16 10:16:37",
-   "exit_date": "2026-10-19",
-   "short_px": 59.5,
-   "long_px": 3.1,
-   "cost_to_close": 56.4,
-   "mtm": 2717.0000000000005,
-   "mtm_pct_margin": 13.850231941683235,
-   "sl_amount": 2942.5499999999997
-  }
- ]
+ "positions": [],
+ "live": []
 }
