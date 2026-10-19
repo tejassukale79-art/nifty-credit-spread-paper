@@ -24,7 +24,7 @@
  ],
  "live": [
   {
-   "ts": "2026-10-19 14:17:08",
+   "ts": "2026-10-19 14:22:08",
    "type": "bear_call",
    "kind": "CE",
    "short_strike": 23000,
@@ -33,11 +33,11 @@
    "margin": 22886.5,
    "entry_ts": "2026-10-19 11:39:25",
    "exit_date": "2026-10-19",
-   "short_px": 4.2,
-   "long_px": 0.6,
-   "cost_to_close": 3.6,
-   "mtm": 2879.5000000000005,
-   "mtm_pct_margin": 12.581652939505824,
+   "short_px": 3.7,
+   "long_px": 0.45,
+   "cost_to_close": 3.25,
+   "mtm": 2902.2500000000005,
+   "mtm_pct_margin": 12.68105651803465,
    "sl_amount": 3432.975
   }
  ]
