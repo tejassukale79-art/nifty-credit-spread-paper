@@ -7,23 +7,23 @@
   "lot_size": 100
  },
  "session": {
-  "date": "2026-10-19",
-  "open": "09:00",
+  "date": "2026-10-20",
+  "open": "17:00",
   "end": "23:30",
   "square_off": "23:00",
   "broker": "Upstox MIS",
   "us_dst": true,
-  "note": null
+  "note": "Dussehra: MCX session 17:00-23:30 only"
  },
  "today": {
-  "date": "2026-10-19",
-  "trades": 1,
-  "net": 6841
+  "date": "2026-10-20",
+  "trades": 0,
+  "net": 0
  },
- "margin_1lot": 135461,
+ "margin_1lot": 134803,
  "margin_product": "MIS",
- "margin_ts": "2026-10-19 08:55:12",
- "heartbeat": "2026-10-19 23:32:57",
+ "margin_ts": "2026-10-20 08:55:07",
+ "heartbeat": "2026-10-20 08:59:07",
  "ltp": {
   "px": 145783.0,
   "ts": "2026-10-19 23:32:57"
