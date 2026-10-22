@@ -2,17 +2,17 @@
  "position": null,
  "live": null,
  "last_signal": {
-  "ts": "2026-10-22T12:16:18.146969",
+  "ts": "2026-10-22T12:21:18.626235",
   "dte": 5,
   "threshold": 13.0,
   "eligible": false,
   "armed": false,
-  "spot": 22605.4,
+  "spot": 22595.65,
   "expiry": "2026-10-27",
-  "edr": 36.49,
-  "entropy": 0.99988,
-  "disp": 0.0274,
-  "skew": 0.0021,
+  "edr": 31.81,
+  "entropy": 0.99984,
+  "disp": 0.0314,
+  "skew": 0.005,
   "strikes": 21,
   "plan": {
    "kind": "CE",
@@ -23,11 +23,11 @@
    "lots": 5,
    "lot": 65,
    "qty": 325,
-   "sell_px": 174.9,
-   "buy_px": 42.45,
-   "credit": 132.35,
-   "credit_total": 43014,
-   "max_loss": 86986
+   "sell_px": 167.6,
+   "buy_px": 40.4,
+   "credit": 127.1,
+   "credit_total": 41308,
+   "max_loss": 88692
   }
  }
 }
