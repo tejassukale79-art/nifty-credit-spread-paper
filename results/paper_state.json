@@ -1,44 +1,4 @@
 {
- "positions": [
-  {
-   "date": "2026-10-23",
-   "expiry": "2026-10-27",
-   "type": "bear_call",
-   "kind": "CE",
-   "entry_ts": "2026-10-23 10:17:40",
-   "signal_ts": "2026-10-23 10:17:08",
-   "atm": 22450,
-   "lot": 65,
-   "short_strike": 22450,
-   "long_strike": 22850,
-   "credit": 149.64999999999998,
-   "margin": 16272.750000000002,
-   "margin_blocked": 46435,
-   "short_entry": 198.45,
-   "long_entry": 48.8,
-   "alpha": 0.03164556962025317,
-   "alpha2": 0.17627118644067796,
-   "spot_entry": 22471.6,
-   "exit_date": "2026-10-26"
-  }
- ],
- "live": [
-  {
-   "ts": "2026-10-23 13:37:08",
-   "type": "bear_call",
-   "kind": "CE",
-   "short_strike": 22450,
-   "long_strike": 22850,
-   "credit": 149.64999999999998,
-   "margin": 16272.750000000002,
-   "entry_ts": "2026-10-23 10:17:40",
-   "exit_date": "2026-10-26",
-   "short_px": 173.85,
-   "long_px": 36.9,
-   "cost_to_close": 136.95,
-   "mtm": 825.4999999999993,
-   "mtm_pct_margin": 5.072897942879964,
-   "sl_amount": 2440.9125000000004
-  }
- ]
+ "positions": [],
+ "live": []
 }

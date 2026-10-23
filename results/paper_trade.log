@@ -781,3 +781,5 @@
 2026-10-23 09:10:03  holding 0/1 positions
 2026-10-23 09:17:03  waiting for the session's first candle (normal at open)
 2026-10-23 10:17:40  OPENED bear_call (1/1): sell 22450CE @ 198.45, buy 22850CE @ 48.80, credit 149.65, margin 16,273, SL 2,441, exit 2026-10-26 15:00
+2026-10-23 13:41:08  SL hit 22450/22850: MTM -2,473 <= -2,441
+2026-10-23 13:41:08  CLOSED bear_call 22450/22850 (SL) net -2,606
