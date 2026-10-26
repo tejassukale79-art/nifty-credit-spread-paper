@@ -1,13 +1,13 @@
 {
  "position": null,
  "contract": {
-  "symbol": "GOLDM26NOVFUT",
-  "key": "MCX_FO|571445",
-  "expiry": "2026-11-05",
+  "symbol": "GOLDM26DECFUT",
+  "key": "MCX_FO|575011",
+  "expiry": "2026-12-04",
   "lot_size": 100
  },
  "session": {
-  "date": "2026-10-23",
+  "date": "2026-10-26",
   "open": "09:00",
   "end": "23:30",
   "square_off": "23:00",
@@ -16,17 +16,17 @@
   "note": null
  },
  "today": {
-  "date": "2026-10-23",
+  "date": "2026-10-26",
   "trades": 0,
   "net": 0
  },
- "margin_1lot": 131168,
+ "margin_1lot": 131328,
  "margin_product": "MIS",
- "margin_ts": "2026-10-23 08:55:04",
- "heartbeat": "2026-10-23 23:32:55",
+ "margin_ts": "2026-10-26 08:55:14",
+ "heartbeat": "2026-10-26 09:00:07",
  "ltp": {
-  "px": 140611.0,
-  "ts": "2026-10-23 23:32:55"
+  "px": 142400.0,
+  "ts": "2026-10-26 09:00:07"
  },
  "signal": {
   "bar": "2026-10-23 23:20:00",
