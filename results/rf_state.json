@@ -2,17 +2,18 @@
  "position": null,
  "live": null,
  "last_signal": {
-  "ts": "2026-10-27T15:23:40.682915",
+  "ts": "2026-10-27T15:28:41.195942",
   "dte": 0,
   "threshold": 13.0,
   "eligible": false,
-  "armed": true,
-  "spot": 22760.75,
+  "armed": false,
+  "spot": 22749.75,
   "expiry": "2026-10-27",
-  "edr": 3.19,
-  "entropy": 0.9728,
-  "disp": 0.3048,
+  "edr": null,
+  "entropy": null,
+  "disp": null,
   "skew": null,
-  "strikes": 6
+  "strikes": 0,
+  "note": "IV surface unavailable (at/near expiry or thin quotes)"
  }
 }
