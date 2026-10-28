@@ -23,22 +23,22 @@
  "margin_1lot": 133236,
  "margin_product": "MIS",
  "margin_ts": "2026-10-28 08:55:14",
- "heartbeat": "2026-10-28 16:45:12",
+ "heartbeat": "2026-10-28 16:50:20",
  "ltp": {
-  "px": 143854.0,
-  "ts": "2026-10-28 16:45:12"
+  "px": 143797.0,
+  "ts": "2026-10-28 16:50:20"
  },
  "signal": {
-  "bar": "2026-10-28 16:30:00",
-  "close": 143795.0,
+  "bar": "2026-10-28 16:40:00",
+  "close": 143797.0,
   "tenkan": 143952.5,
   "kijun": 143732.5,
-  "cci": 50.2,
+  "cci": 55.8,
   "regime": "none",
   "signal": 0,
   "last_bar_of_session": false,
   "after_square_off": false
  },
- "last_bar": "2026-10-28 16:30:00",
+ "last_bar": "2026-10-28 16:40:00",
  "live": null
 }
