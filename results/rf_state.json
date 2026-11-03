@@ -22,11 +22,11 @@
   "margin_blocked": 259261
  },
  "live": {
-  "ts": "2026-11-03 10:20:06",
+  "ts": "2026-11-03 10:25:06",
   "short_px": 3.15,
-  "long_px": 1.75,
-  "cost_to_close": 1.4,
-  "mtm": 25252.5,
+  "long_px": 1.65,
+  "cost_to_close": 1.5,
+  "mtm": 25220.0,
   "max_loss": 104292.5,
   "stop_at": -36502.38,
   "mtm_pct_maxloss": 24.2
