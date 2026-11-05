@@ -875,3 +875,4 @@
 2026-11-05 09:16:08  SL hit 23900/24300: MTM -10,927 <= -2,701
 2026-11-05 09:16:08  CLOSED bear_call 23900/24300 (SL) net -11,074
 2026-11-05 09:16:50  waiting for the session's first candle (normal at open)
+2026-11-05 10:17:35  OPENED bull_put (1/1): sell 24400PE @ 157.10, buy 24000PE @ 40.40, credit 116.70, margin 18,414, SL 2,762, exit 2026-11-06 15:00
