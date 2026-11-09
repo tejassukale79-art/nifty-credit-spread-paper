@@ -897,3 +897,4 @@
 2026-11-09 11:36:08  CLOSED bear_call 24900/25300 (SL) net -3,685
 2026-11-09 11:43:42  OPENED bear_call (1/1): sell 25000CE @ 66.05, buy 25400CE @ 3.00, credit 63.05, margin 21,902, SL 3,285, exit 2026-11-09 15:00
 2026-11-09 15:00:08  CLOSED bear_call 25000/25400 (TIME) net 945
+2026-11-09 15:30:33  day done. open positions: 0/1 (state saved; run again tomorrow)
