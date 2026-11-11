@@ -22,5 +22,23 @@
    "exit_date": "2026-11-12"
   }
  ],
- "live": []
+ "live": [
+  {
+   "ts": "2026-11-11 13:37:08",
+   "type": "bear_call",
+   "kind": "CE",
+   "short_strike": 25250,
+   "long_strike": 25650,
+   "credit": 136.64999999999998,
+   "margin": 17117.75,
+   "entry_ts": "2026-11-11 13:32:36",
+   "exit_date": "2026-11-12",
+   "short_px": 235.1,
+   "long_px": 96.5,
+   "cost_to_close": 138.6,
+   "mtm": -126.75000000000111,
+   "mtm_pct_margin": -0.7404594645908552,
+   "sl_amount": 2567.6625
+  }
+ ]
 }
