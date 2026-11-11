@@ -7,26 +7,26 @@
   "lot_size": 100
  },
  "session": {
-  "date": "2026-11-10",
-  "open": "17:00",
+  "date": "2026-11-11",
+  "open": "09:00",
   "end": "23:55",
   "square_off": "23:25",
   "broker": "Upstox MIS",
   "us_dst": false,
-  "note": "Diwali-Balipratipada: MCX session 17:00-23:55 only"
+  "note": null
  },
  "today": {
-  "date": "2026-11-10",
+  "date": "2026-11-11",
   "trades": 0,
   "net": 0
  },
- "margin_1lot": 132386,
+ "margin_1lot": 129995,
  "margin_product": "MIS",
- "margin_ts": "2026-11-10 08:55:14",
- "heartbeat": "2026-11-10 23:57:57",
+ "margin_ts": "2026-11-11 08:55:14",
+ "heartbeat": "2026-11-11 09:00:07",
  "ltp": {
-  "px": 140600.0,
-  "ts": "2026-11-10 23:57:57"
+  "px": 141254.0,
+  "ts": "2026-11-11 09:00:07"
  },
  "signal": {
   "bar": "2026-11-10 23:40:00",
