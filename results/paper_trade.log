@@ -975,3 +975,4 @@
 2026-11-12 12:09:08  SL hit 25350/24950: MTM -3,110 <= -2,637
 2026-11-12 12:09:08  CLOSED bull_put 25350/24950 (SL) net -3,245
 2026-11-12 12:18:37  OPENED bear_call (1/1): sell 25200CE @ 204.15, buy 25600CE @ 67.25, credit 136.90, margin 17,102, SL 2,565, exit 2026-11-13 15:00
+2026-11-12 15:30:08  day done. open positions: 1/1 (state saved; run again tomorrow)
