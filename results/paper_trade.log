@@ -962,3 +962,10 @@
 2026-11-11 13:32:08  CLOSED bull_put 25350/24950 (SL) net -3,246
 2026-11-11 13:32:36  OPENED bear_call (1/1): sell 25250CE @ 232.60, buy 25650CE @ 95.95, credit 136.65, margin 17,118, SL 2,568, exit 2026-11-12 15:00
 2026-11-11 15:30:08  day done. open positions: 1/1 (state saved; run again tomorrow)
+2026-11-12 09:10:01  ============================================================
+2026-11-12 09:10:01  paper trading start | SL 15% of margin | exit next day 15:00
+2026-11-12 09:10:03  warm-up spot: 2320 bars (2026-11-03 09:15:00 -> 2026-11-11 15:29:00)
+2026-11-12 09:10:03  trading expiry 2026-11-17, lot 65
+2026-11-12 09:10:04  NSE holiday calendar loaded (16 closed days)
+2026-11-12 09:10:04  restored open position: bear_call 25250/25650
+2026-11-12 09:10:04  holding 1/1 positions
