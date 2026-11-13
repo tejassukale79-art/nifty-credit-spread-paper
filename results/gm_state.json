@@ -1,5 +1,19 @@
 {
- "position": null,
+ "position": {
+  "side": -1,
+  "entry": 136350.0,
+  "stop": 137713.5,
+  "lots": 1,
+  "entry_ts": "2026-11-13 18:50:21",
+  "entry_bar": "2026-11-13 18:50:00",
+  "contract": "GOLDM26DECFUT",
+  "key": "MCX_FO|575011",
+  "margin_blocked": 126128,
+  "margin_product": "MIS",
+  "entry_tenkan": 136577.5,
+  "entry_kijun": 136817.5,
+  "entry_cci": -83.2
+ },
  "contract": {
   "symbol": "GOLDM26DECFUT",
   "key": "MCX_FO|575011",
@@ -23,22 +37,28 @@
  "margin_1lot": 126130,
  "margin_product": "MIS",
  "margin_ts": "2026-11-13 08:55:13",
- "heartbeat": "2026-11-13 18:46:34",
+ "heartbeat": "2026-11-13 18:51:38",
  "ltp": {
-  "px": 136418.0,
-  "ts": "2026-11-13 18:46:34"
+  "px": 136232.0,
+  "ts": "2026-11-13 18:51:37"
  },
  "signal": {
-  "bar": "2026-11-13 18:30:00",
-  "close": 136488.0,
-  "tenkan": 136675.5,
-  "kijun": 136887.5,
-  "cci": -47.4,
+  "bar": "2026-11-13 18:40:00",
+  "close": 136245.0,
+  "tenkan": 136577.5,
+  "kijun": 136817.5,
+  "cci": -83.2,
   "regime": "bear",
-  "signal": 0,
+  "signal": -1,
   "last_bar_of_session": false,
   "after_square_off": false
  },
- "last_bar": "2026-11-13 18:30:00",
- "live": null
+ "last_bar": "2026-11-13 18:40:00",
+ "live": {
+  "ts": "2026-11-13 18:51:37",
+  "ltp": 136232.0,
+  "mtm": 1180,
+  "mtm_pct_margin": 0.94,
+  "to_stop_pct": 1.087
+ }
 }
