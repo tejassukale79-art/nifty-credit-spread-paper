@@ -1,0 +1,13 @@
+{
+ "positions": [],
+ "scan": null,
+ "live": null,
+ "heartbeat": "2026-11-17 09:14:11",
+ "calendar": {
+  "ts": "2026-11-17 09:10:11",
+  "live": 9,
+  "from_file": 0,
+  "fo_ahead": [],
+  "entry_target": "2026-11-20"
+ }
+}
