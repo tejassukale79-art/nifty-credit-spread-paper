@@ -1,8 +1,13 @@
 {
  "positions": [],
- "scan": null,
+ "scan": {
+  "ts": "2026-11-17 15:12:11",
+  "results_date": "2026-11-20",
+  "exit_date": "2026-11-19",
+  "candidates": []
+ },
  "live": null,
- "heartbeat": "2026-11-17 15:08:11",
+ "heartbeat": "2026-11-17 15:12:11",
  "calendar": {
   "ts": "2026-11-17 09:10:11",
   "live": 9,
