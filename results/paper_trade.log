@@ -1005,3 +1005,4 @@
 2026-11-17 10:19:08  CLOSED bear_call 25300/25700 (SL) net -3,263
 2026-11-17 10:19:48  OPENED bull_put (1/1): sell 25400PE @ 48.45, buy 25000PE @ 2.55, credit 45.90, margin 23,016, SL 3,452, exit 2026-11-17 15:00
 2026-11-17 15:00:08  CLOSED bull_put 25400/25000 (TIME) net 1,734
+2026-11-17 15:30:26  day done. open positions: 0/1 (state saved; run again tomorrow)
