@@ -1013,3 +1013,4 @@
 2026-11-18 09:10:10  NSE holiday calendar loaded (16 closed days)
 2026-11-18 09:10:10  holding 0/1 positions
 2026-11-18 09:16:44  waiting for the session's first candle (normal at open)
+2026-11-18 10:16:28  OPENED bear_call (1/1): sell 25300CE @ 161.00, buy 25700CE @ 42.00, credit 119.00, margin 18,265, SL 2,740, exit 2026-11-19 15:00
