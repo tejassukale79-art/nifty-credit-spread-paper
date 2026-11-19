@@ -7,12 +7,12 @@
   "candidates": []
  },
  "live": null,
- "heartbeat": "2026-11-18 15:35:10",
+ "heartbeat": "2026-11-19 09:14:13",
  "calendar": {
-  "ts": "2026-11-18 09:10:10",
-  "live": 9,
+  "ts": "2026-11-19 09:10:13",
+  "live": 8,
   "from_file": 0,
   "fo_ahead": [],
-  "entry_target": "2026-11-23"
+  "entry_target": "2026-11-25"
  }
 }
