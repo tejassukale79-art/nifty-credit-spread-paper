@@ -1,4 +1,44 @@
 {
- "positions": [],
- "live": []
+ "positions": [
+  {
+   "date": "2026-11-23",
+   "expiry": "2026-11-23",
+   "type": "bull_put",
+   "kind": "PE",
+   "entry_ts": "2026-11-23 10:18:47",
+   "signal_ts": "2026-11-23 10:18:08",
+   "atm": 25650,
+   "lot": 65,
+   "short_strike": 25650,
+   "long_strike": 25250,
+   "credit": 98.05000000000001,
+   "margin": 19626.75,
+   "margin_blocked": 87393,
+   "short_entry": 103.85000000000001,
+   "long_entry": 5.8,
+   "alpha": 0.9544303797468354,
+   "alpha2": 0.8711864406779661,
+   "spot_entry": 25627.15,
+   "exit_date": "2026-11-23"
+  }
+ ],
+ "live": [
+  {
+   "ts": "2026-11-23 10:20:08",
+   "type": "bull_put",
+   "kind": "PE",
+   "short_strike": 25650,
+   "long_strike": 25250,
+   "credit": 98.05000000000001,
+   "margin": 19626.75,
+   "entry_ts": "2026-11-23 10:18:47",
+   "exit_date": "2026-11-23",
+   "short_px": 106.35,
+   "long_px": 5.7,
+   "cost_to_close": 100.64999999999999,
+   "mtm": -168.9999999999987,
+   "mtm_pct_margin": -0.8610697135287233,
+   "sl_amount": 2944.0125
+  }
+ ]
 }
