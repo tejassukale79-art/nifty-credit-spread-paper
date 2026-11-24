@@ -1113,3 +1113,5 @@
 2026-11-24 09:57:40  no intraday candles yet (holiday or feed delay?)
 2026-11-24 09:58:40  no intraday candles yet (holiday or feed delay?)
 2026-11-24 09:59:40  no intraday candles yet (holiday or feed delay?)
+2026-11-24 10:00:40  no candles by 10:00 - market closed today, exiting
+2026-11-24 10:00:40  day done. open positions: 0/1 (state saved; run again tomorrow)
