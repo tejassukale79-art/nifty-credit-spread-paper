@@ -1070,3 +1070,6 @@
 2026-11-24 09:10:04  trading expiry 2026-12-01, lot 65
 2026-11-24 09:10:05  NSE holiday calendar loaded (16 closed days)
 2026-11-24 09:10:05  holding 0/1 positions
+2026-11-24 09:17:12  waiting for the session's first candle (normal at open)
+2026-11-24 09:18:40  waiting for the session's first candle (normal at open)
+2026-11-24 09:19:40  waiting for the session's first candle (normal at open)
