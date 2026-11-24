@@ -1,29 +1,29 @@
 {
  "position": null,
  "contract": {
-  "symbol": "GOLDM26DECFUT",
-  "key": "MCX_FO|575011",
-  "expiry": "2026-12-04",
+  "symbol": "GOLDM27JANFUT",
+  "key": "MCX_FO|578779",
+  "expiry": "2027-01-05",
   "lot_size": 100
  },
  "session": {
-  "date": "2026-11-23",
-  "open": "09:00",
+  "date": "2026-11-24",
+  "open": "17:00",
   "end": "23:55",
   "square_off": "23:25",
   "broker": "Upstox MIS",
   "us_dst": false,
-  "note": null
+  "note": "Guru Nanak Jayanti: MCX session 17:00-23:55 only"
  },
  "today": {
-  "date": "2026-11-23",
-  "trades": 1,
-  "net": 8897
+  "date": "2026-11-24",
+  "trades": 0,
+  "net": 0
  },
- "margin_1lot": 129864,
+ "margin_1lot": 146014,
  "margin_product": "MIS",
- "margin_ts": "2026-11-23 08:55:14",
- "heartbeat": "2026-11-23 23:57:57",
+ "margin_ts": "2026-11-24 08:55:13",
+ "heartbeat": "2026-11-24 08:59:13",
  "ltp": {
   "px": 126000.0,
   "ts": "2026-11-23 23:57:57"
