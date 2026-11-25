@@ -1115,3 +1115,9 @@
 2026-11-24 09:59:40  no intraday candles yet (holiday or feed delay?)
 2026-11-24 10:00:40  no candles by 10:00 - market closed today, exiting
 2026-11-24 10:00:40  day done. open positions: 0/1 (state saved; run again tomorrow)
+2026-11-25 09:10:06  ============================================================
+2026-11-25 09:10:06  paper trading start | SL 15% of margin | exit next day 15:00
+2026-11-25 09:10:08  warm-up spot: 2250 bars (2026-11-16 09:15:00 -> 2026-11-23 15:29:00)
+2026-11-25 09:10:08  trading expiry 2026-12-01, lot 65
+2026-11-25 09:10:09  NSE holiday calendar loaded (16 closed days)
+2026-11-25 09:10:09  holding 0/1 positions
