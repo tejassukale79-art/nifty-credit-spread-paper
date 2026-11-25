@@ -2,18 +2,32 @@
  "position": null,
  "live": null,
  "last_signal": {
-  "ts": "2026-11-23T15:34:39.421810",
-  "dte": 0,
+  "ts": "2026-11-25T09:24:01.585081",
+  "dte": 6,
   "threshold": 13.0,
   "eligible": false,
   "armed": false,
-  "spot": 25349.65,
-  "expiry": "2026-11-23",
-  "edr": null,
-  "entropy": null,
-  "disp": null,
-  "skew": null,
-  "strikes": 0,
-  "note": "IV surface unavailable (at/near expiry or thin quotes)"
+  "spot": 25735.75,
+  "expiry": "2026-12-01",
+  "edr": 24.6,
+  "entropy": 0.99973,
+  "disp": 0.0406,
+  "skew": 0.0136,
+  "strikes": 21,
+  "plan": {
+   "kind": "CE",
+   "structure": "bear call spread",
+   "sell_strike": 25750,
+   "buy_strike": 26150,
+   "expiry": "2026-12-01",
+   "lots": 5,
+   "lot": 65,
+   "qty": 325,
+   "sell_px": 227.6,
+   "buy_px": 83.2,
+   "credit": 144.3,
+   "credit_total": 46897,
+   "max_loss": 83102
+  }
  }
 }
