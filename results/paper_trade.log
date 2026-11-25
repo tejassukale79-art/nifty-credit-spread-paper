@@ -1123,3 +1123,4 @@
 2026-11-25 09:10:09  holding 0/1 positions
 2026-11-25 09:17:12  waiting for the session's first candle (normal at open)
 2026-11-25 10:15:42  OPENED bull_put (1/1): sell 25750PE @ 208.95, buy 25350PE @ 75.50, credit 133.45, margin 17,326, SL 2,599, exit 2026-11-26 15:00
+2026-11-25 15:30:08  day done. open positions: 1/1 (state saved; run again tomorrow)
