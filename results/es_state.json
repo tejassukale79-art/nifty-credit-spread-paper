@@ -7,17 +7,12 @@
   "candidates": []
  },
  "live": null,
- "heartbeat": "2026-11-25 15:35:11",
+ "heartbeat": "2026-11-26 09:14:10",
  "calendar": {
-  "ts": "2026-11-25 09:10:10",
-  "live": 6,
+  "ts": "2026-11-26 09:10:10",
+  "live": 4,
   "from_file": 0,
-  "fo_ahead": [
-   {
-    "sym": "ENRIN",
-    "results": "2026-11-25"
-   }
-  ],
-  "entry_target": "2026-11-30"
+  "fo_ahead": [],
+  "entry_target": "2026-12-01"
  }
 }
